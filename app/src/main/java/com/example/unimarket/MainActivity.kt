@@ -22,7 +22,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    //Greeting("Android")
+                    //The viewModel of a screen MUST BE DECLARED OUTSIDE
+                    //IF NOT , THE VIEWMODEL WILL BE CREATED AGAIN EACH TIME
+                    //THERE IS A CHANGE IN MUTABLES
+                    //val homeViewModel = HomeViewModel()
+                    //Home(viewModel = homeViewModel)
                 }
             }
         }
