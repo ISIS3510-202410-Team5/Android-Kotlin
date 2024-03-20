@@ -19,6 +19,7 @@ import com.example.unimarket.ui.theme.UniMarketTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        val firebaseManager = LoginModel()
         super.onCreate(savedInstanceState)
         setContent {
             UniMarketTheme {
