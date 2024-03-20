@@ -42,7 +42,7 @@ fun ListProductApp() {
 fun ProductList(productList: List<Product>, modifier: Modifier = Modifier) {
     LazyColumn(modifier = modifier) {
         items(productList) { product ->
-            AffirmationCard(
+            ProductCard(
                 product = product,
                 modifier = Modifier.padding(8.dp)
             )
@@ -51,7 +51,7 @@ fun ProductList(productList: List<Product>, modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun AffirmationCard(product: Product, modifier: Modifier = Modifier) {
+fun ProductCard(product: Product, modifier: Modifier = Modifier) {
     val colors = MaterialTheme.colorScheme
     Box(
         modifier = modifier
