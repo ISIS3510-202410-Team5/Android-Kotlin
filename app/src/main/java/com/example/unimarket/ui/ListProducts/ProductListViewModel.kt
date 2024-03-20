@@ -52,6 +52,8 @@ constructor
 
                     _state.value = ProductListState(productos = result.data ?: emptyList())
                 }
+
+                else -> {}
             }
         }.launchIn(viewModelScope)
     }
