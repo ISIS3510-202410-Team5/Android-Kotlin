@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
 
@@ -54,25 +55,57 @@ fun SignUp(modifier: Modifier, viewModel: SignUpViewModel) {
         }}
     else{
         Column (modifier= modifier) {
-            HeaderImageSignUp(Modifier.align(Alignment.CenterHorizontally))
-            Spacer(modifier = Modifier.padding(16.dp))
             /*Cada vez que se oprima una tecla se llama al view model para comprobar si es valido*/
+            WelcomeSignUpText()
+            Spacer(modifier = Modifier.padding(8.dp))
+            EmailText()
             EmailSignUp(email){viewModel.onLoginChanged(it,password)}
             Spacer(modifier = Modifier.padding(16.dp))
+            PasswordText()
             PasswordCreationSpace(password) {viewModel.onLoginChanged(email,it)}
-            Spacer(modifier = Modifier.padding(16.dp))
+            Spacer(modifier = Modifier.padding(18.dp))
             ButtonSignUp(loginEnable){
                 coroutineScope.launch {
                     viewModel.onLoginSelected()}
             }
-
-            Spacer(modifier = Modifier.padding(8.dp))
-            BienvenidoUni     ()
+            Spacer(modifier = Modifier.padding(14.dp))
+            SignInText()
+            Spacer(modifier = Modifier.padding(16.dp))
+            HeaderImageSignUp(Modifier.align(Alignment.CenterHorizontally))
         }
     }
 }
 
 /*single source of thruth*/
+
+@Composable
+fun WelcomeSignUpText() {
+    Text(text = "Sign Up",
+        fontSize = 25.sp,
+        color = Color(0xFF181316),
+        fontFamily = FontFamily.SansSerif
+    )
+    Text(text = "Please fill the information below! Welcome to the unimarket experience.",
+        fontSize = 15.sp,
+        color = Color(0xFF989EB1),
+        fontFamily = FontFamily.SansSerif
+    )
+}
+
+
+@Composable
+fun SignInText() {
+    Text(text = "Sign In",
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentSize(Alignment.Center)
+            .clickable { },
+        fontSize = 15.sp,
+        color = Color(0xFFFF5958),
+        fontFamily = FontFamily.SansSerif
+    )
+}
+
 
 @Composable
 fun ButtonSignUp(loginEnable: Boolean, onLoginSelected: () -> Unit) {
@@ -92,15 +125,6 @@ fun ButtonSignUp(loginEnable: Boolean, onLoginSelected: () -> Unit) {
     }
 }
 
-
-@Composable
-fun BienvenidoUni() {
-    Text(text = "Bienvenido a Unimarket",
-        modifier = Modifier.clickable { },
-        fontSize = 12.sp,
-        color = Color(0xFF989EB1)
-    )
-}
 
 @Composable
 fun PasswordCreationSpace(password:String,onTextFieldChanged:(String)->Unit) {
@@ -147,6 +171,6 @@ fun HeaderImageSignUp(modifier: Modifier) {
         painter = painterResource(id = R.drawable.logo),
         contentDescription = "Header",
         modifier= modifier
-            .size(200.dp)
+            .size(150.dp)
     )
 }
