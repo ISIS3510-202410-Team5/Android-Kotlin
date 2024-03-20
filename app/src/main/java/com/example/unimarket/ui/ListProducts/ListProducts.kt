@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -55,29 +56,38 @@ fun ListProductApp(modifier: Modifier = Modifier) {
     val ctx = LocalContext.current
     var query by remember { mutableStateOf("") }
     var active by remember { mutableStateOf(true) } // Mantén la barra de búsqueda activa todo el tiempo
-    
-    Column {
 
+    Column(modifier = modifier.fillMaxSize()) {
+        // Barra de búsqueda
         SearchBar(
             query = query,
             onQueryChange = { query = it },
-            onSearch = {
-            },
+            onSearch = {},
             active = active,
-            onActiveChange = { active = it },
+            onActiveChange = { active = it }
         )
         {
 
             ProductList(
                 productList = productList.filter { product ->
                     product.stringResourceId.contains(query, ignoreCase = true)
-                }
+                },
+                modifier = Modifier.weight(1f) // Permitir que la lista ocupe todo el espacio disponible
             )
 
+            Button(
+                onClick = { /* Acción del botón */ },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(text = "Botón")
+            }
 
         }
     }
 }
+
 
 
 @Composable
@@ -86,7 +96,8 @@ fun ProductList(productList: List<Product>, modifier: Modifier = Modifier) {
         items(productList) { product ->
             ProductCard(
                 product = product,
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier
+                    .padding(8.dp)
                     .clickable {
 
                     }
@@ -100,26 +111,22 @@ fun ProductList(productList: List<Product>, modifier: Modifier = Modifier) {
 fun ProductCard(product: Product, modifier: Modifier = Modifier) {
     val colors = MaterialTheme.colorScheme
     val isPortrait = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
 
     Box(
         modifier = modifier
             .padding(1.dp)
             .background(colors.surface)
             .border(1.dp, colors.onSurface, shape = RoundedCornerShape(8.dp))
-    )
-    {
-
+    ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.Top
         ) {
-
-            if (isPortrait) {
-                Box(
-                    modifier = Modifier
-                        .size(200.dp)
-                ) {
-
+            Box(
+                modifier = if (isPortrait) Modifier.weight(1f) else Modifier.width(screenWidth / 2)
+            ) {
+                Column {
                     Text(
                         text = product.stringResourceId,
                         modifier = Modifier
@@ -131,52 +138,56 @@ fun ProductCard(product: Product, modifier: Modifier = Modifier) {
                             color = Color(0xffff4500) // Color naranja
                         )
                     )
-                }
-
-                Box(
-                    modifier = Modifier
-                        .size(200.dp)
-                        .padding(1.dp)
-                ) {
-                    Image(
-                        painter = painterResource(product.imageResourceId),
-                        contentDescription = product.stringResourceId,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
-                }
-            } else {
-
-                Box(
-                    modifier = Modifier
-                        .size(370.dp)
-                ) {
 
                     Text(
-                        text = product.stringResourceId,
+                        text = "$ 49.000",
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color(0xffffcfd5), shape = RoundedCornerShape(4.dp))
-                            .padding(8.dp),
-                        style = MaterialTheme.typography.bodyLarge.copy(
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xffff4500) // Color naranja
-                        )
+                            .padding(7.dp),
+                        style = MaterialTheme.typography.bodyMedium.copy(
+                            fontWeight = FontWeight.Bold
+                        ),
                     )
-                }
 
-                Box(
-                    modifier = Modifier
-                        .size(370.dp)
-                ) {
-                    Image(
-                        painter = painterResource(product.imageResourceId),
-                        contentDescription = product.stringResourceId,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
+                    ExampleScreen()
                 }
             }
+
+            Box(
+                modifier = if (isPortrait) Modifier.weight(1f) else Modifier
+                    .width(screenWidth / 2)
+                    .padding(1.dp)
+            ) {
+                Image(
+                    painter = painterResource(product.imageResourceId),
+                    contentDescription = product.stringResourceId,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            }
+        }
+    }
+}
+
+
+@Composable
+fun ExampleScreen() {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.Bottom
+    ) {
+        Button(
+            onClick = { /* Acción del primer botón */ },
+            modifier = Modifier.weight(0.5f)
+        ) {
+            Text(text = "B")
+        }
+
+        Button(
+            onClick = { /* Acción del segundo botón */ },
+            modifier = Modifier.weight(0.5f)
+        ) {
+            Text(text = "B")
         }
     }
 }
