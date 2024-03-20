@@ -27,6 +27,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
@@ -44,6 +46,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.unimarket.R
 import com.example.unimarket.data.Datasource
 
 
@@ -172,22 +175,22 @@ fun ProductCard(product: Product, modifier: Modifier = Modifier) {
 
 @Composable
 fun ExampleScreen() {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.Bottom
+    Column(
+        modifier = Modifier.fillMaxWidth()
     ) {
-        Button(
-            onClick = { /* Acción del primer botón */ },
-            modifier = Modifier.weight(0.5f)
-        ) {
-            Text(text = "B")
-        }
+        var checked by remember { mutableStateOf(false) } //1
 
-        Button(
-            onClick = { /* Acción del segundo botón */ },
-            modifier = Modifier.weight(0.5f)
-        ) {
-            Text(text = "B")
+        IconToggleButton(checked = checked, onCheckedChange = { checked = it }) { //2
+            Icon(
+                painter = painterResource( //3
+                    if (checked) R.drawable.heart_icon
+                    else R.drawable.heart_icon_border
+                ),
+                contentDescription = //4
+                if (checked) "Añadir a marcadores"
+                else "Quitar de marcadores"//5
+            )
         }
     }
 }
+
