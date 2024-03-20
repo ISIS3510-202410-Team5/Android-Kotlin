@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -57,9 +58,13 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel) {
     Column (modifier= modifier) {
         HeaderImage(Modifier.align(Alignment.CenterHorizontally))
         Spacer(modifier = Modifier.padding(16.dp))
+        WelcomeText()
+        Spacer(modifier = Modifier.padding(8.dp))
         /*Cada vez que se oprima una tecla se llama al view model para comprobar si es valido*/
+        EmailText()
         EmailSpace(email){viewModel.onLoginChanged(it,password)}
         Spacer(modifier = Modifier.padding(16.dp))
+        PasswordText()
         PasswordSpace(password) {viewModel.onLoginChanged(email,it)}
         Spacer(modifier = Modifier.padding(16.dp))
         ButtonLogin(loginEnable){
@@ -67,8 +72,8 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel) {
                 viewModel.onLoginSelected()}
             }
 
-        Spacer(modifier = Modifier.padding(8.dp))
-        ForgotPassword()
+        Spacer(modifier = Modifier.padding(16.dp))
+        SignUpText()
     }
     }
 }
@@ -89,25 +94,66 @@ fun ButtonLogin(loginEnable: Boolean, onLoginSelected: () -> Unit) {
         )
 
     {
-        Text(text = "Sign in")
+        Text(text = "Sign In",
+            fontSize = 15.sp,
+            fontFamily = FontFamily.SansSerif)
     }
+}
+@Composable
+fun WelcomeText() {
+    Text(text = "Sign In",
+        fontSize = 25.sp,
+        color = Color(0xFF181316),
+        fontFamily = FontFamily.SansSerif
+    )
+    Text(text = "Hi there! Nice to see you again.",
+        fontSize = 15.sp,
+        color = Color(0xFF989EB1),
+        fontFamily = FontFamily.SansSerif
+    )
 }
 
 
 @Composable
-fun ForgotPassword() {
-    Text(text = "Recuperar contraseña",
-        modifier = Modifier.clickable { },
-        fontSize = 12.sp,
-        color = Color(0xFF989EB1)
+fun SignUpText() {
+    Text(text = "Sign Up",
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentSize(Alignment.Center)
+            .clickable { },
+        fontSize = 15.sp,
+        color = Color(0xFFFF5958),
+        fontFamily = FontFamily.SansSerif
         )
 }
 
 @Composable
+fun EmailText() {
+    Text(text = "Email",
+        fontSize = 17.sp,
+        color = Color(0xFFFF5958),
+        fontFamily = FontFamily.SansSerif
+
+    )
+}
+
+@Composable
+fun PasswordText() {
+    Text(text = "Password",
+        fontSize = 20.sp,
+        color = Color(0xFFFF5958),
+        fontFamily = FontFamily.SansSerif
+    )
+}
+
+@Composable
 fun PasswordSpace(password:String,onTextFieldChanged:(String)->Unit) {
+
     TextField(value = password, onValueChange = {onTextFieldChanged(it)},
         modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text(text = "Password",color= Color(0xFF989EB1))},
+        placeholder = { Text(text = "Password",
+            color= Color(0xFF989EB1),
+            fontFamily = FontFamily.SansSerif)},
         keyboardOptions = KeyboardOptions (keyboardType= KeyboardType.Password),
         singleLine = true,
         maxLines = 1,
@@ -118,6 +164,7 @@ fun PasswordSpace(password:String,onTextFieldChanged:(String)->Unit) {
             unfocusedIndicatorColor = Color.Transparent
         )
         )
+
 }
 
 @Composable
@@ -125,7 +172,9 @@ fun EmailSpace(email:String,onTextFieldChanged:(String)->Unit) {
     TextField(value = email ,
         onValueChange = {onTextFieldChanged(it)},
         modifier= Modifier.fillMaxWidth(),
-        placeholder={ Text(text="Email", color = Color(0xFF989EB1)) },
+        placeholder={ Text(text="Email",
+            color = Color(0xFF989EB1),
+            fontFamily = FontFamily.SansSerif) },
         keyboardOptions = KeyboardOptions (keyboardType= KeyboardType.Email),
         singleLine = true,
         maxLines = 1,
@@ -147,5 +196,6 @@ fun HeaderImage(modifier: Modifier) {
         painter = painterResource(id = R.drawable.logo),
         contentDescription = "Header",
         modifier= modifier
+            .size(150.dp)
     )
 }

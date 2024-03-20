@@ -13,6 +13,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.unimarket.ui.theme.Login.model.LoginModel
 import com.example.unimarket.ui.theme.Login.ui.LoginScreen
 import com.example.unimarket.ui.theme.Login.ui.LoginViewModel
+import com.example.unimarket.ui.theme.Login.ui.SignUp
+import com.example.unimarket.ui.theme.Login.ui.SignUpScreen
+import com.example.unimarket.ui.theme.Login.ui.SignUpViewModel
 import com.example.unimarket.ui.theme.theme.UniMarketTheme
 
 class MainActivity : ComponentActivity() {
@@ -28,6 +31,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     /*Se crea una instancia con el Login View Model*/
                     LoginScreen(LoginViewModel(firebaseManager))
+                    /*SignUpScreen(SignUpViewModel(firebaseManager))*/
                 }
             }
         }

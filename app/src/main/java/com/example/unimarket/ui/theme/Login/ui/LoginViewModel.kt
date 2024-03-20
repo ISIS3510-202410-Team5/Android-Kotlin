@@ -15,7 +15,6 @@ import kotlinx.coroutines.launch
 class LoginViewModel(private val firebaseManager: LoginModel) : ViewModel() {
     /*Solo Modifica el valor email para que despues este modifique _email, solo es modificable dentro
     del LoginViewModel*/
-
     private val _email = MutableLiveData<String>()
     val email : LiveData<String> = _email
 
@@ -59,9 +58,10 @@ class LoginViewModel(private val firebaseManager: LoginModel) : ViewModel() {
                 /*en caso de que las credenciales no esten bien se crashe*/
                 Log.e(TAG, "Error signing in: ${e.message}", e)
             }
-        delay(1000)
-        _isloading.value=false
-    }
+            delay(1000)
+            _isloading.value=false
+        }
 
 
-}}
+    }}
+
