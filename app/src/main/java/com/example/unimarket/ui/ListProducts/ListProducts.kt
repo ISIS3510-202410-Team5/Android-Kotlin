@@ -19,12 +19,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,18 +39,29 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.compose.ComposeNavigator
+import androidx.navigation.compose.composable
+import coil.annotation.ExperimentalCoilApi
+import coil.compose.rememberImagePainter
 import com.example.unimarket.R
 import com.example.unimarket.data.Datasource
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true,
-    showSystemUi = true)
 @Composable
-fun ListProductApp(modifier: Modifier = Modifier) {
-    val productList = remember { Datasource().loadAffirmations() }
+fun ListProductApp(modifier: Modifier = Modifier, ) {
+
+    val viewModel: ProductListViewModel = hiltViewModel()
+    val state = viewModel.state.value
+    val isRefreshing = viewModel.isRefreshing.collectAsState()
+    val productList = state.productos
     var query by remember { mutableStateOf("") }
     var active by remember { mutableStateOf(true) }
+
 
     Column(modifier = modifier.fillMaxSize()) {
         SearchBar(
@@ -62,9 +75,12 @@ fun ListProductApp(modifier: Modifier = Modifier) {
 
             ProductList(
                 productList = productList.filter { product ->
-                    product.stringResourceId.contains(query, ignoreCase = true)
+                    product.title.contains(query, ignoreCase = true)
                 },
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                isRefreshing = isRefreshing.value,
+                refreshData = viewModel::getProductList,
+                state = state
             )
 
             Button(
@@ -83,22 +99,47 @@ fun ListProductApp(modifier: Modifier = Modifier) {
 
 
 @Composable
-fun ProductList(productList: List<Product>, modifier: Modifier = Modifier) {
-    LazyColumn(modifier = modifier) {
-        items(productList) { product ->
-            ProductCard(
-                product = product,
-                modifier = Modifier
-                    .padding(8.dp)
-                    .clickable {
+fun ProductList(productList: List<Product>, modifier: Modifier = Modifier, isRefreshing: Boolean, refreshData: () -> Unit, state: ProductListState) {
+    
+    SwipeRefresh(state = rememberSwipeRefreshState(isRefreshing), onRefresh = refreshData) {
 
-                    }
-            )
+        LazyColumn(modifier = modifier) {
+            items(productList) { product ->
+                ProductCard(
+                    product = product,
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .clickable {
 
+                        }
+                )
+
+            }
         }
+
+    }
+
+    if(state.error.isBlank())
+    {
+        Text(
+            text = state.error,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            style = MaterialTheme.typography.bodyLarge.copy(
+                fontWeight = FontWeight.Bold,
+                color = Color(0xffff4500) // Color naranja
+            )
+        )
+    }
+
+    if(state.isLoading)
+    {
+        CircularProgressIndicator()
     }
 }
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun ProductCard(product: Product, modifier: Modifier = Modifier) {
     val colors = MaterialTheme.colorScheme
@@ -120,7 +161,7 @@ fun ProductCard(product: Product, modifier: Modifier = Modifier) {
             ) {
                 Column {
                     Text(
-                        text = product.stringResourceId,
+                        text = product.title,
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(Color(0xffffcfd5), shape = RoundedCornerShape(4.dp))
@@ -132,7 +173,7 @@ fun ProductCard(product: Product, modifier: Modifier = Modifier) {
                     )
 
                     Text(
-                        text = "$ 49.000",
+                        text = product.precio,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(7.dp),
@@ -151,8 +192,8 @@ fun ProductCard(product: Product, modifier: Modifier = Modifier) {
                     .padding(1.dp)
             ) {
                 Image(
-                    painter = painterResource(product.imageResourceId),
-                    contentDescription = product.stringResourceId,
+                    painter = rememberImagePainter(product.coverUrl),
+                    contentDescription = product.coverUrl,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
