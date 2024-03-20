@@ -28,8 +28,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.unimarket.R
+import com.example.unimarket.ui.Login.model.LoginModel
 import com.example.unimarket.ui.home.Home
 import com.example.unimarket.ui.home.HomeViewModel
+import com.example.unimarket.ui.login.ui.LoginViewModel
+import com.example.unimarket.ui.login.ui.SignUpViewModel
 import com.example.unimarket.ui.publishitem.PublishItem
 import com.example.unimarket.ui.publishitem.PublishItemViewModel
 import com.example.unimarket.ui.shoppingcart.ShoppingCart
@@ -40,10 +43,16 @@ fun Nav(){
 
     val navController = rememberNavController()
 
+
+    //Model declaration:
+    val loginModel = LoginModel()
+
     //This should be changed to a pattern
     val homeViewModel = remember {HomeViewModel()}
     val publishItemViewModel = remember {PublishItemViewModel()}
     val cartViewModel = remember {ShoppingCartViewModel()}
+    val loginViewModel = remember {LoginViewModel(loginModel)}
+    val singUpViewModel = remember {SignUpViewModel(loginModel)}
 
     Scaffold (
         bottomBar = {AppBottomNav(navController = navController)}

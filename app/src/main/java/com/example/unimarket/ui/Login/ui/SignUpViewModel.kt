@@ -1,4 +1,4 @@
-package com.example.unimarket.ui.theme.Login.ui
+package com.example.unimarket.ui.login.ui
 
 import android.content.ContentValues.TAG
 import android.util.Log
@@ -7,7 +7,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.unimarket.ui.theme.Login.model.LoginModel
+import com.example.unimarket.ui.Login.model.LoginModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

@@ -1,4 +1,4 @@
-package com.example.unimarket.ui.theme.theme
+package com.example.unimarket.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

@@ -1,4 +1,4 @@
-package com.example.unimarket.ui.theme.theme
+package com.example.unimarket.ui.theme
 
 import android.app.Activity
 import android.os.Build
