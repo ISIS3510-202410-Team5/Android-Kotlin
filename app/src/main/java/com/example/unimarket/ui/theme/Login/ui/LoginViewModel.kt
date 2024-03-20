@@ -61,6 +61,7 @@ class LoginViewModel(private val firebaseManager: LoginModel) : ViewModel() {
             delay(1000)
             _isloading.value=false
         }
+        { TODO("Aqui toca colocar la parte de navegacion") }
 
 
     }}

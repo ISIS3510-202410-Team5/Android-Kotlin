@@ -95,6 +95,7 @@ fun WelcomeSignUpText() {
 
 @Composable
 fun SignInText() {
+    { TODO("Aqui toca colocar la parte de navegacion A Sign IN Screen") }
     Text(text = "Sign In",
         modifier = Modifier
             .fillMaxWidth()
@@ -103,12 +104,14 @@ fun SignInText() {
         fontSize = 15.sp,
         color = Color(0xFFFF5958),
         fontFamily = FontFamily.SansSerif
+
     )
 }
 
 
 @Composable
 fun ButtonSignUp(loginEnable: Boolean, onLoginSelected: () -> Unit) {
+    { TODO("Aqui toca colocar la parte de navegacion") }
     Button(onClick = { onLoginSelected() }, modifier = Modifier
         .fillMaxWidth()
         .height(48.dp),

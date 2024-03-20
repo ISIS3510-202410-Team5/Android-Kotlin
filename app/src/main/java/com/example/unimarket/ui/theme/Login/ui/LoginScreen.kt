@@ -82,6 +82,7 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel) {
 
 @Composable
 fun ButtonLogin(loginEnable: Boolean, onLoginSelected: () -> Unit) {
+    { TODO("Aqui toca colocar la parte de navegacion") }
     Button(onClick = { onLoginSelected() }, modifier = Modifier
         .fillMaxWidth()
         .height(48.dp),
@@ -116,6 +117,7 @@ fun WelcomeText() {
 
 @Composable
 fun SignUpText() {
+    { TODO("Aqui toca colocar la parte de navegacion hacia Sign UP screen") }
     Text(text = "Sign Up",
         modifier = Modifier
             .fillMaxWidth()
