@@ -211,13 +211,3 @@ sealed class catButton(val icon: ImageVector?, val label: String?){
     data object button5: catButton(Icons.Rounded.Settings, "Hardware")
     data object button6: catButton(null, null)
 }
-
-
-@Preview(showBackground = true,
-    showSystemUi = true)
-@Composable
-fun GreetingPreview() {
-    UniMarketTheme {
-        Home()
-    }
-}

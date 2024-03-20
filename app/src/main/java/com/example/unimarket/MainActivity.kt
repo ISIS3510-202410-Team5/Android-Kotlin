@@ -10,6 +10,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.unimarket.ui.home.Home
+import com.example.unimarket.ui.home.HomeViewModel
+import com.example.unimarket.ui.shoppingcart.ShoppingCart
+import com.example.unimarket.ui.shoppingcart.ShoppingCartViewModel
 import com.example.unimarket.ui.theme.UniMarketTheme
 
 class MainActivity : ComponentActivity() {
@@ -28,6 +32,8 @@ class MainActivity : ComponentActivity() {
                     //THERE IS A CHANGE IN MUTABLES
                     //val homeViewModel = HomeViewModel()
                     //Home(viewModel = homeViewModel)
+                    val shoppingCartViewModel = ShoppingCartViewModel()
+                    ShoppingCart(viewModel = shoppingCartViewModel)
                 }
             }
         }
