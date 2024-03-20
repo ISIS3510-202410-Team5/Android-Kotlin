@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -62,8 +63,7 @@ fun ListProductApp(modifier: Modifier = Modifier, ) {
     var query by remember { mutableStateOf("") }
     var active by remember { mutableStateOf(true) }
 
-
-    Column(modifier = modifier.fillMaxSize()) {
+    Column() {
         SearchBar(
             query = query,
             onQueryChange = { query = it },
@@ -83,17 +83,10 @@ fun ListProductApp(modifier: Modifier = Modifier, ) {
                 state = state
             )
 
-            Button(
-                onClick = { },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Text(text = "Botón")
-            }
-
         }
+
     }
+
 }
 
 
@@ -145,6 +138,7 @@ fun ProductCard(product: Product, modifier: Modifier = Modifier) {
     val colors = MaterialTheme.colorScheme
     val isPortrait = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
     Box(
         modifier = modifier
@@ -194,7 +188,10 @@ fun ProductCard(product: Product, modifier: Modifier = Modifier) {
                 Image(
                     painter = rememberImagePainter(product.coverUrl),
                     contentDescription = product.coverUrl,
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .width((screenWidth / 2) - 1.dp)
+                        .height((screenWidth / 2) - 1.dp)
+                        .padding(8.dp),
                     contentScale = ContentScale.Crop
                 )
             }
