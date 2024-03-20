@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.ui.text.input.KeyboardType
@@ -24,6 +25,8 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -43,7 +46,14 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel) {
     val password:String by viewModel.password.observeAsState(initial = "")
     val loginEnable: Boolean by viewModel.loginEnable.observeAsState(initial = false)
 
+    val coroutineScope= rememberCoroutineScope()
+    val isloading:Boolean by viewModel.isloading.observeAsState(initial=false)
 
+    if (isloading){
+        Box(Modifier.fillMaxSize()){
+            CircularProgressIndicator(modifier.align(Alignment.Center))
+        }}
+    else{
     Column (modifier= modifier) {
         HeaderImage(Modifier.align(Alignment.CenterHorizontally))
         Spacer(modifier = Modifier.padding(16.dp))
@@ -52,18 +62,22 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel) {
         Spacer(modifier = Modifier.padding(16.dp))
         PasswordSpace(password) {viewModel.onLoginChanged(email,it)}
         Spacer(modifier = Modifier.padding(16.dp))
-        ButtonLogin(loginEnable){viewModel.onLoginSelected()}
+        ButtonLogin(loginEnable){
+            coroutineScope.launch {
+                viewModel.onLoginSelected()}
+            }
+
         Spacer(modifier = Modifier.padding(8.dp))
         ForgotPassword()
     }
-
+    }
 }
 
 /*single source of thruth*/
 
 @Composable
 fun ButtonLogin(loginEnable: Boolean, onLoginSelected: () -> Unit) {
-    Button(onClick = { onLoginSelected }, modifier = Modifier
+    Button(onClick = { onLoginSelected() }, modifier = Modifier
         .fillMaxWidth()
         .height(48.dp),
         colors = ButtonDefaults.buttonColors(
@@ -78,6 +92,7 @@ fun ButtonLogin(loginEnable: Boolean, onLoginSelected: () -> Unit) {
         Text(text = "Sign in")
     }
 }
+
 
 @Composable
 fun ForgotPassword() {

@@ -10,12 +10,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.unimarket.ui.theme.Login.model.LoginModel
 import com.example.unimarket.ui.theme.Login.ui.LoginScreen
 import com.example.unimarket.ui.theme.Login.ui.LoginViewModel
 import com.example.unimarket.ui.theme.theme.UniMarketTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        val firebaseManager = LoginModel()
         super.onCreate(savedInstanceState)
         setContent {
             UniMarketTheme {
@@ -25,7 +27,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     /*Se crea una instancia con el Login View Model*/
-                    LoginScreen(LoginViewModel())
+                    LoginScreen(LoginViewModel(firebaseManager))
                 }
             }
         }
