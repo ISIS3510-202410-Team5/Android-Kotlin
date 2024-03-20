@@ -33,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.unimarket.R
 import com.example.unimarket.ui.theme.AlmostWhite
 import com.example.unimarket.ui.theme.CoolGray
@@ -41,7 +42,7 @@ import com.example.unimarket.ui.theme.Licorice
 import com.example.unimarket.ui.theme.UniMarketTheme
 
 @Composable
-fun ShoppingCart(viewModel: ShoppingCartViewModel = ShoppingCartViewModel() )  {
+fun ShoppingCart(viewModel: ShoppingCartViewModel = ShoppingCartViewModel(), navController: NavHostController )  {
     Column (
         modifier = Modifier.fillMaxSize()
     ) {
@@ -181,14 +182,5 @@ fun ProductCard(modifier:Modifier = Modifier, index:Int, product: Any, viewModel
                 fontSize = 14.sp
             )
         }
-    }
-}
-
-@Preview(showBackground = true,
-    showSystemUi = true)
-@Composable
-fun ShoppingCartPreview() {
-    UniMarketTheme {
-        ShoppingCart()
     }
 }

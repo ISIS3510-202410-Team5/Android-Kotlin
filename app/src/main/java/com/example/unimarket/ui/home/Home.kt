@@ -42,13 +42,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.unimarket.ui.theme.Bittersweet
 import com.example.unimarket.ui.theme.CoolGray
 import com.example.unimarket.ui.theme.GiantsOrange
 import com.example.unimarket.ui.theme.UniMarketTheme
 
 @Composable
-fun Home(viewModel: HomeViewModel = HomeViewModel()) {
+fun Home(viewModel: HomeViewModel = HomeViewModel(), navController: NavHostController) {
 
 
     val searchText by viewModel.searchText.collectAsState()
