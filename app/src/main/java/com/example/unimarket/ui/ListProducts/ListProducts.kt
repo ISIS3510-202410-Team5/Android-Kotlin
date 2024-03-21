@@ -80,7 +80,8 @@ fun ListProductApp(modifier: Modifier = Modifier, ) {
                 modifier = Modifier.weight(1f),
                 isRefreshing = isRefreshing.value,
                 refreshData = viewModel::getProductList,
-                state = state
+                state = state,
+                viewModel = viewModel
             )
 
         }
@@ -92,7 +93,8 @@ fun ListProductApp(modifier: Modifier = Modifier, ) {
 
 
 @Composable
-fun ProductList(productList: List<Product>, modifier: Modifier = Modifier, isRefreshing: Boolean, refreshData: () -> Unit, state: ProductListState) {
+fun ProductList(productList: List<Product>, modifier: Modifier = Modifier, isRefreshing: Boolean, refreshData: () -> Unit, state: ProductListState,
+                viewModel: ProductListViewModel) {
     
     SwipeRefresh(state = rememberSwipeRefreshState(isRefreshing), onRefresh = refreshData) {
 
@@ -103,7 +105,7 @@ fun ProductList(productList: List<Product>, modifier: Modifier = Modifier, isRef
                     modifier = Modifier
                         .padding(8.dp)
                         .clickable {
-
+                            viewModel.addToShoppingCart(product)
                         }
                 )
 

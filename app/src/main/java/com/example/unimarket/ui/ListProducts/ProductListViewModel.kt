@@ -5,6 +5,8 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.unimarket.model.Product
+import com.example.unimarket.model.ShoppingCart
 import com.example.unimarket.repositories.ProductoRepository
 import com.example.unimarket.repositories.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +22,8 @@ class ProductListViewModel
 constructor
     (
 
-            private val productoRepository: ProductoRepository
+            private val productoRepository: ProductoRepository,
+            private val shoppingCart: ShoppingCart
 
 ): ViewModel()
 {
@@ -57,4 +60,9 @@ constructor
             }
         }.launchIn(viewModelScope)
     }
+
+    fun addToShoppingCart(product: Product){
+        shoppingCart.addProduct(product)
+    }
+
 }
