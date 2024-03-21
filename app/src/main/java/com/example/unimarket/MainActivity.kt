@@ -10,11 +10,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.unimarket.ui.navigation.Nav
 import com.example.unimarket.ui.ListProducts.ListProductApp
 import com.example.unimarket.ui.theme.UniMarketTheme
 import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +26,15 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    //Greeting("Android")
+                    //The viewModel of a screen MUST BE DECLARED OUTSIDE
+                    //IF NOT , THE VIEWMODEL WILL BE CREATED AGAIN EACH TIME
+                    //THERE IS A CHANGE IN MUTABLES
+                    //val homeViewModel = HomeViewModel()
+                    //Home(viewModel = homeViewModel)
+                    //val shoppingCartViewModel = ShoppingCartViewModel()
+                    //ShoppingCart(viewModel = shoppingCartViewModel)
+                    Nav()
                     //Greeting("Android")
                     ListProductApp()
                 }

@@ -14,7 +14,10 @@
   ~ limitations under the License.
   -->
 <resources>
-    <string name="app_name">Affirmations</string>
+    <string name="app_name">UniMarket</string>
+    <string name="home">HOME\n</string>
+    <string name="post">\POST</string>
+    <string name="cart">CART</string>
     <string name="affirmation1">I am strong.</string>
     <string name="affirmation2">I believe in myself.</string>
     <string name="affirmation3">Each day is a new opportunity to grow and be a better version of myself.</string>
