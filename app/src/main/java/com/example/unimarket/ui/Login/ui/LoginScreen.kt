@@ -1,4 +1,4 @@
-package com.example.unimarket.ui.login.ui
+package com.example.unimarket.ui.Login.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -37,12 +37,12 @@ fun LoginScreen(viewModel: LoginViewModel, navController: NavHostController){
         Modifier
             .fillMaxHeight()
             .padding(16.dp)) {
-        Login(Modifier.align(Alignment.Center),viewModel)
+        Login(Modifier.align(Alignment.Center),viewModel, navController)
     }
 }
 
 @Composable
-fun Login(modifier: Modifier, viewModel: LoginViewModel) {
+fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostController) {
 
     val email:String by viewModel.email.observeAsState(initial = "")
     val password:String by viewModel.password.observeAsState(initial = "")

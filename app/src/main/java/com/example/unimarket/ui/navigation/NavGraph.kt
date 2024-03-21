@@ -31,8 +31,9 @@ import com.example.unimarket.R
 import com.example.unimarket.ui.Login.model.LoginModel
 import com.example.unimarket.ui.home.Home
 import com.example.unimarket.ui.home.HomeViewModel
-import com.example.unimarket.ui.login.ui.LoginViewModel
-import com.example.unimarket.ui.login.ui.SignUpViewModel
+import com.example.unimarket.ui.Login.ui.LoginScreen
+import com.example.unimarket.ui.Login.ui.LoginViewModel
+import com.example.unimarket.ui.Login.ui.SignUpViewModel
 import com.example.unimarket.ui.publishitem.PublishItem
 import com.example.unimarket.ui.publishitem.PublishItemViewModel
 import com.example.unimarket.ui.shoppingcart.ShoppingCart
@@ -58,7 +59,7 @@ fun Nav(){
         bottomBar = {AppBottomNav(navController = navController)}
     ) {
         innerPadding ->
-        NavHost(navController, startDestination = Screen.Home.route, Modifier.padding(innerPadding)){
+        NavHost(navController, startDestination = Screen.LogIn.route, Modifier.padding(innerPadding)){
             composable(Screen.Home.route){
                 Home(viewModel = homeViewModel, navController=navController)
             }
@@ -70,6 +71,9 @@ fun Nav(){
             }
             composable(Screen.UnderConstruction.route){
                 Text(text="Under construction")
+            }
+            composable(Screen.LogIn.route){
+                LoginScreen(viewModel = loginViewModel, navController = navController)
             }
         }
     }
@@ -152,4 +156,6 @@ sealed class Screen(val route: String) {
     data object Post: Screen(route = "POST")
     data object Cart: Screen(route = "CART")
     data object UnderConstruction: Screen(route = "UNDER")
+    data object LogIn: Screen(route= "LOGIN")
+    data object SignUp: Screen(route = "SIGNUP")
 }

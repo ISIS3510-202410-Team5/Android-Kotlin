@@ -1,4 +1,4 @@
-package com.example.unimarket.ui.login.ui
+package com.example.unimarket.ui.Login.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -26,8 +26,8 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.sp
-import com.example.unimarket.ui.login.ui.EmailText
-import com.example.unimarket.ui.login.ui.PasswordText
+import com.example.unimarket.ui.Login.ui.EmailText
+import com.example.unimarket.ui.Login.ui.PasswordText
 import kotlinx.coroutines.launch
 
 
