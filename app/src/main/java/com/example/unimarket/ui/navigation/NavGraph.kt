@@ -33,6 +33,7 @@ import com.example.unimarket.ui.home.Home
 import com.example.unimarket.ui.home.HomeViewModel
 import com.example.unimarket.ui.Login.ui.LoginScreen
 import com.example.unimarket.ui.Login.ui.LoginViewModel
+import com.example.unimarket.ui.Login.ui.SignUpScreen
 import com.example.unimarket.ui.Login.ui.SignUpViewModel
 import com.example.unimarket.ui.publishitem.PublishItem
 import com.example.unimarket.ui.publishitem.PublishItemViewModel
@@ -53,7 +54,7 @@ fun Nav(){
     val publishItemViewModel = remember {PublishItemViewModel()}
     val cartViewModel = remember {ShoppingCartViewModel()}
     val loginViewModel = remember {LoginViewModel(loginModel)}
-    val singUpViewModel = remember {SignUpViewModel(loginModel)}
+    val signUpViewModel = remember {SignUpViewModel(loginModel)}
 
     Scaffold (
         bottomBar = {AppBottomNav(navController = navController)}
@@ -75,6 +76,9 @@ fun Nav(){
             composable(Screen.LogIn.route){
                 LoginScreen(viewModel = loginViewModel, navController = navController)
             }
+            composable(Screen.SignUp.route){
+                SignUpScreen(viewModel = signUpViewModel, navController = navController)
+            }
         }
     }
 
@@ -84,25 +88,33 @@ fun Nav(){
 fun AppBottomNav(navController: NavHostController){
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-    if (currentDestination?.route == "HOME")
+    if (currentDestination?.route == Screen.LogIn.route || currentDestination?.route == Screen.SignUp.route)
     {
         Log.d(null, "La ruta actual es ${currentDestination.route}")
-    }
+    } else {
 
-    NavigationBar {
-        BottomNavigationItem().bottomNavigationItems().forEachIndexed {
-            index, navigationItem ->
-            NavigationBarItem(selected = navigationItem.route == currentDestination?.route,
-                onClick = {
-                    navController.navigate(navigationItem.route) {
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                },
-                icon = {
-                    Icon(imageVector = navigationItem.icon,
-                        contentDescription = navigationItem.label)
-                })
+        NavigationBar {
+            BottomNavigationItem().bottomNavigationItems().forEachIndexed { index, navigationItem ->
+                NavigationBarItem(selected = navigationItem.route == currentDestination?.route,
+                    onClick = {
+                        navController.navigate(navigationItem.route) {
+                            launchSingleTop = true
+                            restoreState = true
+                            if (navigationItem.route == Screen.Home.route)
+                            {
+                                //popUpTo(Screen.LogIn.route){inclusive = true}
+                                popUpTo(Screen.Home.route){inclusive = true}
+                                Log.d(null,"popupto aplicado")
+                            }
+                        }
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = navigationItem.icon,
+                            contentDescription = navigationItem.label
+                        )
+                    })
+            }
         }
     }
 

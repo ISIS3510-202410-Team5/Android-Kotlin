@@ -26,6 +26,8 @@ class SignUpViewModel (private val firebaseManager: LoginModel) : ViewModel() {
     private val _isloading = MutableLiveData<Boolean>()
     val isloading : LiveData<Boolean> = _isloading
 
+    private val _validSignUp = MutableLiveData<Boolean>()
+    val validSignUp : LiveData<Boolean> = _validSignUp
 
     /*Siempre va a tener el ultimo valor que se escriba en las cajas de texto de password e Email*/
     fun onLoginChanged(email: String,password:String){
@@ -46,9 +48,11 @@ class SignUpViewModel (private val firebaseManager: LoginModel) : ViewModel() {
         if (emailValue != null && passwordValue != null) {
             try {
                 firebaseManager.signUp(emailValue, passwordValue)
+                _validSignUp.value = true
             } catch (e: Exception) {
                 /*en caso de que las credenciales no esten bien se crashe*/
                 Log.e(TAG, "Error signing in: ${e.message}", e)
+                _validSignUp.value = false
             }
             delay(1000)
             _isloading.value=false
