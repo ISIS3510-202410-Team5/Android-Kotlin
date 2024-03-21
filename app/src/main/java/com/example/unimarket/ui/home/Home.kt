@@ -1,5 +1,8 @@
 package com.example.unimarket.ui.home
 
+import android.hardware.Sensor
+import android.hardware.SensorManager
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -33,12 +36,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -47,6 +53,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.unimarket.sensor.ShakeDetector
 import com.example.unimarket.ui.theme.Bittersweet
 import com.example.unimarket.ui.theme.CoolGray
 import com.example.unimarket.ui.theme.GiantsOrange
@@ -60,6 +67,17 @@ fun Home(viewModel: HomeViewModel = HomeViewModel(), navController: NavHostContr
     val searchText by viewModel.searchText.collectAsState()
     //val isSearching by viewModel.isSearching.collectAsState()
 
+    val context = LocalContext.current
+    val sensorManager = remember {context.getSystemService(ComponentActivity.SENSOR_SERVICE) as SensorManager}
+    val accelSensor = remember { sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)}
+
+    val shakeListener = remember { ShakeDetector(navController)}
+
+    DisposableEffect(sensorManager){
+        sensorManager.registerListener(shakeListener, accelSensor, SensorManager.SENSOR_DELAY_NORMAL)
+
+        onDispose { sensorManager.unregisterListener(shakeListener) }
+    }
 
     Column (
         modifier = Modifier.fillMaxSize()
