@@ -11,7 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.unimarket.ui.navigation.Nav
+import com.example.unimarket.ui.ListProducts.ListProductApp
 import com.example.unimarket.ui.theme.UniMarketTheme
+import dagger.hilt.android.AndroidEntryPoint
 
 
 class MainActivity : ComponentActivity() {
@@ -33,6 +35,7 @@ class MainActivity : ComponentActivity() {
                     //val shoppingCartViewModel = ShoppingCartViewModel()
                     //ShoppingCart(viewModel = shoppingCartViewModel)
                     Nav()
+                    //Greeting("Android")
                 }
             }
         }
