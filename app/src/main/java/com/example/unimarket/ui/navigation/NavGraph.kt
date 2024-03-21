@@ -28,6 +28,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.unimarket.R
+import com.example.unimarket.ui.ListProducts.ListProductApp
 import com.example.unimarket.ui.Login.model.LoginModel
 import com.example.unimarket.ui.home.Home
 import com.example.unimarket.ui.home.HomeViewModel
@@ -52,7 +53,6 @@ fun Nav(){
     //This should be changed to a pattern
     val homeViewModel = remember {HomeViewModel()}
     val publishItemViewModel = remember {PublishItemViewModel()}
-    val cartViewModel = remember {ShoppingCartViewModel()}
     val loginViewModel = remember {LoginViewModel(loginModel)}
     val signUpViewModel = remember {SignUpViewModel(loginModel)}
 
@@ -68,7 +68,7 @@ fun Nav(){
                 PublishItem(viewModel = publishItemViewModel, navController = navController)
             }
             composable(Screen.Cart.route){
-                ShoppingCart(viewModel = cartViewModel, navController = navController)
+                ShoppingCart(navController = navController)
             }
             composable(Screen.UnderConstruction.route){
                 Text(text="Under construction")
@@ -78,6 +78,9 @@ fun Nav(){
             }
             composable(Screen.SignUp.route){
                 SignUpScreen(viewModel = signUpViewModel, navController = navController)
+            }
+            composable(Screen.ListProduct.route){
+                ListProductApp()
             }
         }
     }
@@ -170,4 +173,5 @@ sealed class Screen(val route: String) {
     data object UnderConstruction: Screen(route = "UNDER")
     data object LogIn: Screen(route= "LOGIN")
     data object SignUp: Screen(route = "SIGNUP")
+    data object ListProduct: Screen(route = "LIST")
 }

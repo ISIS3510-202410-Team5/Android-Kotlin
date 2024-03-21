@@ -24,7 +24,11 @@ import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.Face
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -46,6 +50,7 @@ import androidx.navigation.NavHostController
 import com.example.unimarket.ui.theme.Bittersweet
 import com.example.unimarket.ui.theme.CoolGray
 import com.example.unimarket.ui.theme.GiantsOrange
+import com.example.unimarket.ui.theme.Licorice
 import com.example.unimarket.ui.theme.UniMarketTheme
 
 @Composable
@@ -59,6 +64,7 @@ fun Home(viewModel: HomeViewModel = HomeViewModel(), navController: NavHostContr
     Column (
         modifier = Modifier.fillMaxSize()
     ) {
+        /*
         TextField(
             value = searchText, //searchText,
             onValueChange = {viewModel.onSearchTextChange(it)}, //viewModel::onSearchTextChange,
@@ -76,7 +82,21 @@ fun Home(viewModel: HomeViewModel = HomeViewModel(), navController: NavHostContr
             keyboardActions = KeyboardActions( onSearch = {
                 viewModel.onToggleSearch()
             })
-        )
+        )*/
+        FilledTonalButton(
+            onClick= {navController.navigate("LIST")},
+            colors = ButtonDefaults.buttonColors(
+                containerColor = GiantsOrange,
+                contentColor = Licorice
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+            ){
+            Text(
+                text = "Search for a product"
+            )
+        }
         ShowSales()
         Divider(color = CoolGray,
             thickness = 5.dp,
