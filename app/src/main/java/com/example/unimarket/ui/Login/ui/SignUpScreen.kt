@@ -1,5 +1,6 @@
-package com.example.unimarket.ui.theme.Login.ui
+package com.example.unimarket.ui.Login.ui
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -26,30 +27,35 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.example.unimarket.ui.Login.ui.EmailText
+import com.example.unimarket.ui.Login.ui.PasswordText
 import kotlinx.coroutines.launch
 
 
+
 @Composable
-fun SignUpScreen(viewModel: SignUpViewModel){
+fun SignUpScreen(viewModel: SignUpViewModel, navController: NavHostController){
     Box(
         Modifier
             .fillMaxHeight()
             .padding(16.dp)) {
-        SignUp(Modifier.align(Alignment.Center),viewModel)
+        SignUp(Modifier.align(Alignment.Center),viewModel, navController)
     }
 }
 
 @Composable
-fun SignUp(modifier: Modifier, viewModel: SignUpViewModel) {
+fun SignUp(modifier: Modifier, viewModel: SignUpViewModel, navController: NavHostController) {
 
     val email:String by viewModel.email.observeAsState(initial = "")
     val password:String by viewModel.password.observeAsState(initial = "")
     val loginEnable: Boolean by viewModel.loginEnable.observeAsState(initial = false)
 
     val coroutineScope= rememberCoroutineScope()
-    val isloading:Boolean by viewModel.isloading.observeAsState(initial=false)
+    val isLoading:Boolean by viewModel.isloading.observeAsState(initial=false)
+    val validSignUp by viewModel.validSignUp.observeAsState(initial = false)
 
-    if (isloading){
+    if (isLoading){
         Box(Modifier.fillMaxSize()){
             CircularProgressIndicator(modifier.align(Alignment.Center))
         }}
@@ -66,10 +72,15 @@ fun SignUp(modifier: Modifier, viewModel: SignUpViewModel) {
             Spacer(modifier = Modifier.padding(18.dp))
             ButtonSignUp(loginEnable){
                 coroutineScope.launch {
-                    viewModel.onLoginSelected()}
+                    viewModel.onLoginSelected()
+                    if (validSignUp){
+                        navController.navigate("HOME"){
+                            popUpTo(route = "LOGIN"){inclusive = true}
+                        }}
+                }
             }
             Spacer(modifier = Modifier.padding(14.dp))
-            SignInText()
+            SignInText(navController)
             Spacer(modifier = Modifier.padding(16.dp))
             HeaderImageSignUp(Modifier.align(Alignment.CenterHorizontally))
         }
@@ -85,7 +96,7 @@ fun WelcomeSignUpText() {
         color = Color(0xFF181316),
         fontFamily = FontFamily.SansSerif
     )
-    Text(text = "Please fill the information below! Welcome to the unimarket experience.",
+    Text(text = "Welcome to the Unimarket experience.\nPlease fill the information below!",
         fontSize = 15.sp,
         color = Color(0xFF989EB1),
         fontFamily = FontFamily.SansSerif
@@ -94,13 +105,16 @@ fun WelcomeSignUpText() {
 
 
 @Composable
-fun SignInText() {
+fun SignInText(navController: NavHostController) {
     { TODO("Aqui toca colocar la parte de navegacion A Sign IN Screen") }
     Text(text = "Sign In",
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentSize(Alignment.Center)
-            .clickable { },
+            .clickable {
+                Log.d(null, "Se presiona boton de Sign In")
+                navController.navigate(route = "LOGIN")
+            },
         fontSize = 15.sp,
         color = Color(0xFFFF5958),
         fontFamily = FontFamily.SansSerif

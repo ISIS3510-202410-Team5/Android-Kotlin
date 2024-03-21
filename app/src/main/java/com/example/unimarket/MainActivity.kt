@@ -10,17 +10,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.unimarket.ui.theme.Login.model.LoginModel
-import com.example.unimarket.ui.theme.Login.ui.LoginScreen
-import com.example.unimarket.ui.theme.Login.ui.LoginViewModel
-import com.example.unimarket.ui.theme.Login.ui.SignUp
-import com.example.unimarket.ui.theme.Login.ui.SignUpScreen
-import com.example.unimarket.ui.theme.Login.ui.SignUpViewModel
-import com.example.unimarket.ui.theme.theme.UniMarketTheme
+import com.example.unimarket.ui.navigation.Nav
+import com.example.unimarket.ui.theme.UniMarketTheme
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        val firebaseManager = LoginModel()
         super.onCreate(savedInstanceState)
         setContent {
             UniMarketTheme {
@@ -29,9 +24,15 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    /*Se crea una instancia con el Login View Model*/
-                    LoginScreen(LoginViewModel(firebaseManager))
-                    /*SignUpScreen(SignUpViewModel(firebaseManager))*/
+                    //Greeting("Android")
+                    //The viewModel of a screen MUST BE DECLARED OUTSIDE
+                    //IF NOT , THE VIEWMODEL WILL BE CREATED AGAIN EACH TIME
+                    //THERE IS A CHANGE IN MUTABLES
+                    //val homeViewModel = HomeViewModel()
+                    //Home(viewModel = homeViewModel)
+                    //val shoppingCartViewModel = ShoppingCartViewModel()
+                    //ShoppingCart(viewModel = shoppingCartViewModel)
+                    Nav()
                 }
             }
         }

@@ -1,4 +1,4 @@
-package com.example.unimarket.ui.theme.Login.model
+package com.example.unimarket.ui.Login.model
 
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.tasks.await

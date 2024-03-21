@@ -1,5 +1,6 @@
-package com.example.unimarket.ui.theme.Login.ui
+package com.example.unimarket.ui.Login.ui
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -26,26 +27,28 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel){
+fun LoginScreen(viewModel: LoginViewModel, navController: NavHostController){
     Box(
         Modifier
             .fillMaxHeight()
             .padding(16.dp)) {
-        Login(Modifier.align(Alignment.Center),viewModel)
+        Login(Modifier.align(Alignment.Center),viewModel, navController)
     }
 }
 
 @Composable
-fun Login(modifier: Modifier, viewModel: LoginViewModel) {
+fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostController) {
 
     val email:String by viewModel.email.observeAsState(initial = "")
     val password:String by viewModel.password.observeAsState(initial = "")
     val loginEnable: Boolean by viewModel.loginEnable.observeAsState(initial = false)
+    val loginValid: Boolean by viewModel.loginValid.observeAsState(initial = false)
 
     val coroutineScope= rememberCoroutineScope()
     val isloading:Boolean by viewModel.isloading.observeAsState(initial=false)
@@ -69,11 +72,23 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel) {
         Spacer(modifier = Modifier.padding(16.dp))
         ButtonLogin(loginEnable){
             coroutineScope.launch {
-                viewModel.onLoginSelected()}
+                Log.d(null, "Presiona boton de login")
+                try {
+                    viewModel.onLoginSelected()
+                    if (loginValid){
+                        navController.navigate(route = "HOME"){
+                            popUpTo(route = "LOGIN"){inclusive = true}
+                        }
+                    }
+                }
+                catch (e:Exception) {
+                    Log.d(null, "error en el login")
+                }
+                }
             }
 
         Spacer(modifier = Modifier.padding(16.dp))
-        SignUpText()
+        SignUpText(navController = navController)
     }
     }
 }
@@ -116,13 +131,16 @@ fun WelcomeText() {
 
 
 @Composable
-fun SignUpText() {
+fun SignUpText(navController: NavHostController) {
     { TODO("Aqui toca colocar la parte de navegacion hacia Sign UP screen") }
     Text(text = "Sign Up",
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentSize(Alignment.Center)
-            .clickable { },
+            .clickable {
+                Log.d(null, "se presiona botton de sign up")
+                navController.navigate("SIGNUP")
+            },
         fontSize = 15.sp,
         color = Color(0xFFFF5958),
         fontFamily = FontFamily.SansSerif
