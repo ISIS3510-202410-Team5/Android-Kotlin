@@ -36,7 +36,6 @@ class MainActivity : ComponentActivity() {
                     //ShoppingCart(viewModel = shoppingCartViewModel)
                     Nav()
                     //Greeting("Android")
-                    ListProductApp()
                 }
             }
         }
