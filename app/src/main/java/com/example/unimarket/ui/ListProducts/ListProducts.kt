@@ -113,7 +113,7 @@ fun ListProductApp(modifier: Modifier = Modifier, ) {
                                         currentLocation?.latitude ?: 0.0, currentLocation?.longitude ?: 0.0,
                                         product.latitud.toDouble(), product.longitud.toDouble()
                                     )
-                                    product.title.contains(query, ignoreCase = true) && distance <= 0.1
+                                    product.title.contains(query, ignoreCase = true) && distance <= 0.4
 
                                 },
                                 modifier = Modifier.weight(1f),
