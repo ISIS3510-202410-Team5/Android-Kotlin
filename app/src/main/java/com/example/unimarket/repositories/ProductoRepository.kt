@@ -8,12 +8,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
 class ProductoRepository
 @Inject
-constructor(private val productList: CollectionReference)
+constructor(
+    @Named("productos")
+    private val productList: CollectionReference)
 {
 
     fun addNewProduct(product: Product)

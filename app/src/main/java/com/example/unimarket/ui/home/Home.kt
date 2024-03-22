@@ -2,6 +2,7 @@ package com.example.unimarket.ui.home
 
 import android.hardware.Sensor
 import android.hardware.SensorManager
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -52,6 +53,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.unimarket.sensor.ShakeDetector
 import com.example.unimarket.ui.theme.Bittersweet
@@ -61,7 +63,11 @@ import com.example.unimarket.ui.theme.Licorice
 import com.example.unimarket.ui.theme.UniMarketTheme
 
 @Composable
-fun Home(viewModel: HomeViewModel = HomeViewModel(), navController: NavHostController) {
+fun Home(navController: NavHostController) {
+
+    val viewModel: HomeViewModel = hiltViewModel()
+    val users = viewModel.state.value.users
+    val userNumber = if (users.isNotEmpty()) {users[0].regUsers} else {0}
 
 
     val searchText by viewModel.searchText.collectAsState()
@@ -115,7 +121,7 @@ fun Home(viewModel: HomeViewModel = HomeViewModel(), navController: NavHostContr
                 text = "Search for a product"
             )
         }
-        ShowSales()
+        ShowSales(userNumber)
         Divider(color = CoolGray,
             thickness = 5.dp,
             modifier = Modifier
@@ -155,7 +161,7 @@ fun ShowSales(sales: Int = 69420){
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text="cerca de: ",
+            text="Around: ",
             modifier = Modifier
                 .align(alignment = Alignment.Start)
                 .padding(5.dp),
@@ -163,7 +169,7 @@ fun ShowSales(sales: Int = 69420){
             fontFamily = FontFamily.SansSerif
         )
         Text(
-            text="$sales personas",
+            text="$sales University students",
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
             modifier = Modifier
@@ -175,7 +181,7 @@ fun ShowSales(sales: Int = 69420){
 
         )
         Text(
-            text="han encontrado productos en Unimarket",
+            text="have found what they need in UniMarket",
             modifier = Modifier
                 .align(alignment = Alignment.CenterHorizontally)
                 .padding(5.dp),
