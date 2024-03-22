@@ -51,8 +51,6 @@ fun Nav(){
     val loginModel = LoginModel()
 
     //This should be changed to a pattern
-    val homeViewModel = remember {HomeViewModel()}
-    val publishItemViewModel = remember {PublishItemViewModel()}
     val loginViewModel = remember {LoginViewModel(loginModel)}
     val signUpViewModel = remember {SignUpViewModel(loginModel)}
 
@@ -62,10 +60,10 @@ fun Nav(){
         innerPadding ->
         NavHost(navController, startDestination = Screen.LogIn.route, Modifier.padding(innerPadding)){
             composable(Screen.Home.route){
-                Home(viewModel = homeViewModel, navController=navController)
+                Home(navController=navController)
             }
             composable(Screen.Post.route){
-                PublishItem(viewModel = publishItemViewModel, navController = navController)
+                PublishItem(navController = navController)
             }
             composable(Screen.Cart.route){
                 ShoppingCart(navController = navController)
