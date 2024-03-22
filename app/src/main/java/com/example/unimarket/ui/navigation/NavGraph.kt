@@ -52,7 +52,6 @@ fun Nav(){
 
     //This should be changed to a pattern
     val homeViewModel = remember {HomeViewModel()}
-    val publishItemViewModel = remember {PublishItemViewModel()}
     val loginViewModel = remember {LoginViewModel(loginModel)}
     val signUpViewModel = remember {SignUpViewModel(loginModel)}
 
@@ -65,7 +64,7 @@ fun Nav(){
                 Home(viewModel = homeViewModel, navController=navController)
             }
             composable(Screen.Post.route){
-                PublishItem(viewModel = publishItemViewModel, navController = navController)
+                PublishItem(navController = navController)
             }
             composable(Screen.Cart.route){
                 ShoppingCart(navController = navController)
