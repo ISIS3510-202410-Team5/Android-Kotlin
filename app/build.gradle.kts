@@ -103,12 +103,19 @@ dependencies {
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
     implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.1")
+    implementation ("androidx.camera:camera-camera2:1.3.2")
 
     // Coil Image Loader
     implementation ("io.coil-kt:coil-compose:1.3.2")
 
     // Accompaniest Swipe Refresh
     implementation ("com.google.accompanist:accompanist-swiperefresh:0.18.0")
+
+    //Camera
+    implementation("androidx.camera:camera-core:1.1.0")
+    implementation ("androidx.core:core-ktx:1.7.0")
+    implementation ("androidx.compose.material:material:1.0.5")
+
 }
 
     kapt {
