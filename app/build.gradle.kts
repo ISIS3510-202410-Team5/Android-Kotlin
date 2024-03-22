@@ -109,6 +109,15 @@ dependencies {
 
     // Accompaniest Swipe Refresh
     implementation ("com.google.accompanist:accompanist-swiperefresh:0.18.0")
+
+    // GMS - Google Mobile Services
+    implementation("com.google.android.gms:play-services-location:21.2.0")
+
+    // Permissions
+    implementation("com.google.accompanist:accompanist-permissions:0.31.1-alpha")
+
+    // Needed if targeting API > 31 (Android 12+)
+    implementation ("androidx.work:work-runtime-ktx:2.9.0")
 }
 
     kapt {

@@ -7,8 +7,10 @@ data class Product(
     val id: String,
     val coverUrl: String,
     val title: String,
-    val precio: String
+    val precio: String,
+    val latitud: String,
+    val longitud: String
 )
 {
-    constructor(): this("","","","")
+    constructor(): this("","","","","","")
 }
