@@ -36,13 +36,16 @@ import com.example.unimarket.ui.Login.ui.LoginScreen
 import com.example.unimarket.ui.Login.ui.LoginViewModel
 import com.example.unimarket.ui.Login.ui.SignUpScreen
 import com.example.unimarket.ui.Login.ui.SignUpViewModel
+import com.example.unimarket.ui.camera.ui.CameraScreen
+import com.example.unimarket.ui.camera.ui.CameraViewModel
+import com.example.unimarket.ui.camera.ui.LightSensorViewModel
 import com.example.unimarket.ui.publishitem.PublishItem
 import com.example.unimarket.ui.publishitem.PublishItemViewModel
 import com.example.unimarket.ui.shoppingcart.ShoppingCart
 import com.example.unimarket.ui.shoppingcart.ShoppingCartViewModel
 
 @Composable
-fun Nav(){
+fun Nav(lightSensorViewModel: LightSensorViewModel){
 
     val navController = rememberNavController()
 
@@ -64,6 +67,9 @@ fun Nav(){
             }
             composable(Screen.Post.route){
                 PublishItem(navController = navController)
+            }
+            composable(Screen.Camera.route){
+                CameraScreen(viewModel = CameraViewModel(), lightViewModel = lightSensorViewModel)
             }
             composable(Screen.Cart.route){
                 ShoppingCart(navController = navController)
@@ -172,4 +178,6 @@ sealed class Screen(val route: String) {
     data object LogIn: Screen(route= "LOGIN")
     data object SignUp: Screen(route = "SIGNUP")
     data object ListProduct: Screen(route = "LIST")
+
+    data object Camera: Screen(route = "CAMERA")
 }
