@@ -1,6 +1,7 @@
 package com.example.unimarket.ui.ListProducts
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.unimarket.model.Product
@@ -8,6 +9,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,6 +29,7 @@ import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,21 +41,22 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.ComposeNavigator
-import androidx.navigation.compose.composable
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.example.unimarket.R
-import com.example.unimarket.data.Datasource
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
 fun ListProductApp(modifier: Modifier = Modifier, ) {
 
@@ -63,29 +67,76 @@ fun ListProductApp(modifier: Modifier = Modifier, ) {
     var query by remember { mutableStateOf("") }
     var active by remember { mutableStateOf(true) }
 
-    Column() {
-        SearchBar(
-            query = query,
-            onQueryChange = { query = it },
-            onSearch = {},
-            active = active,
-            onActiveChange = { active = it }
+    val viewModelUbi: LocationViewModel = hiltViewModel()
+
+    val locationPermissions = rememberMultiplePermissionsState(
+        permissions = listOf(
+            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+            android.Manifest.permission.ACCESS_FINE_LOCATION
         )
-        {
+    )
 
-            ProductList(
-                productList = productList.filter { product ->
-                    product.title.contains(query, ignoreCase = true)
-                },
-                modifier = Modifier.weight(1f),
-                isRefreshing = isRefreshing.value,
-                refreshData = viewModel::getProductList,
-                state = state,
-                viewModel = viewModel
-            )
-
+    LaunchedEffect(key1 = locationPermissions.allPermissionsGranted) {
+        if (locationPermissions.allPermissionsGranted) {
+            viewModelUbi.getCurrentLocation()
         }
+    }
 
+    val currentLocation = viewModelUbi.currentLocation
+
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        AnimatedContent(
+            targetState = locationPermissions.allPermissionsGranted, label = ""
+        ) { areGranted ->
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                if (areGranted) {
+
+                    Column() {
+                        SearchBar(
+                            query = query,
+                            onQueryChange = { query = it },
+                            onSearch = {},
+                            active = active,
+                            onActiveChange = { active = it }
+                        )
+                        {
+
+                            ProductList(
+                                productList = productList.filter { product ->
+                                    val distance = calculateDistance(
+                                        currentLocation?.latitude ?: 0.0, currentLocation?.longitude ?: 0.0,
+                                        product.latitud.toDouble(), product.longitud.toDouble()
+                                    )
+                                    product.title.contains(query, ignoreCase = true) && distance <= 0.1
+
+                                },
+                                modifier = Modifier.weight(1f),
+                                isRefreshing = isRefreshing.value,
+                                refreshData = viewModel::getProductList,
+                                state = state,
+                                viewModel = viewModel
+                            )
+
+                        }
+
+                    }
+
+                } else {
+                    Text(text = "We need location permissions for this application.")
+                    Button(
+                        onClick = { locationPermissions.launchMultiplePermissionRequest() }
+                    ) {
+                        Text(text = "Accept")
+                    }
+                }
+            }
+        }
     }
 
 }
@@ -221,5 +272,21 @@ fun ExampleScreen() {
             )
         }
     }
+}
+
+fun calculateDistance(
+    lat1: Double,
+    lon1: Double,
+    lat2: Double,
+    lon2: Double
+): Double {
+    val radius = 6371 // Radio de la Tierra en kilómetros
+    val dLat = Math.toRadians(lat2 - lat1)
+    val dLon = Math.toRadians(lon2 - lon1)
+    val a = sin(dLat / 2) * sin(dLat / 2) +
+            cos(Math.toRadians(lat1)) * cos(Math.toRadians(lat2)) *
+            sin(dLon / 2) * sin(dLon / 2)
+    val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+    return radius * c
 }
 
