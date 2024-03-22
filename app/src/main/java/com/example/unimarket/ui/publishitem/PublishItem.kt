@@ -69,7 +69,19 @@ fun PublishItem(navController: NavHostController){
                 text = "Post"
             )
         }
-
+        Spacer(
+            modifier = Modifier.height(30.dp)
+        )
+        FilledTonalButton(
+            onClick = { navController.navigate("CAMERA") },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = GiantsOrange,
+                contentColor = Licorice
+            )) {
+            Text(
+                text = "Post"
+            )
+        }
 
 
     }

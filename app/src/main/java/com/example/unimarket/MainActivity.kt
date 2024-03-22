@@ -40,8 +40,8 @@ class MainActivity : ComponentActivity() {
                     //Home(viewModel = homeViewModel)
                     //val shoppingCartViewModel = ShoppingCartViewModel()
                     //ShoppingCart(viewModel = shoppingCartViewModel)
-                    CameraScreen(viewModel = CameraViewModel(), lightSensorViewModel )
-                    //Nav()
+                    //CameraScreen(viewModel = CameraViewModel(), lightSensorViewModel )
+                    Nav(lightSensorViewModel)
                     //Greeting("Android")
                 }
             }
