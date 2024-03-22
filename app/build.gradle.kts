@@ -116,6 +116,14 @@ dependencies {
     implementation ("androidx.core:core-ktx:1.7.0")
     implementation ("androidx.compose.material:material:1.0.5")
 
+    // GMS - Google Mobile Services
+    implementation("com.google.android.gms:play-services-location:21.2.0")
+
+    // Permissions
+    implementation("com.google.accompanist:accompanist-permissions:0.31.1-alpha")
+
+    // Needed if targeting API > 31 (Android 12+)
+    implementation ("androidx.work:work-runtime-ktx:2.9.0")
 }
 
     kapt {
