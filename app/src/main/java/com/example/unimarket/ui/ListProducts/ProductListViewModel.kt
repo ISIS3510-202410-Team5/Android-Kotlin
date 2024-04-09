@@ -13,8 +13,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.unimarket.model.LastList
 import com.example.unimarket.model.Product
+import com.example.unimarket.model.ProductCache
 import com.example.unimarket.model.ShoppingCart
 import com.example.unimarket.repositories.ConnectivityRepository
 import com.example.unimarket.repositories.ProductoRepository
@@ -36,7 +36,7 @@ constructor
             private val productoRepository: ProductoRepository,
             private val shoppingCart: ShoppingCart,
             private val connectivityRepository: ConnectivityRepository,
-            private val lastlist: LastList
+            private val productCache: ProductCache
 
 ): ViewModel()
 {
@@ -48,8 +48,6 @@ constructor
     val isRefreshing: StateFlow<Boolean> = _isRefreshing
 
     val isOnline = connectivityRepository.isConnected.asLiveData()
-
-    var lastList: MutableState<ProductListState> = _state
 
     init{
         getProductList()
@@ -75,7 +73,7 @@ constructor
                         is Result.Success ->  {
 
                             _state.value = ProductListState(productos = result.data ?: emptyList())
-                            lastlist.lastproductList = mutableStateOf(_state.value)
+                            productCache.putProducts("products", _state.value.productos)
                         }
 
                         else -> {}
@@ -84,7 +82,7 @@ constructor
                 // Handle online state
             } else {
 
-                _state.value = lastlist.lastproductList.value
+                _state.value = ProductListState(productos = productCache.getProducts("products")?: emptyList())
 
             }
         }
