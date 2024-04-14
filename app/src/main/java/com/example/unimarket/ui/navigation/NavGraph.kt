@@ -29,6 +29,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.unimarket.R
 import com.example.unimarket.ui.ListProducts.ListProductApp
+import com.example.unimarket.ui.ListProducts.SearchProductApp
 import com.example.unimarket.ui.Login.model.LoginModel
 import com.example.unimarket.ui.home.Home
 import com.example.unimarket.ui.home.HomeViewModel
@@ -84,7 +85,10 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
                 SignUpScreen(viewModel = signUpViewModel, navController = navController)
             }
             composable(Screen.ListProduct.route){
-                ListProductApp()
+                ListProductApp(navController = navController)
+            }
+            composable(Screen.ListProductSearch.route){
+                SearchProductApp(navController = navController)
             }
         }
     }
@@ -180,4 +184,6 @@ sealed class Screen(val route: String) {
     data object ListProduct: Screen(route = "LIST")
 
     data object Camera: Screen(route = "CAMERA")
+
+    data object ListProductSearch: Screen(route = "SEARCH")
 }
