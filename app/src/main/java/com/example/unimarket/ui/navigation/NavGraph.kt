@@ -36,6 +36,8 @@ import com.example.unimarket.ui.Login.ui.LoginScreen
 import com.example.unimarket.ui.Login.ui.LoginViewModel
 import com.example.unimarket.ui.Login.ui.SignUpScreen
 import com.example.unimarket.ui.Login.ui.SignUpViewModel
+import com.example.unimarket.ui.Login.ui.UserInfoScreen
+import com.example.unimarket.ui.Login.ui.UserInfoViewModel
 import com.example.unimarket.ui.camera.ui.CameraScreen
 import com.example.unimarket.ui.camera.ui.CameraViewModel
 import com.example.unimarket.ui.camera.ui.LightSensorViewModel
@@ -56,6 +58,7 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
     //This should be changed to a pattern
     val loginViewModel = remember {LoginViewModel(loginModel)}
     val signUpViewModel = remember {SignUpViewModel(loginModel)}
+    val userInfoViewModel= remember {UserInfoViewModel(loginModel,signUpViewModel)}
 
     Scaffold (
         bottomBar = {AppBottomNav(navController = navController)}
@@ -83,6 +86,9 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
             composable(Screen.SignUp.route){
                 SignUpScreen(viewModel = signUpViewModel, navController = navController)
             }
+            composable(Screen.Info.route){
+                UserInfoScreen(viewModel = userInfoViewModel, navController = navController)
+            }
             composable(Screen.ListProduct.route){
                 ListProductApp()
             }
@@ -95,7 +101,9 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
 fun AppBottomNav(navController: NavHostController){
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-    if (currentDestination?.route == Screen.LogIn.route || currentDestination?.route == Screen.SignUp.route)
+    if (currentDestination?.route == Screen.LogIn.route || currentDestination?.route == Screen.SignUp.route
+        || currentDestination?.route == Screen.Info.route
+    )
     {
         Log.d(null, "La ruta actual es ${currentDestination.route}")
     } else {

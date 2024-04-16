@@ -74,7 +74,7 @@ fun SignUp(modifier: Modifier, viewModel: SignUpViewModel, navController: NavHos
                 coroutineScope.launch {
                     viewModel.onLoginSelected()
                     if (validSignUp){
-                        navController.navigate("HOME"){
+                        navController.navigate("INFO"){
                             popUpTo(route = "LOGIN"){inclusive = true}
                         }}
                 }

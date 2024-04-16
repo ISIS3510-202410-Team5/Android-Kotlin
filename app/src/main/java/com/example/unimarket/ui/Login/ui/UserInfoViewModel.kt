@@ -15,7 +15,6 @@ class UserInfoViewModel(private val firebaseManager: LoginModel, private val sig
     private val _semestre = MutableLiveData<String>()
     val semestre: LiveData<String> = _semestre
 
-    val emailv=""
 
     val passwordv=""
 
@@ -36,7 +35,11 @@ class UserInfoViewModel(private val firebaseManager: LoginModel, private val sig
     /* Método para guardar los datos de usuario */
     suspend fun guardarDatosUsuario() {
         try {
-            obtenerEmailYContraseña()
+            val (emailValue, passwordValue) = signUpViewModel.obtenerEmailYContraseña()
+            val emailv=emailValue
+            val passwordv=passwordValue
+
+
             _guardadoExitoso.value = firebaseManager.guardarDatosUsuario(
                 emailv,
                 passwordv,
@@ -49,11 +52,7 @@ class UserInfoViewModel(private val firebaseManager: LoginModel, private val sig
             _guardadoExitoso.value = false
         }
     }
-    fun obtenerEmailYContraseña() {
-        val (emailValue, passwordValue) = signUpViewModel.obtenerEmailYContraseña()
-        val emailv = emailValue
-        val passwrodv = passwordValue
-    }
+
 }
 
 

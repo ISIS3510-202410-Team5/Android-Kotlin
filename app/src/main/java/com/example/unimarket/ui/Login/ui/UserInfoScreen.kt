@@ -17,13 +17,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.unimarket.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
 @Composable
-fun UserInfoScreen(viewModel: UserInfoViewModel) {
+fun UserInfoScreen(viewModel: UserInfoViewModel,navController: NavHostController) {
     val carreraState: String by viewModel.carrera.observeAsState(initial = "")
     val semestreState: String by viewModel.semestre.observeAsState(initial = "")
     val nombreState: String by viewModel.nombre.observeAsState(initial = "")
@@ -49,8 +50,12 @@ fun UserInfoScreen(viewModel: UserInfoViewModel) {
         SemestreSpace(semestreState) { viewModel.onInfoChanged(nombreState, carreraState, it) }
         Spacer(modifier = Modifier.padding(16.dp))
         ButtonGuardar{
-            coroutineScope.launch(Dispatchers.IO) {
+            coroutineScope.launch {
                 viewModel.guardarDatosUsuario()
+
+            }
+            navController.navigate("HOME"){
+                popUpTo(route = "LOGIN"){inclusive = true}
             }
         }
 
@@ -65,6 +70,8 @@ fun HeaderImage() {
         contentDescription = "Header"
     )
 }
+
+
 @Composable
 fun Welcome() {
     Text(
