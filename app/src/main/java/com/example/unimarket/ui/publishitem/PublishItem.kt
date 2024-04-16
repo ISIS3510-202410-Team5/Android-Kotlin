@@ -79,7 +79,7 @@ fun PublishItem(navController: NavHostController){
                 contentColor = Licorice
             )) {
             Text(
-                text = "Post"
+                text = "Take a Picture"
             )
         }
 

@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -14,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -56,12 +58,17 @@ fun CameraScreen(
 
         Button(
             onClick = {
-                if (lightValue != null && lightValue!! < 200) {
+                if (lightValue != null && lightValue!! < 100) {
                     Toast.makeText(context, "The environment is too dark to capture an image", Toast.LENGTH_SHORT).show()
                 } else {
                     viewModel.captureImage(context)
                 }
-            }
+            },
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = Color(0xFFFF5958),
+                contentColor = Color.White
+            )
+
         ) {
             Text("Capture Image")
         }
