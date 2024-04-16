@@ -29,6 +29,11 @@ class SignUpViewModel (private val firebaseManager: LoginModel) : ViewModel() {
     private val _validSignUp = MutableLiveData<Boolean>()
     val validSignUp : LiveData<Boolean> = _validSignUp
 
+    // Variables para almacenar el correo electrónico y la contraseña
+    private var _storedEmail: String? = null
+    private var _storedPassword: String? = null
+
+
     /*Siempre va a tener el ultimo valor que se escriba en las cajas de texto de password e Email*/
     fun onLoginChanged(email: String,password:String){
         _email.value= email
@@ -47,6 +52,10 @@ class SignUpViewModel (private val firebaseManager: LoginModel) : ViewModel() {
         val passwordValue = _password.value
         if (emailValue != null && passwordValue != null) {
             try {
+                // Guardar el correo electrónico y la contraseña en las variables
+                _storedEmail = emailValue
+                _storedPassword = passwordValue
+
                 firebaseManager.signUp(emailValue, passwordValue)
                 _validSignUp.value = true
             } catch (e: Exception) {
@@ -60,4 +69,8 @@ class SignUpViewModel (private val firebaseManager: LoginModel) : ViewModel() {
         { TODO("Aqui toca colocar la parte de navegacion") }
 
     }
+    fun obtenerEmailYContraseña(): Pair<String?, String?> {
+        return Pair(_storedEmail, _storedPassword)
+    }
+
 }

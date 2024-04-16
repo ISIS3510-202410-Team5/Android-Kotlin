@@ -177,6 +177,7 @@ sealed class Screen(val route: String) {
     data object UnderConstruction: Screen(route = "UNDER")
     data object LogIn: Screen(route= "LOGIN")
     data object SignUp: Screen(route = "SIGNUP")
+    data object Info: Screen(route = "INFO")
     data object ListProduct: Screen(route = "LIST")
 
     data object Camera: Screen(route = "CAMERA")
