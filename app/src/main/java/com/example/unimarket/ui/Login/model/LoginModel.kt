@@ -4,7 +4,7 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.tasks.await
 
 class LoginModel {
-    // Función para iniciar sesión con Firebase Authentication
+
     suspend fun signIn(email: String, password: String) {
         try {
             // Iniciar sesión con el correo electrónico y la contraseña utilizando Firebase Authentication
@@ -15,7 +15,6 @@ class LoginModel {
         }
     }
 
-    // Función para registrar un nuevo usuario con Firebase Authentication
     suspend fun signUp(email: String, password: String) {
         try {
             // Registrar un nuevo usuario con el correo electrónico y la contraseña utilizando Firebase Authentication
@@ -26,7 +25,6 @@ class LoginModel {
         }
     }
 
-    // Clase de excepción personalizada para manejar errores de inicio de sesión
     class LoginException(message: String) : Exception(message)
 
     // Clase de excepción personalizada para manejar errores de registro de usuario

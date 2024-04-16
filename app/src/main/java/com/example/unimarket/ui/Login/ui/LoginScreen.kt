@@ -171,7 +171,7 @@ fun PasswordSpace(password:String,onTextFieldChanged:(String)->Unit) {
 
     TextField(value = password, onValueChange = {onTextFieldChanged(it)},
         modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text(text = "Password",
+        placeholder = { Text(text = "minimum 6 characters",
             color= Color(0xFF989EB1),
             fontFamily = FontFamily.SansSerif)},
         keyboardOptions = KeyboardOptions (keyboardType= KeyboardType.Password),
@@ -192,7 +192,7 @@ fun EmailSpace(email:String,onTextFieldChanged:(String)->Unit) {
     TextField(value = email ,
         onValueChange = {onTextFieldChanged(it)},
         modifier= Modifier.fillMaxWidth(),
-        placeholder={ Text(text="Email",
+        placeholder={ Text(text="example@gmail.com",
             color = Color(0xFF989EB1),
             fontFamily = FontFamily.SansSerif) },
         keyboardOptions = KeyboardOptions (keyboardType= KeyboardType.Email),
