@@ -34,7 +34,7 @@ class LightSensorViewModel(application: Application) : AndroidViewModel(applicat
     }
 
     override fun onAccuracyChanged(sensor: Sensor, accuracy: Int) {
-        // manejar cambios en la precisión del sensor de luz si es necesario.
+        // manejar cambios en la precisión del sensor de luz si es necesario
     }
 
     override fun onSensorChanged(event: SensorEvent) {

@@ -96,7 +96,7 @@ fun WelcomeSignUpText() {
         color = Color(0xFF181316),
         fontFamily = FontFamily.SansSerif
     )
-    Text(text = "Welcome to the Unimarket experience.\nPlease fill the information below!",
+    Text(text = "Welcome to the Unimarket experience.\nPlease fill the information below for \ncreating your new account!",
         fontSize = 15.sp,
         color = Color(0xFF989EB1),
         fontFamily = FontFamily.SansSerif
@@ -147,7 +147,7 @@ fun ButtonSignUp(loginEnable: Boolean, onLoginSelected: () -> Unit) {
 fun PasswordCreationSpace(password:String,onTextFieldChanged:(String)->Unit) {
     TextField(value = password, onValueChange = {onTextFieldChanged(it)},
         modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text(text = "Password",color= Color(0xFF989EB1))},
+        placeholder = { Text(text = "Please introduce at least 6 characters",color= Color(0xFF989EB1))},
         keyboardOptions = KeyboardOptions (keyboardType= KeyboardType.Password),
         singleLine = true,
         maxLines = 1,
@@ -165,7 +165,7 @@ fun EmailSignUp(email:String,onTextFieldChanged:(String)->Unit) {
     TextField(value = email ,
         onValueChange = {onTextFieldChanged(it)},
         modifier= Modifier.fillMaxWidth(),
-        placeholder={ Text(text="Email", color = Color(0xFF989EB1)) },
+        placeholder={ Text(text="example@gmail.com", color = Color(0xFF989EB1)) },
         keyboardOptions = KeyboardOptions (keyboardType= KeyboardType.Email),
         singleLine = true,
         maxLines = 1,

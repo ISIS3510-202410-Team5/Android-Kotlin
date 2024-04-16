@@ -58,7 +58,7 @@ fun CameraScreen(
 
         Button(
             onClick = {
-                if (lightValue != null && lightValue!! < 200) {
+                if (lightValue != null && lightValue!! < 100) {
                     Toast.makeText(context, "The environment is too dark to capture an image", Toast.LENGTH_SHORT).show()
                 } else {
                     viewModel.captureImage(context)
