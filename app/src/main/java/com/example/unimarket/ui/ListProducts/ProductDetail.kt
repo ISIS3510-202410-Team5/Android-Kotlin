@@ -60,8 +60,6 @@ fun DetailProduct(productoId: String, navController: NavHostController) {
 
     var producto by remember { mutableStateOf<Product?>(null) }
 
-    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-
     LaunchedEffect(Unit) {
         producto = withContext(Dispatchers.Default) {
             detailviewModel.buscarProductoEnLista(productoId)
