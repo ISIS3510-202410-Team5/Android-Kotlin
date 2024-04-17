@@ -202,7 +202,8 @@ fun SearchProductApp(modifier: Modifier = Modifier,navController: NavHostControl
                     isRefreshing = isRefreshing.value,
                     refreshData = viewModel::getProductList,
                     state = state,
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    navController = navController
                 )
 
             }

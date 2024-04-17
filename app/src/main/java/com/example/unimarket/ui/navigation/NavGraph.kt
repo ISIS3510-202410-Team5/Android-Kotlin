@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -28,6 +29,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.unimarket.R
+import com.example.unimarket.ui.ListProducts.DetailProduct
+import com.example.unimarket.ui.ListProducts.DetailProductViewModel
 import com.example.unimarket.ui.ListProducts.ListProductApp
 import com.example.unimarket.ui.ListProducts.SearchProductApp
 import com.example.unimarket.ui.Login.model.LoginModel
@@ -44,6 +47,7 @@ import com.example.unimarket.ui.publishitem.PublishItem
 import com.example.unimarket.ui.publishitem.PublishItemViewModel
 import com.example.unimarket.ui.shoppingcart.ShoppingCart
 import com.example.unimarket.ui.shoppingcart.ShoppingCartViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 @Composable
 fun Nav(lightSensorViewModel: LightSensorViewModel){
@@ -89,6 +93,10 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
             }
             composable(Screen.ListProductSearch.route){
                 SearchProductApp(navController = navController)
+            }
+            composable(Screen.DetailProduct.route) { backStackEntry ->
+                val productoId = backStackEntry.arguments?.getString("productoId")
+                DetailProduct(productoId.toString(),navController = navController)
             }
         }
     }
@@ -186,4 +194,6 @@ sealed class Screen(val route: String) {
     data object Camera: Screen(route = "CAMERA")
 
     data object ListProductSearch: Screen(route = "SEARCH")
+
+    data object DetailProduct: Screen(route = "DETAIL/{productoId}")
 }

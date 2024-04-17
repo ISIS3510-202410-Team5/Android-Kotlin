@@ -89,10 +89,6 @@ constructor
 
     }
 
-    fun addToShoppingCart(product: Product){
-        shoppingCart.addProduct(product)
-    }
-
 
 
 }

@@ -97,7 +97,8 @@ fun ListProductApp(modifier: Modifier = Modifier, navController: NavHostControll
             isRefreshing = isRefreshing.value,
             refreshData = viewModel::getProductList,
             state = state,
-            viewModel = viewModel
+            viewModel = viewModel,
+            navController = navController
         )
 
     }
@@ -107,7 +108,7 @@ fun ListProductApp(modifier: Modifier = Modifier, navController: NavHostControll
 
 @Composable
 fun ProductList(productList: List<Product>, modifier: Modifier = Modifier, isRefreshing: Boolean, refreshData: () -> Unit, state: ProductListState,
-                viewModel: ProductListViewModel) {
+                viewModel: ProductListViewModel,navController: NavHostController) {
     
     SwipeRefresh(state = rememberSwipeRefreshState(isRefreshing), onRefresh = refreshData) {
 
@@ -118,7 +119,7 @@ fun ProductList(productList: List<Product>, modifier: Modifier = Modifier, isRef
                     modifier = Modifier
                         .padding(8.dp)
                         .clickable {
-                            viewModel.addToShoppingCart(product)
+                            navController.navigate("DETAIL" + "/${product.id}") // Navegar a la vista de detalle del producto
                         }
                 )
 
