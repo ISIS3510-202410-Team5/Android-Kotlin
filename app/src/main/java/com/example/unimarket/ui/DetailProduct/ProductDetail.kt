@@ -46,6 +46,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.example.unimarket.R
 import com.example.unimarket.model.Product
 import com.example.unimarket.ui.theme.GiantsOrange
 import com.example.unimarket.ui.theme.Licorice
@@ -89,7 +90,11 @@ fun DetailProduct(productoId: String, navController: NavHostController) {
 
             Glide.with(context)
                 .load(it.coverUrl)
-                .apply(RequestOptions().centerCrop())
+                .apply(RequestOptions()
+                    .centerCrop()
+                    .placeholder(R.drawable.placeholder)
+                    .error(R.drawable.error)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL))
                 .into(object : CustomTarget<Drawable>() {
                     override fun onResourceReady(
                         resource: Drawable,
