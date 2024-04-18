@@ -1,5 +1,7 @@
 package com.example.unimarket.ui.Login.ui
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -9,10 +11,14 @@ import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -29,6 +35,10 @@ fun UserInfoScreen(viewModel: UserInfoViewModel,navController: NavHostController
     val semestreState: String by viewModel.semestre.observeAsState(initial = "")
     val nombreState: String by viewModel.nombre.observeAsState(initial = "")
     val coroutineScope= rememberCoroutineScope()
+
+    val context = LocalContext.current
+
+    var toast: Toast? by remember { mutableStateOf(null) }
 
     Column(
         modifier = Modifier
@@ -49,13 +59,19 @@ fun UserInfoScreen(viewModel: UserInfoViewModel,navController: NavHostController
         SemestreText()
         SemestreSpace(semestreState) { viewModel.onInfoChanged(nombreState, carreraState, it) }
         Spacer(modifier = Modifier.padding(16.dp))
-        ButtonGuardar{
-            coroutineScope.launch {
-                viewModel.guardarDatosUsuario()
-
-            }
-            navController.navigate("HOME"){
-                popUpTo(route = "LOGIN"){inclusive = true}
+        ButtonGuardar {
+            if (viewModel.isNetworkAvailable(context)) {
+                coroutineScope.launch(Dispatchers.IO) {
+                    viewModel.guardarDatosUsuario()
+                }
+                navController.navigate("HOME") {
+                    popUpTo(route = "LOGIN") { inclusive = true }
+                }
+            } else {
+                toast?.cancel()
+                toast = Toast.makeText(context, "No hay conectividad a internet", Toast.LENGTH_SHORT)
+                toast?.show()
+                Log.d(null, "No hay conectividad a internet")
             }
         }
 

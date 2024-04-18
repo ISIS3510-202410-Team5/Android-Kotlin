@@ -1,6 +1,9 @@
 package com.example.unimarket.ui.Login.ui
 
 import android.content.ContentValues.TAG
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.util.Log
 import android.util.Patterns
 import androidx.lifecycle.LiveData
@@ -71,6 +74,15 @@ class SignUpViewModel (private val firebaseManager: LoginModel) : ViewModel() {
     }
     fun obtenerEmailYContraseña(): Pair<String?, String?> {
         return Pair(_storedEmail, _storedPassword)
+    }
+
+    fun isNetworkAvailable(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork
+        val capabilities = connectivityManager.getNetworkCapabilities(network)
+        return capabilities != null && (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET))
     }
 
 }
