@@ -124,6 +124,8 @@ dependencies {
 
     // Needed if targeting API > 31 (Android 12+)
     implementation ("androidx.work:work-runtime-ktx:2.9.0")
+
+    implementation("com.github.skydoves:landscapist-glide:1.3.7")
 }
 
     kapt {
