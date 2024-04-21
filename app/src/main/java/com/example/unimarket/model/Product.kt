@@ -9,8 +9,11 @@ data class Product(
     val title: String,
     val precio: String,
     val latitud: String,
-    val longitud: String
+    val longitud: String,
+    val categories: String,
+    val related: String
 )
 {
-    constructor(): this("","","","","","")
+    constructor(): this("","","","","",""
+        , "", "")
 }
