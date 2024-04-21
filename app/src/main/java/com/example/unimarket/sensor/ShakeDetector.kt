@@ -7,6 +7,7 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.util.Log
 import androidx.navigation.NavHostController
+import com.example.unimarket.di.SharedPreferenceService
 import kotlin.math.sqrt
 
 
@@ -20,7 +21,7 @@ class ShakeDetector
             val y = event.values[1]
             val z = event.values[2]
             val accel = sqrt((x*x)+(y*y)+(z*z).toDouble())
-            if (accel > 15)
+            if (accel > SharedPreferenceService.getShakeDetectorThreshold())
             {
                 navController.navigate(route="POST"){
                     popUpTo(route="Post"){inclusive=true}

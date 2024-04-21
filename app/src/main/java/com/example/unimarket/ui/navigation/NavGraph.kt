@@ -119,7 +119,7 @@ fun AppBottomNav(navController: NavHostController){
                             {
                                 //popUpTo(Screen.LogIn.route){inclusive = true}
                                 popUpTo(Screen.Home.route){inclusive = true}
-                                Log.d(null,"popupto aplicado")
+                                Log.d(null,"popUpTo called")
                             }
                         }
                     },
