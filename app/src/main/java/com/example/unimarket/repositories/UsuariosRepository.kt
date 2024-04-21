@@ -42,6 +42,7 @@ class UsuarioRepository @Inject constructor(
             val doc = usuariosCollection.document(correo).get().await()
             if (doc.exists()) {
                 usuariosCollection.document(correo).update("shake", newShakeVal)
+                SharedPreferenceService.putShakeDetectorThreshold(newShakeVal.toFloat())
                 emit(Result.Success(data = null))
             } else {
                 emit(Result.Error(message = "Usuario no encontrado"))
@@ -59,7 +60,7 @@ class UsuarioRepository @Inject constructor(
     }
 
 
-    
+
 
 
 
