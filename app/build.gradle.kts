@@ -12,6 +12,8 @@ android {
     namespace = "com.example.unimarket"
     compileSdk = 34
 
+
+
     defaultConfig {
         applicationId = "com.example.unimarket"
         minSdk = 24
@@ -42,6 +44,7 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
+        viewBinding = true
         compose = true
     }
     composeOptions {
@@ -88,6 +91,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("com.google.firebase:firebase-perf-ktx")
+    implementation("com.google.firebase:firebase-storage-ktx")
 
 
 

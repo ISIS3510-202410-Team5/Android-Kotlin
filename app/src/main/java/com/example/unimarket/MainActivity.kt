@@ -13,6 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.unimarket.ui.Login.model.LoginModel
+import com.example.unimarket.ui.Login.ui.UserInfoScreen
+import com.example.unimarket.ui.Login.ui.UserInfoViewModel
 import com.example.unimarket.ui.camera.ui.CameraScreen
 import com.example.unimarket.ui.camera.ui.CameraViewModel
 import com.example.unimarket.ui.camera.ui.LightSensorViewModel
@@ -44,6 +47,7 @@ class MainActivity : ComponentActivity() {
                     //val shoppingCartViewModel = ShoppingCartViewModel()
                     //ShoppingCart(viewModel = shoppingCartViewModel)
                     //CameraScreen(viewModel = CameraViewModel(), lightSensorViewModel )
+                    //UserInfoScreen(viewModel = UserInfoViewModel(LoginModel()))
                     Nav(lightSensorViewModel)
                     //Greeting("Android")
                 }

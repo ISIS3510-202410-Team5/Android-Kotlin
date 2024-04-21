@@ -30,6 +30,11 @@ object AppModule
 
     @Provides
     @Singleton
+    @Named("Usuarios")
+    fun provideUsuariosList(firestore: FirebaseFirestore) = firestore.collection("Usuarios")
+
+    @Provides
+    @Singleton
     @Named("users")
     fun provideUserList(firestore: FirebaseFirestore) = firestore.collection("users")
 
