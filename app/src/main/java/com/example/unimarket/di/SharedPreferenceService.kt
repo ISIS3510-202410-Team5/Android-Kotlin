@@ -13,28 +13,30 @@ object SharedPreferenceService {
     
     fun init(context: Context) {
         sharedPreferences = context.getSharedPreferences(
-            /* name = */ Resources.getSystem().getString(R.string.usersharedpreferences),
+            /* name = */ context.getString(R.string.usersharedpreferences),
             /* mode = */ Context.MODE_PRIVATE
         )
-        initPreferences()
+        initPreferences(context)
     }
 
-    private fun initPreferences() {
+    private fun initPreferences(context: Context) {
         /* initialize shakeDetector threshold*/
-        sharedPreferences.edit().putFloat(Resources.getSystem().getString(R.string.shakedetector), 10.0f).apply()
+        sharedPreferences.edit().putFloat(context.getString(R.string.shakedetector), 10.0f).apply()
 
         /* Other values should be initialized using this same notation */
     }
 
 
     suspend fun getShakeDetectorThreshold(): Float = withContext(Dispatchers.IO) {
-        return@withContext sharedPreferences.getFloat(Resources.getSystem().getString(R.string.shakedetector), -1.0f)
+        return@withContext sharedPreferences.getFloat(
+            /* key = */ "shakeDetector",
+            /* defValue = */ -1.0f)
     }
 
     suspend fun putShakeDetectorThreshold(newThreshold: Float): Unit= withContext(Dispatchers.IO) {
         sharedPreferences.edit().putFloat(
-            /* key = */ Resources.getSystem().getString(R.string.shakedetector),
+            /* key = */ "shakeDetector",
             /* value = */ newThreshold
-        )
+        ).apply()
     }
 }
