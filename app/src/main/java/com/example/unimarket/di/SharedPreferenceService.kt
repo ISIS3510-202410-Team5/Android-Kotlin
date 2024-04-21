@@ -21,7 +21,7 @@ object SharedPreferenceService {
 
     private fun initPreferences(context: Context) {
         /* initialize shakeDetector threshold*/
-        sharedPreferences.edit().putFloat(context.getString(R.string.shakedetector), 10.0f).apply()
+        sharedPreferences.edit().putFloat(context.getString(R.string.shakedetector), 15.0f).apply()
 
         /* Other values should be initialized using this same notation */
     }
