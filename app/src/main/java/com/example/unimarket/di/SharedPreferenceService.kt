@@ -27,8 +27,8 @@ object SharedPreferenceService {
     }
 
 
-    suspend fun getShakeDetectorThreshold(): Float = withContext(Dispatchers.IO) {
-        return@withContext sharedPreferences.getFloat(
+    fun getShakeDetectorThreshold(): Float {
+        return sharedPreferences.getFloat(
             /* key = */ "shakeDetector",
             /* defValue = */ -1.0f)
     }
