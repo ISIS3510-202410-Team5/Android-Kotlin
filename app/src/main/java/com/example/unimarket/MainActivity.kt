@@ -35,6 +35,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        Log.d("OnCreate", "OnCreate called")
+
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContent {
             UniMarketTheme {
@@ -60,16 +62,17 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        for (i in 1 until 10) {
+
+    override fun onPause() {
+        super.onPause()
             lifecycleScope.launch{
-                withContext(Dispatchers.Default) {
-                    Log.d("On Destroy", "$i")
+                withContext(Dispatchers.IO){
+                    for (i in 1 until 10) {
+                        Log.d("onPause", "printing $i")
+                    }
                 }
             }
         }
-    }
 }
 
 @Composable
