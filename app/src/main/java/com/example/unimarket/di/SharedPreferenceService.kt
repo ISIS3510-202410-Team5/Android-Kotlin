@@ -5,12 +5,13 @@ import android.content.SharedPreferences
 import com.example.unimarket.R
 import android.content.res.Resources
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 
 object SharedPreferenceService {
 
     private lateinit var sharedPreferences: SharedPreferences
-    
+
     fun init(context: Context) {
         sharedPreferences = context.getSharedPreferences(
             /* name = */ context.getString(R.string.usersharedpreferences),
@@ -21,6 +22,7 @@ object SharedPreferenceService {
 
     private fun initPreferences(context: Context) {
         /* initialize shakeDetector threshold*/
+
         sharedPreferences.edit().putFloat(context.getString(R.string.shakedetector), 15.0f).apply()
 
         /* Other values should be initialized using this same notation */
