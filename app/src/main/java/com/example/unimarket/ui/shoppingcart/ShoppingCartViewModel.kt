@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.unimarket.model.Product
 import com.example.unimarket.model.ShoppingCart
+import com.example.unimarket.repositories.CarritoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,7 +13,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ShoppingCartViewModel
-    @Inject constructor( private val shoppingCart: ShoppingCart): ViewModel() {
+    @Inject constructor(
+        private val shoppingCart: ShoppingCart,
+        private val shoppingCartRepository: CarritoRepository): ViewModel() {
 
 
 
@@ -25,6 +28,7 @@ class ShoppingCartViewModel
     init {
         getCartContent()
         getCartPrice()
+        shoppingCartRepository.test()
     }
 
     private fun getCartContent() {
