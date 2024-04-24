@@ -1,6 +1,7 @@
 package com.example.unimarket.ui.ListProducts
 
 import android.content.res.Configuration
+import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -12,6 +13,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -50,8 +52,13 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlin.math.atan2
 import kotlin.math.cos
+import kotlin.math.log
 import kotlin.math.sin
 import kotlin.math.sqrt
 
@@ -76,10 +83,13 @@ fun ListProductApp(modifier: Modifier = Modifier, ) {
         )
     )
 
+
+
     LaunchedEffect(key1 = locationPermissions.allPermissionsGranted) {
         if (locationPermissions.allPermissionsGranted) {
             viewModelUbi.getCurrentLocation()
         }
+
     }
 
     val currentLocation = viewModelUbi.currentLocation
@@ -98,6 +108,12 @@ fun ListProductApp(modifier: Modifier = Modifier, ) {
                 if (areGranted) {
 
                     Column() {
+                        /*Ejemplo quitar cuando ya no se necesite*/
+                        LaunchedEffect(Unit) {
+                            val result = viewModel.fetchRelatedProduct("1")
+                            println("Resultado de fetchRelatedProduct: $result")
+                            Log.d("$result","$result")
+                        }
                         SearchBar(
                             query = query,
                             onQueryChange = { query = it },

@@ -1,5 +1,6 @@
 package com.example.unimarket.repositories
 
+import android.util.Log
 import com.example.unimarket.model.Product
 import com.example.unimarket.repositories.Result
 import com.google.firebase.firestore.CollectionReference
@@ -53,6 +54,41 @@ constructor(
         {
             emit(Result.Error<List<Product>>(message = e.localizedMessage ?: "Error desco"))
         }
-
     }
+    /*
+    fun getRelatedById(productId: String): Flow<Result<String?>> = flow {
+        try {
+            emit(Result.Loading())
+
+            val documentSnapshot = productList.document(productId).get().await()
+
+            val related = documentSnapshot.data?.get("related") as? String
+
+            emit(Result.Success(data = related))
+
+        } catch (e: Exception) {
+            Log.d("ErrorModel","ErrorModel")
+            emit(Result.Error(message = e.localizedMessage ?: "Error desconocido"))
+        }
+    }
+    */
+    suspend fun getRelatedById(productId: String): Result<String?> {
+        return try {
+            val documentSnapshot = productList.document(productId).get().await()
+            val related = documentSnapshot.data?.get("related") as? String
+            if (related != null) {
+                Log.d("$related","$related")
+                Result.Success(data = related)
+
+            } else {
+                Result.Error(message = "No se encontró un producto relacionado para el ID: $productId")
+            }
+        } catch (e: Exception) {
+            Log.e("ProductoRepository", "Error al obtener el producto relacionado", e)
+            Result.Error(message = e.localizedMessage ?: "Error desconocido")
+        }
+    }
+
+
+
 }
