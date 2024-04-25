@@ -1,4 +1,4 @@
-package com.example.unimarket.ui.SearchProduct
+package com.example.unimarket.ui.ListProducts
 
 import android.location.Location
 import androidx.compose.runtime.getValue
