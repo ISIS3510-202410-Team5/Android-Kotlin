@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -26,6 +27,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.unimarket.ui.DetailProduct.DetailProduct
 import com.example.unimarket.ui.ListProducts.ListProductApp
+import com.example.unimarket.ui.ListProducts.SelectedProductViewModel
 import com.example.unimarket.ui.SearchProduct.SearchProductApp
 import com.example.unimarket.ui.Login.model.LoginModel
 import com.example.unimarket.ui.home.Home
@@ -51,6 +53,8 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
     //This should be changed to a pattern
     val loginViewModel = remember {LoginViewModel(loginModel)}
     val signUpViewModel = remember {SignUpViewModel(loginModel)}
+
+    val ProductviewModel: SelectedProductViewModel = hiltViewModel()
 
     Scaffold (
         bottomBar = {AppBottomNav(navController = navController)}
@@ -79,14 +83,13 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
                 SignUpScreen(viewModel = signUpViewModel, navController = navController)
             }
             composable(Screen.ListProduct.route){
-                ListProductApp(navController = navController)
+                ListProductApp(navController = navController, productViewModel = ProductviewModel)
             }
             composable(Screen.ListProductSearch.route){
-                SearchProductApp(navController = navController)
+                SearchProductApp(navController = navController, productViewModel = ProductviewModel)
             }
-            composable(Screen.DetailProduct.route) { backStackEntry ->
-                val productoId = backStackEntry.arguments?.getString("productoId")
-                DetailProduct(productoId.toString(),navController = navController)
+            composable(Screen.DetailProduct.route) {
+                DetailProduct(navController = navController, productViewModel = ProductviewModel)
             }
         }
     }
@@ -185,5 +188,5 @@ sealed class Screen(val route: String) {
 
     data object ListProductSearch: Screen(route = "SEARCH")
 
-    data object DetailProduct: Screen(route = "DETAIL/{productoId}")
+    data object DetailProduct: Screen(route = "DETAIL")
 }

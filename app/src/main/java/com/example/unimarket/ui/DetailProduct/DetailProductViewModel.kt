@@ -25,7 +25,6 @@ constructor(
 
     private val _productListState: MutableState<List<Product>> = mutableStateOf(emptyList())
     val productListState: State<List<Product>> = _productListState
-    var producto: MutableState<Product> = mutableStateOf(Product())
 
     init {
         cargarProductos()
@@ -33,7 +32,7 @@ constructor(
 
     private fun cargarProductos() {
         viewModelScope.launch(context = Dispatchers.Main) {
-            val productList = withContext(Dispatchers.Main){productCache.getProducts("products") ?: emptyList()}
+            val productList = withContext(Dispatchers.IO){productCache.getProducts("products") ?: emptyList()}
 
             _productListState.value = productList
             }

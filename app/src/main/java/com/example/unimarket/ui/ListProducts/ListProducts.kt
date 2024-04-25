@@ -1,7 +1,6 @@
 package com.example.unimarket.ui.ListProducts
 
 import android.content.res.Configuration
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.unimarket.model.Product
@@ -9,7 +8,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,23 +15,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -51,21 +43,15 @@ import androidx.navigation.NavHostController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.example.unimarket.R
-import com.example.unimarket.ui.theme.GiantsOrange
 import com.example.unimarket.ui.theme.Licorice
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import kotlin.math.atan2
-import kotlin.math.cos
-import kotlin.math.sin
-import kotlin.math.sqrt
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
-fun ListProductApp(modifier: Modifier = Modifier, navController: NavHostController) {
+fun ListProductApp(modifier: Modifier = Modifier, navController: NavHostController, productViewModel: SelectedProductViewModel) {
 
     val viewModel: ProductListViewModel = hiltViewModel()
     val state = viewModel.state.value
@@ -98,7 +84,8 @@ fun ListProductApp(modifier: Modifier = Modifier, navController: NavHostControll
             refreshData = viewModel::getProductList,
             state = state,
             viewModel = viewModel,
-            navController = navController
+            navController = navController,
+            productViewModel = productViewModel
         )
 
     }
@@ -107,8 +94,16 @@ fun ListProductApp(modifier: Modifier = Modifier, navController: NavHostControll
 
 
 @Composable
-fun ProductList(productList: List<Product>, modifier: Modifier = Modifier, isRefreshing: Boolean, refreshData: () -> Unit, state: ProductListState,
-                viewModel: ProductListViewModel,navController: NavHostController) {
+fun ProductList(
+    productList: List<Product>,
+    modifier: Modifier = Modifier,
+    isRefreshing: Boolean,
+    refreshData: () -> Unit,
+    state: ProductListState,
+    viewModel: ProductListViewModel,
+    navController: NavHostController,
+    productViewModel: SelectedProductViewModel
+) {
     
     SwipeRefresh(state = rememberSwipeRefreshState(isRefreshing), onRefresh = refreshData) {
 
@@ -119,7 +114,8 @@ fun ProductList(productList: List<Product>, modifier: Modifier = Modifier, isRef
                     modifier = Modifier
                         .padding(8.dp)
                         .clickable {
-                            navController.navigate("DETAIL" + "/${product.id}") // Navegar a la vista de detalle del producto
+                            productViewModel.setSelectedProduct(product)
+                            navController.navigate("DETAIL")
                         }
                 )
 

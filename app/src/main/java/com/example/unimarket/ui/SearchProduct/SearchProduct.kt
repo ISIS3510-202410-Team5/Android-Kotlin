@@ -37,6 +37,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.unimarket.ui.ListProducts.ProductList
 import com.example.unimarket.ui.ListProducts.ProductListViewModel
+import com.example.unimarket.ui.ListProducts.SelectedProductViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import kotlin.math.atan2
@@ -47,7 +48,7 @@ import kotlin.math.sqrt
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
-fun SearchProductApp(modifier: Modifier = Modifier,navController: NavHostController) {
+fun SearchProductApp(modifier: Modifier = Modifier,navController: NavHostController, productViewModel: SelectedProductViewModel) {
 
     val viewModel: ProductListViewModel = hiltViewModel()
     val state = viewModel.state.value
@@ -176,7 +177,8 @@ fun SearchProductApp(modifier: Modifier = Modifier,navController: NavHostControl
                     refreshData = viewModel::getProductList,
                     state = state,
                     viewModel = viewModel,
-                    navController = navController
+                    navController = navController,
+                    productViewModel = productViewModel
                 )
 
             }

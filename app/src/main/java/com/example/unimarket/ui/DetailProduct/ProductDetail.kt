@@ -9,10 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,9 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -48,6 +44,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.unimarket.R
 import com.example.unimarket.model.Product
+import com.example.unimarket.ui.ListProducts.SelectedProductViewModel
 import com.example.unimarket.ui.theme.GiantsOrange
 import com.example.unimarket.ui.theme.Licorice
 import com.skydoves.landscapist.rememberDrawablePainter
@@ -57,7 +54,7 @@ import kotlinx.coroutines.withContext
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalCoilApi::class)
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun DetailProduct(productoId: String, navController: NavHostController) {
+fun DetailProduct(navController: NavHostController, productViewModel: SelectedProductViewModel) {
 
     val detailviewModel: DetailProductViewModel = hiltViewModel()
 
@@ -68,8 +65,8 @@ fun DetailProduct(productoId: String, navController: NavHostController) {
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
-        producto = withContext(Dispatchers.Default) {
-            detailviewModel.buscarProductoEnLista(productoId)
+        producto = withContext(Dispatchers.Main) {
+            productViewModel.getSelectedProduct()
         }
     }
 
