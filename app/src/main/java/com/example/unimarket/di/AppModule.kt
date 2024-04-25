@@ -4,13 +4,18 @@ import android.app.Application
 import android.util.Log
 import com.example.unimarket.data.DefaultLocationTracker
 import com.example.unimarket.data.LocationTracker
+import com.example.unimarket.db.ShoppingCartDb
+import com.example.unimarket.entities.ProductoDAO
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.firestore.FirebaseFirestore
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -40,6 +45,11 @@ object AppModule
 
     @Provides
     @Singleton
+    @Named("shoppingCart")
+    fun provideShoppingCartCollection(firestore: FirebaseFirestore) = firestore.collection("shoppingCart")
+
+    @Provides
+    @Singleton
     fun providesFusedLocationProviderClient(
         application: Application
     ): FusedLocationProviderClient =
@@ -54,4 +64,20 @@ object AppModule
         fusedLocationProviderClient = fusedLocationProviderClient,
         application = application
     )
+
+    @Singleton
+    @Provides
+    fun provideProductoDao(shoppingCartDb: ShoppingCartDb) : ProductoDAO {
+        return shoppingCartDb.ProductoDAO()
+    }
+
+    @Singleton
+    @Provides
+    fun provideApplicationScope() : CoroutineScope = CoroutineScope(SupervisorJob())
+
+    @Singleton
+    @Provides
+    fun provideRoomDbInstance(application: Application, applicationScope: CoroutineScope): ShoppingCartDb
+        = ShoppingCartDb.getDatabase(application, applicationScope)
+
 }
