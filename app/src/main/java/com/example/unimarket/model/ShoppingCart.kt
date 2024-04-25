@@ -90,7 +90,7 @@ constructor(
             if (!productList.contains(product)){
                 productList.add(product)
                 insertDB(product)
-                Log.d("ShoppingCart", "Is asynchronous")
+                //Log.d("ShoppingCart", "Is asynchronous")
                 true
             } else {
                 false
@@ -139,7 +139,7 @@ constructor(
 
     private fun insertDB(product: Product) {
         CoroutineScope(Dispatchers.IO).launch {
-            delay(2000L)
+            //delay(2000L)
             Log.d("ShoppingCart", "Insert $product.id")
             productoDAO.insertShoppingCache(product.convertToEntity())
         }

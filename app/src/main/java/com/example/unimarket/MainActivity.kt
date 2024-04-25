@@ -65,13 +65,15 @@ class MainActivity : ComponentActivity() {
 
     override fun onPause() {
         super.onPause()
-            lifecycleScope.launch{
+        //The next comented code is as an example of coroutine when closing or pasuing the app
+
+            /*lifecycleScope.launch{
                 withContext(Dispatchers.IO){
                     for (i in 1 until 10) {
                         Log.d("onPause", "printing $i")
                     }
                 }
-            }
+            }*/
         }
 }
 
