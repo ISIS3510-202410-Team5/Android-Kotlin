@@ -3,6 +3,7 @@ package com.example.unimarket.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.unimarket.model.Product
 
 @Entity(tableName="shopping_cart")
 data class ProductoEntity(
@@ -24,4 +25,8 @@ data class ProductoEntity(
     @ColumnInfo(name = "categories")
     val categories: String
 ) {
+
+    fun entityToDTO(): Product {
+        return Product(id, coverUrl, title, precio, latitud, longitud, categories, related)
+    }
 }
