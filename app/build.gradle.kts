@@ -135,6 +135,8 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")
 
+    implementation("com.github.skydoves:landscapist-glide:1.3.7")
+
 }
 
     kapt {
