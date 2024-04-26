@@ -38,6 +38,18 @@ constructor(
         }
     }
 
+    suspend fun buscarProductoEnLista(searchTerm: String): Product? {
+        val productList = productListState.value ?: emptyList()
+        val searchTermInt = searchTerm.toIntOrNull()
+
+        for (product in productList) {
+            if (searchTermInt != null && product.id.toIntOrNull() == searchTermInt) { // Comparar con el ID convertido a Int
+                return product
+            }
+        }
+        return null
+    }
+
     fun addToShoppingCart(product: Product){
         shoppingCart.addProduct(product)
     }
