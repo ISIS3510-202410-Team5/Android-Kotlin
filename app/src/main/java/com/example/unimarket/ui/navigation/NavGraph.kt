@@ -25,6 +25,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.unimarket.repositories.UsuarioRepository
 import com.example.unimarket.ui.DetailProduct.DetailProduct
 import com.example.unimarket.ui.ListProducts.ListProductApp
 import com.example.unimarket.ui.ListProducts.SelectedProductViewModel
@@ -35,11 +36,15 @@ import com.example.unimarket.ui.Login.ui.LoginScreen
 import com.example.unimarket.ui.Login.ui.LoginViewModel
 import com.example.unimarket.ui.Login.ui.SignUpScreen
 import com.example.unimarket.ui.Login.ui.SignUpViewModel
+import com.example.unimarket.ui.Login.ui.UserInfoScreen
+import com.example.unimarket.ui.Login.ui.UserInfoViewModel
 import com.example.unimarket.ui.camera.ui.CameraScreen
 import com.example.unimarket.ui.camera.ui.CameraViewModel
 import com.example.unimarket.ui.camera.ui.LightSensorViewModel
 import com.example.unimarket.ui.publishitem.PublishItem
 import com.example.unimarket.ui.shoppingcart.ShoppingCart
+import com.example.unimarket.ui.usuario.UserProfileScreen
+import com.example.unimarket.ui.usuario.UsuarioViewModel
 
 @Composable
 fun Nav(lightSensorViewModel: LightSensorViewModel){
@@ -49,10 +54,14 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
 
     //Model declaration:
     val loginModel = LoginModel()
+    /*val usuariorepository= UsuarioRepository()*/
 
     //This should be changed to a pattern
     val loginViewModel = remember {LoginViewModel(loginModel)}
     val signUpViewModel = remember {SignUpViewModel(loginModel)}
+    val userInfoViewModel= remember {UserInfoViewModel(loginModel,signUpViewModel)}
+    /*val UsuarioViewModel = remember {UsuarioViewModel(usuariorepository)}*/
+
 
     val ProductviewModel: SelectedProductViewModel = hiltViewModel()
 
@@ -91,6 +100,12 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
             composable(Screen.DetailProduct.route) {
                 DetailProduct(navController = navController, productViewModel = ProductviewModel)
             }
+            composable(Screen.InfoScreen.route) {
+                UserInfoScreen(navController = navController, viewModel =userInfoViewModel)
+            }
+            /*composable(Screen.UserProfile.route) {
+                UserProfileScreen(navController = navController, usuarioViewModel = UsuarioViewModel,,)
+            }*/
         }
     }
 
@@ -100,7 +115,7 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
 fun AppBottomNav(navController: NavHostController){
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-    if (currentDestination?.route == Screen.LogIn.route || currentDestination?.route == Screen.SignUp.route)
+    if (currentDestination?.route == Screen.LogIn.route || currentDestination?.route == Screen.SignUp.route|| currentDestination?.route == Screen.InfoScreen.route)
     {
         Log.d(null, "La ruta actual es ${currentDestination.route}")
     } else {
@@ -180,6 +195,7 @@ sealed class Screen(val route: String) {
     data object Post: Screen(route = "POST")
     data object Cart: Screen(route = "CART")
     data object UnderConstruction: Screen(route = "UNDER")
+    data object UserProfile: Screen(route = "USER")
     data object LogIn: Screen(route= "LOGIN")
     data object SignUp: Screen(route = "SIGNUP")
     data object ListProduct: Screen(route = "LIST")
@@ -189,4 +205,6 @@ sealed class Screen(val route: String) {
     data object ListProductSearch: Screen(route = "SEARCH")
 
     data object DetailProduct: Screen(route = "DETAIL")
+
+    data object InfoScreen: Screen(route = "INFO")
 }
