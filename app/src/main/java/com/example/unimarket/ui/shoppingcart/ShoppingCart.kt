@@ -62,7 +62,7 @@ fun ShoppingCart(navController: NavHostController )  {
         TotalComposable(total = price,
             onClickFun = {
             Log.d(null, "PaymentButton pressed")
-            //viewModel.pressPayment()
+            viewModel.pressPayment()
         })
         Divider(color = CoolGray,
             thickness = 3.dp,

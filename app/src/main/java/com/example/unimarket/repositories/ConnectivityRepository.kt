@@ -2,11 +2,9 @@ package com.example.unimarket.repositories
 
 import android.app.Application
 import android.content.Context
-import android.location.LocationManager
 import android.net.ConnectivityManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class ConnectivityRepository

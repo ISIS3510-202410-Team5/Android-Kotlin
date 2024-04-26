@@ -1,6 +1,7 @@
 package com.example.unimarket.ui.Login.ui
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -25,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -52,6 +54,9 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
 
     val coroutineScope= rememberCoroutineScope()
     val isloading:Boolean by viewModel.isloading.observeAsState(initial=false)
+    val context = LocalContext.current
+
+    var toast: Toast? by remember { mutableStateOf(null) }
 
     if (isloading){
         Box(Modifier.fillMaxSize()){
@@ -70,22 +75,29 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
         PasswordText()
         PasswordSpace(password) {viewModel.onLoginChanged(email,it)}
         Spacer(modifier = Modifier.padding(16.dp))
-        ButtonLogin(loginEnable){
-            coroutineScope.launch {
-                Log.d(null, "Presiona boton de login")
-                try {
-                    viewModel.onLoginSelected()
-                    if (loginValid){
-                        navController.navigate(route = "HOME"){
-                            popUpTo(route = "LOGIN"){inclusive = true}
+        ButtonLogin(loginEnable) {
+            if (viewModel.isNetworkAvailable(context)) {
+                coroutineScope.launch {
+                    Log.d(null, "Presiona boton de login")
+                    try {
+                        viewModel.onLoginSelected()
+                        if (loginValid){
+                            navController.navigate(route = "HOME"){
+                                popUpTo(route = "LOGIN"){inclusive = true}
+                            }
                         }
                     }
+                    catch (e:Exception) {
+                        Log.d(null, "error en el login")
+                    }
                 }
-                catch (e:Exception) {
-                    Log.d(null, "error en el login")
-                }
-                }
+            } else {
+                toast?.cancel()
+                toast = Toast.makeText(context, "No hay conectividad a internet", Toast.LENGTH_SHORT)
+                toast?.show()
+                Log.d(null, "No hay conectividad a internet")
             }
+        }
 
         Spacer(modifier = Modifier.padding(16.dp))
         SignUpText(navController = navController)
@@ -171,7 +183,7 @@ fun PasswordSpace(password:String,onTextFieldChanged:(String)->Unit) {
 
     TextField(value = password, onValueChange = {onTextFieldChanged(it)},
         modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text(text = "Password",
+        placeholder = { Text(text = "minimum 6 characters",
             color= Color(0xFF989EB1),
             fontFamily = FontFamily.SansSerif)},
         keyboardOptions = KeyboardOptions (keyboardType= KeyboardType.Password),
@@ -192,7 +204,7 @@ fun EmailSpace(email:String,onTextFieldChanged:(String)->Unit) {
     TextField(value = email ,
         onValueChange = {onTextFieldChanged(it)},
         modifier= Modifier.fillMaxWidth(),
-        placeholder={ Text(text="Email",
+        placeholder={ Text(text="example@gmail.com",
             color = Color(0xFF989EB1),
             fontFamily = FontFamily.SansSerif) },
         keyboardOptions = KeyboardOptions (keyboardType= KeyboardType.Email),

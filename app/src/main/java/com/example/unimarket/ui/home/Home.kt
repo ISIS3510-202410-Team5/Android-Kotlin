@@ -41,11 +41,13 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -54,6 +56,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import com.example.unimarket.sensor.ShakeDetector
 import com.example.unimarket.ui.theme.Bittersweet
@@ -69,6 +72,8 @@ fun Home(navController: NavHostController) {
     val users = viewModel.state.value.users
     val userNumber = if (users.isNotEmpty()) {users[0].regUsers} else {0}
 
+    val scope = rememberCoroutineScope()
+
 
     val searchText by viewModel.searchText.collectAsState()
     //val isSearching by viewModel.isSearching.collectAsState()
@@ -77,7 +82,7 @@ fun Home(navController: NavHostController) {
     val sensorManager = remember {context.getSystemService(ComponentActivity.SENSOR_SERVICE) as SensorManager}
     val accelSensor = remember { sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)}
 
-    val shakeListener = remember { ShakeDetector(navController)}
+    val shakeListener = remember { ShakeDetector(navController, scope)}
 
     DisposableEffect(sensorManager){
         sensorManager.registerListener(shakeListener, accelSensor, SensorManager.SENSOR_DELAY_NORMAL)

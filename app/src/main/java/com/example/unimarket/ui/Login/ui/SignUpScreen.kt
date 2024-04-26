@@ -1,6 +1,7 @@
 package com.example.unimarket.ui.Login.ui
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -25,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -55,6 +57,10 @@ fun SignUp(modifier: Modifier, viewModel: SignUpViewModel, navController: NavHos
     val isLoading:Boolean by viewModel.isloading.observeAsState(initial=false)
     val validSignUp by viewModel.validSignUp.observeAsState(initial = false)
 
+    val context = LocalContext.current
+
+    var toast: Toast? by remember { mutableStateOf(null) }
+
     if (isLoading){
         Box(Modifier.fillMaxSize()){
             CircularProgressIndicator(modifier.align(Alignment.Center))
@@ -71,14 +77,51 @@ fun SignUp(modifier: Modifier, viewModel: SignUpViewModel, navController: NavHos
             PasswordCreationSpace(password) {viewModel.onLoginChanged(email,it)}
             Spacer(modifier = Modifier.padding(18.dp))
             ButtonSignUp(loginEnable){
-                coroutineScope.launch {
-                    viewModel.onLoginSelected()
-                    if (validSignUp){
-                        navController.navigate("HOME"){
-                            popUpTo(route = "LOGIN"){inclusive = true}
-                        }}
+                if (viewModel.isNetworkAvailable(context)){
+                    coroutineScope.launch {
+                        viewModel.onLoginSelected()
+                        if (validSignUp){
+                            navController.navigate("INFO"){
+                                popUpTo(route = "LOGIN"){inclusive = true}
+                        }
+                    }
+
+                }
+
+                }
+                else {
+                    toast?.cancel()
+                    toast = Toast.makeText(context, "No hay conectividad a internet", Toast.LENGTH_SHORT)
+                    toast?.show()
+                    Log.d(null, "No hay conectividad a internet")
                 }
             }
+            /*
+            ButtonLogin(loginEnable) {
+                if (viewModel.isNetworkAvailable(context)) {
+                    coroutineScope.launch {
+                        Log.d(null, "Presiona boton de SignUp")
+                        try {
+                            viewModel.onLoginSelected()
+                            if (validSignUp){
+                                navController.navigate(route = "INFO"){
+                                    popUpTo(route = "LOGIN"){inclusive = true}
+                                }
+                            }
+                        }
+                        catch (e:Exception) {
+                            Log.d(null, "error en el SignUp")
+                        }
+                    }
+                } else {
+                    toast?.cancel()
+                    toast = Toast.makeText(context, "No hay conectividad a internet", Toast.LENGTH_SHORT)
+                    toast?.show()
+                    Log.d(null, "No hay conectividad a internet")
+                }
+            }
+            */
+
             Spacer(modifier = Modifier.padding(14.dp))
             SignInText(navController)
             Spacer(modifier = Modifier.padding(16.dp))
@@ -96,7 +139,7 @@ fun WelcomeSignUpText() {
         color = Color(0xFF181316),
         fontFamily = FontFamily.SansSerif
     )
-    Text(text = "Welcome to the Unimarket experience.\nPlease fill the information below!",
+    Text(text = "Welcome to the Unimarket experience.\nPlease fill the information below for \ncreating your new account!",
         fontSize = 15.sp,
         color = Color(0xFF989EB1),
         fontFamily = FontFamily.SansSerif
@@ -147,7 +190,7 @@ fun ButtonSignUp(loginEnable: Boolean, onLoginSelected: () -> Unit) {
 fun PasswordCreationSpace(password:String,onTextFieldChanged:(String)->Unit) {
     TextField(value = password, onValueChange = {onTextFieldChanged(it)},
         modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text(text = "Password",color= Color(0xFF989EB1))},
+        placeholder = { Text(text = "Please introduce at least 6 characters",color= Color(0xFF989EB1))},
         keyboardOptions = KeyboardOptions (keyboardType= KeyboardType.Password),
         singleLine = true,
         maxLines = 1,
@@ -165,7 +208,7 @@ fun EmailSignUp(email:String,onTextFieldChanged:(String)->Unit) {
     TextField(value = email ,
         onValueChange = {onTextFieldChanged(it)},
         modifier= Modifier.fillMaxWidth(),
-        placeholder={ Text(text="Email", color = Color(0xFF989EB1)) },
+        placeholder={ Text(text="example@gmail.com", color = Color(0xFF989EB1)) },
         keyboardOptions = KeyboardOptions (keyboardType= KeyboardType.Email),
         singleLine = true,
         maxLines = 1,

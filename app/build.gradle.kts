@@ -42,6 +42,7 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
+        viewBinding = true
         compose = true
     }
     composeOptions {
@@ -88,6 +89,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("com.google.firebase:firebase-perf-ktx")
+    implementation("com.google.firebase:firebase-storage-ktx")
 
 
 
@@ -125,7 +127,14 @@ dependencies {
     // Needed if targeting API > 31 (Android 12+)
     implementation ("androidx.work:work-runtime-ktx:2.9.0")
 
+    // Room Components
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    annotationProcessor("androidx.room:room-compiler:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
+
     implementation("com.github.skydoves:landscapist-glide:1.3.7")
+
 }
 
     kapt {
