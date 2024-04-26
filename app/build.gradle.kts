@@ -12,8 +12,6 @@ android {
     namespace = "com.example.unimarket"
     compileSdk = 34
 
-
-
     defaultConfig {
         applicationId = "com.example.unimarket"
         minSdk = 24

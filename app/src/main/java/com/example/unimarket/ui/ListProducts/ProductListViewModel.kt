@@ -1,11 +1,19 @@
 package com.example.unimarket.ui.ListProducts
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.util.Log
+import android.widget.Toast
+import androidx.camera.core.impl.utils.ContextUtil.getApplicationContext
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.unimarket.model.Product
 import com.example.unimarket.model.ProductCache
 import com.example.unimarket.model.ShoppingCart
 import com.example.unimarket.repositories.ConnectivityRepository
@@ -16,6 +24,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.checkerframework.checker.units.qual.Current
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,10 +33,10 @@ class ProductListViewModel
 constructor
     (
 
-    private val productoRepository: ProductoRepository,
-    private val shoppingCart: ShoppingCart,
-    private val connectivityRepository: ConnectivityRepository,
-    private val productCache: ProductCache
+            private val productoRepository: ProductoRepository,
+            private val shoppingCart: ShoppingCart,
+            private val connectivityRepository: ConnectivityRepository,
+            private val productCache: ProductCache
 
 ): ViewModel()
 {

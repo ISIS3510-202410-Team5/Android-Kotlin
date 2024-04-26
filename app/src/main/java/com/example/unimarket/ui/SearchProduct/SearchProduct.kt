@@ -66,6 +66,12 @@ fun SearchProductApp(modifier: Modifier = Modifier,navController: NavHostControl
         )
     )
 
+    LaunchedEffect(key1 = locationPermissions.allPermissionsGranted) {
+        if (locationPermissions.allPermissionsGranted) {
+            viewModelUbi.getCurrentLocation()
+        }
+    }
+
     val currentLocation = viewModelUbi.currentLocation
 
     val locationManager = LocalContext.current.getSystemService(
@@ -100,9 +106,9 @@ fun SearchProductApp(modifier: Modifier = Modifier,navController: NavHostControl
         }
     } else {
 
-        productList.filter { product ->
-            product.title.contains(query, ignoreCase = true)
-        }
+            productList.filter { product ->
+                product.title.contains(query, ignoreCase = true)
+            }
 
     }
 

@@ -104,7 +104,7 @@ fun ProductList(
     navController: NavHostController,
     productViewModel: SelectedProductViewModel
 ) {
-
+    
     SwipeRefresh(state = rememberSwipeRefreshState(isRefreshing), onRefresh = refreshData) {
 
         LazyColumn(modifier = modifier) {
@@ -232,3 +232,4 @@ fun ExampleScreen() {
         }
     }
 }
+

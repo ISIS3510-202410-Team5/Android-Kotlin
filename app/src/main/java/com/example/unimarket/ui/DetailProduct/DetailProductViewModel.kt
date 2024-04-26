@@ -35,7 +35,7 @@ constructor(
             val productList = withContext(Dispatchers.IO){productCache.getProducts("products") ?: emptyList()}
 
             _productListState.value = productList
-        }
+            }
     }
 
     suspend fun buscarProductoEnLista(searchTerm: String): Product? {
