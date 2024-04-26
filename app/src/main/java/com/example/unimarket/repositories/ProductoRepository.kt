@@ -55,23 +55,7 @@ constructor(
             emit(Result.Error<List<Product>>(message = e.localizedMessage ?: "Error desco"))
         }
     }
-    /*
-    fun getRelatedById(productId: String): Flow<Result<String?>> = flow {
-        try {
-            emit(Result.Loading())
 
-            val documentSnapshot = productList.document(productId).get().await()
-
-            val related = documentSnapshot.data?.get("related") as? String
-
-            emit(Result.Success(data = related))
-
-        } catch (e: Exception) {
-            Log.d("ErrorModel","ErrorModel")
-            emit(Result.Error(message = e.localizedMessage ?: "Error desconocido"))
-        }
-    }
-    */
     suspend fun getRelatedById(productId: String): Result<String?> {
         return try {
             val documentSnapshot = productList.document(productId).get().await()
@@ -81,7 +65,8 @@ constructor(
                 Result.Success(data = related)
 
             } else {
-                Result.Error(message = "No se encontró un producto relacionado para el ID: $productId")
+
+                Result.Error(message = "")
             }
         } catch (e: Exception) {
             Log.e("ProductoRepository", "Error al obtener el producto relacionado", e)

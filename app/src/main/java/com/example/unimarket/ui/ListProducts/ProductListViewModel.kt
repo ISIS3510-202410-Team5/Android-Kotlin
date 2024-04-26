@@ -5,7 +5,6 @@ import android.content.Context
 import android.util.Log
 import android.widget.Toast
 import androidx.camera.core.impl.utils.ContextUtil.getApplicationContext
-import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -92,27 +91,4 @@ constructor
         }
 
     }
-    suspend fun fetchRelatedProduct(productId: String): Result<List<String>> {
-        return try {
-            val result = productoRepository.getRelatedById(productId)
-            if (result is Result.Success) {
-
-                val data = result.data?.split(",") ?: emptyList()
-                Log.d("Split realizado, creacion lista","$data")
-                Result.Success(data = data)
-            } else {
-                Result.Error(message = "Error desconocido")
-            }
-        } catch (e: Exception) {
-            Log.d("errorVM", "ErrorVM")
-            Result.Error(message = e.localizedMessage ?: "Error desconocido")
-        }
-    }
-
-
-
-
-
-
-
 }
