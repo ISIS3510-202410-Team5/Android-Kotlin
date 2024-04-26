@@ -37,6 +37,12 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.annotation.ExperimentalCoilApi
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
+import com.example.unimarket.R
 import com.example.unimarket.model.Product
 import com.example.unimarket.ui.ListProducts.SelectedProductViewModel
 import com.example.unimarket.ui.theme.GiantsOrange
@@ -78,6 +84,25 @@ fun DetailProduct(navController: NavHostController, productViewModel: SelectedPr
         )
 
         producto?.let {
+
+            Glide.with(context)
+                .load(it.coverUrl)
+                .apply(RequestOptions()
+                    .centerCrop()
+                    .placeholder(R.drawable.placeholder)
+                    .error(R.drawable.error)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL))
+                .into(object : CustomTarget<Drawable>() {
+                    override fun onResourceReady(
+                        resource: Drawable,
+                        transition: Transition<in Drawable>?
+                    ) {
+                        image = resource
+                    }
+
+                    override fun onLoadCleared(placeholder: Drawable?) {
+                    }
+                })
 
             Column(
                 modifier = Modifier
