@@ -1,12 +1,10 @@
 package com.example.unimarket.ui.navigation
 
 import android.util.Log
-import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.AddCircle
-import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.MailOutline
 import androidx.compose.material.icons.rounded.Menu
@@ -21,30 +19,27 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.unimarket.R
+import com.example.unimarket.ui.DetailProduct.DetailProduct
 import com.example.unimarket.ui.ListProducts.ListProductApp
+import com.example.unimarket.ui.ListProducts.SelectedProductViewModel
+import com.example.unimarket.ui.SearchProduct.SearchProductApp
 import com.example.unimarket.ui.Login.model.LoginModel
 import com.example.unimarket.ui.home.Home
-import com.example.unimarket.ui.home.HomeViewModel
 import com.example.unimarket.ui.Login.ui.LoginScreen
 import com.example.unimarket.ui.Login.ui.LoginViewModel
 import com.example.unimarket.ui.Login.ui.SignUpScreen
 import com.example.unimarket.ui.Login.ui.SignUpViewModel
-import com.example.unimarket.ui.Login.ui.UserInfoScreen
-import com.example.unimarket.ui.Login.ui.UserInfoViewModel
 import com.example.unimarket.ui.camera.ui.CameraScreen
 import com.example.unimarket.ui.camera.ui.CameraViewModel
 import com.example.unimarket.ui.camera.ui.LightSensorViewModel
 import com.example.unimarket.ui.publishitem.PublishItem
-import com.example.unimarket.ui.publishitem.PublishItemViewModel
 import com.example.unimarket.ui.shoppingcart.ShoppingCart
-import com.example.unimarket.ui.shoppingcart.ShoppingCartViewModel
 
 @Composable
 fun Nav(lightSensorViewModel: LightSensorViewModel){
@@ -58,12 +53,13 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
     //This should be changed to a pattern
     val loginViewModel = remember {LoginViewModel(loginModel)}
     val signUpViewModel = remember {SignUpViewModel(loginModel)}
-    val userInfoViewModel= remember {UserInfoViewModel(loginModel,signUpViewModel)}
+
+    val ProductviewModel: SelectedProductViewModel = hiltViewModel()
 
     Scaffold (
         bottomBar = {AppBottomNav(navController = navController)}
     ) {
-        innerPadding ->
+            innerPadding ->
         NavHost(navController, startDestination = Screen.LogIn.route, Modifier.padding(innerPadding)){
             composable(Screen.Home.route){
                 Home(navController=navController)
@@ -86,11 +82,14 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
             composable(Screen.SignUp.route){
                 SignUpScreen(viewModel = signUpViewModel, navController = navController)
             }
-            composable(Screen.Info.route){
-                UserInfoScreen(viewModel = userInfoViewModel, navController = navController)
-            }
             composable(Screen.ListProduct.route){
-                ListProductApp()
+                ListProductApp(navController = navController, productViewModel = ProductviewModel)
+            }
+            composable(Screen.ListProductSearch.route){
+                SearchProductApp(navController = navController, productViewModel = ProductviewModel)
+            }
+            composable(Screen.DetailProduct.route) {
+                DetailProduct(navController = navController, productViewModel = ProductviewModel)
             }
         }
     }
@@ -101,9 +100,7 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
 fun AppBottomNav(navController: NavHostController){
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-    if (currentDestination?.route == Screen.LogIn.route || currentDestination?.route == Screen.SignUp.route
-        || currentDestination?.route == Screen.Info.route
-    )
+    if (currentDestination?.route == Screen.LogIn.route || currentDestination?.route == Screen.SignUp.route)
     {
         Log.d(null, "La ruta actual es ${currentDestination.route}")
     } else {
@@ -119,7 +116,7 @@ fun AppBottomNav(navController: NavHostController){
                             {
                                 //popUpTo(Screen.LogIn.route){inclusive = true}
                                 popUpTo(Screen.Home.route){inclusive = true}
-                                Log.d(null,"popUpTo called")
+                                Log.d(null,"popupto aplicado")
                             }
                         }
                     },
@@ -185,8 +182,11 @@ sealed class Screen(val route: String) {
     data object UnderConstruction: Screen(route = "UNDER")
     data object LogIn: Screen(route= "LOGIN")
     data object SignUp: Screen(route = "SIGNUP")
-    data object Info: Screen(route = "INFO")
     data object ListProduct: Screen(route = "LIST")
 
     data object Camera: Screen(route = "CAMERA")
+
+    data object ListProductSearch: Screen(route = "SEARCH")
+
+    data object DetailProduct: Screen(route = "DETAIL")
 }
