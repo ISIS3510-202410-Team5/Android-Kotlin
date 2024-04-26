@@ -22,10 +22,13 @@ import com.example.unimarket.repositories.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import org.checkerframework.checker.units.qual.Current
 import javax.inject.Inject
+import kotlin.math.log
 
 @HiltViewModel
 class ProductListViewModel
@@ -88,7 +91,4 @@ constructor
         }
 
     }
-
-
-
 }

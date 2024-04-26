@@ -1,6 +1,8 @@
 package com.example.unimarket.ui.ListProducts
 
 import android.content.res.Configuration
+import android.util.Log
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.unimarket.model.Product
@@ -47,6 +49,15 @@ import com.example.unimarket.ui.theme.Licorice
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.log
+import kotlin.math.sin
+import kotlin.math.sqrt
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
