@@ -1,4 +1,4 @@
-package com.example.unimarket.ui.ListProducts
+package com.example.unimarket.ui.SearchProduct
 
 import android.location.Location
 import androidx.compose.runtime.getValue
@@ -20,7 +20,7 @@ class LocationViewModel @Inject constructor(
     var currentLocation by mutableStateOf<Location?>(null)
 
     fun getCurrentLocation() {
-        viewModelScope.launch(context = Dispatchers.Unconfined) {
+        viewModelScope.launch {
             currentLocation = locationTracker.getCurrentLocation()
         }
     }
