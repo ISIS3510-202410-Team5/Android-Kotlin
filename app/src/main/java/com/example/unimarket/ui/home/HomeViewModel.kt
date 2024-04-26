@@ -5,7 +5,9 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.unimarket.repositories.ConnectivityRepository
 import com.example.unimarket.repositories.Result
 import com.example.unimarket.repositories.UserRepository
 import com.example.unimarket.ui.ListProducts.ProductListState
@@ -22,7 +24,8 @@ class HomeViewModel
 @Inject
 constructor
 (
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val connectivityRepository: ConnectivityRepository
 ): ViewModel()
 {
     private val _isSearching = MutableStateFlow(false)
@@ -33,6 +36,11 @@ constructor
 
     private val _state: MutableState<UserListState> = mutableStateOf(UserListState())
     val state: State<UserListState> = _state
+
+    private val _isOnline = connectivityRepository.isConnected.asLiveData()
+    private val isOnline = _isOnline.value
+
+
 
     fun onSearchTextChange(text:String){
         _searchText.value = text

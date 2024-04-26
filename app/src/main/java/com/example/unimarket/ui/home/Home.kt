@@ -75,6 +75,7 @@ fun Home(navController: NavHostController) {
     val scope = rememberCoroutineScope()
 
 
+
     val searchText by viewModel.searchText.collectAsState()
     //val isSearching by viewModel.isSearching.collectAsState()
 
