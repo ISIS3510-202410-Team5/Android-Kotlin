@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class ConnectivityRepository
 @Inject
-constructor(private val application: Application) {
+    constructor(private val application: Application) {
 
     private val connectivityManager =
         application.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

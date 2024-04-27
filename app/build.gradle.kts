@@ -12,8 +12,6 @@ android {
     namespace = "com.example.unimarket"
     compileSdk = 34
 
-
-
     defaultConfig {
         applicationId = "com.example.unimarket"
         minSdk = 24
@@ -134,6 +132,8 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.1")
     annotationProcessor("androidx.room:room-compiler:2.6.1")
     kapt("androidx.room:room-compiler:2.6.1")
+
+    implementation("com.github.skydoves:landscapist-glide:1.3.7")
 
 }
 

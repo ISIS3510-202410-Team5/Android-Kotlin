@@ -5,6 +5,7 @@ import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.net.ConnectivityManager
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -41,12 +42,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -62,6 +65,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Observer
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import com.example.unimarket.connection.ConnectivityObserver
@@ -100,6 +104,13 @@ fun Home(navController: NavHostController) {
 
 
 
+    var isEnabled by remember { mutableStateOf(false) }
+
+    LaunchedEffect(viewModel.isOnline) {
+        viewModel.isOnline.collect { isOnline ->
+            isEnabled = isOnline
+        }
+    }
     DisposableEffect(sensorManager){
         sensorManager.registerListener(shakeListener, accelSensor, SensorManager.SENSOR_DELAY_NORMAL)
 
@@ -130,7 +141,18 @@ fun Home(navController: NavHostController) {
             })
         )*/
         FilledTonalButton(
-            onClick= {navController.navigate("LIST")},
+            onClick= {
+                if(isEnabled){
+
+                    navController.navigate("LIST")
+
+                }
+                else{
+
+                    Toast.makeText(context, "No hay conexión", Toast.LENGTH_SHORT).show()
+
+                }
+                     },
             colors = ButtonDefaults.buttonColors(
                 containerColor = GiantsOrange,
                 contentColor = Licorice

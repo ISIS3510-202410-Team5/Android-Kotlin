@@ -1,5 +1,6 @@
 package com.example.unimarket.ui.ListProducts
 
+
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -12,11 +13,13 @@ import com.example.unimarket.repositories.ConnectivityRepository
 import com.example.unimarket.repositories.ProductoRepository
 import com.example.unimarket.repositories.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
+
 
 @HiltViewModel
 class ProductListViewModel
@@ -24,10 +27,10 @@ class ProductListViewModel
 constructor
     (
 
-    private val productoRepository: ProductoRepository,
-    private val shoppingCart: ShoppingCart,
-    private val connectivityRepository: ConnectivityRepository,
-    private val productCache: ProductCache
+            private val productoRepository: ProductoRepository,
+            private val shoppingCart: ShoppingCart,
+            private val connectivityRepository: ConnectivityRepository,
+            private val productCache: ProductCache
 
 ): ViewModel()
 {
@@ -39,6 +42,8 @@ constructor
     val isRefreshing: StateFlow<Boolean> = _isRefreshing
 
     val isOnline = connectivityRepository.isConnected.asLiveData()
+
+    var isConnected: Flow<Boolean> = connectivityRepository.isConnected
 
     init{
         getProductList()
@@ -70,7 +75,6 @@ constructor
                         else -> {}
                     }
                 }.launchIn(viewModelScope)
-                // Handle online state
             } else {
 
                 _state.value = ProductListState(productos = productCache.getProducts("products")?: emptyList())
@@ -79,7 +83,4 @@ constructor
         }
 
     }
-
-
-
 }

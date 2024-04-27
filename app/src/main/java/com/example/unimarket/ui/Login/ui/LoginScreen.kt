@@ -28,6 +28,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.coroutineScope
@@ -189,6 +190,7 @@ fun PasswordSpace(password:String,onTextFieldChanged:(String)->Unit) {
         keyboardOptions = KeyboardOptions (keyboardType= KeyboardType.Password),
         singleLine = true,
         maxLines = 1,
+        visualTransformation = PasswordVisualTransformation(),
         colors = TextFieldDefaults.colors(
             focusedTextColor = Color(0xFF181316),
             focusedContainerColor = Color(0xFFDEDDDD),
