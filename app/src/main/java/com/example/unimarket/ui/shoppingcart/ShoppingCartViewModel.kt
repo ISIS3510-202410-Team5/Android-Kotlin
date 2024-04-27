@@ -1,10 +1,12 @@
 package com.example.unimarket.ui.shoppingcart
 
+import android.app.Application
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.unimarket.connection.NetworkConnectivityObserver
 import com.example.unimarket.repositories.Result
 import com.example.unimarket.model.Product
 import com.example.unimarket.model.ShoppingCart
@@ -23,7 +25,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ShoppingCartViewModel
     @Inject constructor(
-        private val shoppingCart: ShoppingCart): ViewModel() {
+        private val shoppingCart: ShoppingCart,
+        private val application: Application): ViewModel() {
 
 
 
@@ -32,6 +35,8 @@ class ShoppingCartViewModel
 
     private val _cartPrice = MutableStateFlow(0)
     val cartPrice: StateFlow<Int> = _cartPrice
+
+    val connectivityObserver = NetworkConnectivityObserver(application.applicationContext)
 
     init {
         Log.d("ShoppingCartViewModel", "invoque init function")

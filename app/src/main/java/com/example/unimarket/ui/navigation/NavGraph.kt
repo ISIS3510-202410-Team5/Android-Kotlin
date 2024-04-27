@@ -46,6 +46,8 @@ import com.example.unimarket.ui.shoppingcart.ShoppingCart
 import com.example.unimarket.ui.usuario.UserProfileScreen
 import com.example.unimarket.ui.usuario.UsuarioViewModel
 
+import com.example.unimarket.ui.usuario.shakeSlider
+
 @Composable
 fun Nav(lightSensorViewModel: LightSensorViewModel){
 
@@ -93,6 +95,9 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
             }
             composable(Screen.ListProduct.route){
                 ListProductApp(navController = navController, productViewModel = ProductviewModel)
+            }
+            composable(Screen.User.route){
+                shakeSlider()
             }
             composable(Screen.ListProductSearch.route){
                 SearchProductApp(navController = navController, productViewModel = ProductviewModel)
@@ -179,7 +184,7 @@ data class BottomNavigationItem(
             BottomNavigationItem(
                 label = "User",
                 icon = Icons.Rounded.AccountCircle,
-                route = Screen.UnderConstruction.route
+                route = Screen.User.route
 
             )
 
@@ -202,6 +207,7 @@ sealed class Screen(val route: String) {
 
     data object Camera: Screen(route = "CAMERA")
 
+    data object User: Screen(route = "USER")
     data object ListProductSearch: Screen(route = "SEARCH")
 
     data object DetailProduct: Screen(route = "DETAIL")

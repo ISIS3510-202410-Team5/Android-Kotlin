@@ -1,11 +1,16 @@
 package com.example.unimarket.ui.home
 
+import android.app.Application
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.unimarket.connection.NetworkConnectivityObserver
 import com.example.unimarket.repositories.ConnectivityRepository
 import com.example.unimarket.repositories.Result
 import com.example.unimarket.repositories.UserRepository
@@ -15,8 +20,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,7 +32,8 @@ class HomeViewModel
 constructor
 (
     private val userRepository: UserRepository,
-    private val connectivityRepository: ConnectivityRepository
+    private val connectivityRepository: ConnectivityRepository,
+    private val application: Application
 ): ViewModel()
 {
     private val _isSearching = MutableStateFlow(false)
@@ -36,6 +44,10 @@ constructor
 
     private val _state: MutableState<UserListState> = mutableStateOf(UserListState())
     val state: State<UserListState> = _state
+
+    val connectivityObserver = NetworkConnectivityObserver(application.applicationContext)
+
+
 
     var isOnline: Flow<Boolean> = connectivityRepository.isConnected
 
@@ -52,7 +64,15 @@ constructor
     }
 
     init {
-        Log.d(null, "inicializa el viewModel")
+
+        viewModelScope.launch {
+            connectivityRepository.isConnected.collect() {
+                Log.d("HomeViewModel", "$it")
+
+            }
+        }
+
+        Log.d("ViewModelHome", "inicializa el viewModel")
         getRegUsers()
     }
 

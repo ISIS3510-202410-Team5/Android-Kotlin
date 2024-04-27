@@ -15,12 +15,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.unimarket.connection.ConnectivityObserver
+import com.example.unimarket.ui.theme.Bittersweet
 import com.example.unimarket.ui.theme.GiantsOrange
 import com.example.unimarket.ui.theme.Licorice
 import com.example.unimarket.ui.theme.UniMarketTheme
@@ -35,6 +38,13 @@ fun PublishItem(navController: NavHostController){
 
     val titleValid: Boolean = productTitle != ""
     val priceValid: Boolean = validPrice(productPrice)
+
+    val connectStatus by viewModel.connectivityObserver.observe().collectAsState(initial = ConnectivityObserver.Status.Losing)
+
+
+    if (connectStatus != ConnectivityObserver.Status.Available) {
+        Fallback()
+    } else {
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -84,7 +94,7 @@ fun PublishItem(navController: NavHostController){
         }
 
 
-    }
+    }}
 
 
 }
@@ -119,5 +129,38 @@ fun validPrice(price: String): Boolean{
     } catch (e: Exception){
         return false
     }
+}
+
+@Composable
+fun Fallback() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "Something went wrong!",
+            modifier = Modifier
+                .align(alignment = Alignment.CenterHorizontally)
+                .padding(5.dp),
+            fontSize = 30.sp,
+            fontFamily = FontFamily.SansSerif,
+            color = GiantsOrange,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            text = "You internet connection is Unavailable!",
+            modifier = Modifier
+                .align(alignment = Alignment.CenterHorizontally)
+                .padding(5.dp),
+            fontSize = 20.sp,
+            fontFamily = FontFamily.SansSerif,
+            color = Bittersweet,
+
+        )
+
+    }
+
 }
 

@@ -1,7 +1,9 @@
 package com.example.unimarket.ui.home
 
+import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorManager
+import android.net.ConnectivityManager
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -32,6 +34,7 @@ import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
@@ -42,6 +45,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -60,9 +64,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Observer
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
+import com.example.unimarket.connection.ConnectivityObserver
 import com.example.unimarket.sensor.ShakeDetector
 import com.example.unimarket.ui.theme.Bittersweet
 import com.example.unimarket.ui.theme.CoolGray
@@ -75,19 +81,28 @@ fun Home(navController: NavHostController) {
 
     val viewModel: HomeViewModel = hiltViewModel()
     val users = viewModel.state.value.users
+    //val isOnline = viewModel.isOnline
     val userNumber = if (users.isNotEmpty()) {users[0].regUsers} else {0}
 
     val scope = rememberCoroutineScope()
 
 
+
+
     val searchText by viewModel.searchText.collectAsState()
+
     //val isSearching by viewModel.isSearching.collectAsState()
 
     val context = LocalContext.current
+    val lifeCycleOwner = LocalLifecycleOwner.current
     val sensorManager = remember {context.getSystemService(ComponentActivity.SENSOR_SERVICE) as SensorManager}
     val accelSensor = remember { sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)}
 
     val shakeListener = remember { ShakeDetector(navController, scope)}
+
+    val connectStatus  by viewModel.connectivityObserver.observe().collectAsState(initial = ConnectivityObserver.Status.Losing)
+
+
 
     var isEnabled by remember { mutableStateOf(false) }
 
@@ -99,7 +114,8 @@ fun Home(navController: NavHostController) {
     DisposableEffect(sensorManager){
         sensorManager.registerListener(shakeListener, accelSensor, SensorManager.SENSOR_DELAY_NORMAL)
 
-        onDispose { sensorManager.unregisterListener(shakeListener) }
+        onDispose { sensorManager.unregisterListener(shakeListener)
+            }
     }
 
     Column (
@@ -149,7 +165,11 @@ fun Home(navController: NavHostController) {
                 text = "Search for a product"
             )
         }
-        ShowSales(userNumber)
+        Log.d("Home", "Test Live data changes $connectStatus")
+        when (connectStatus) {
+            ConnectivityObserver.Status.Available -> {ShowSales(userNumber)}
+            else -> { SalesFallBack() }
+        }
         Divider(color = CoolGray,
             thickness = 5.dp,
             modifier = Modifier
@@ -182,6 +202,7 @@ fun Home(navController: NavHostController) {
 
 @Composable
 fun ShowSales(sales: Int = 69420){
+
     Column (
         modifier = Modifier
             .fillMaxWidth()
@@ -269,6 +290,39 @@ fun CatButtonRow(modifier: Modifier = Modifier, icon1: ImageVector?, label1: Str
             CatButton(modifier = Modifier.weight(1f), buttonIcon = icon2, buttonLabel = label2)
         }
 
+    }
+}
+
+
+@Composable
+fun SalesFallBack(modifier: Modifier = Modifier) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "BEWARE",
+            fontWeight = FontWeight.Bold,
+            fontSize = 20.sp,
+            modifier = modifier
+                .align(alignment = Alignment.CenterHorizontally)
+                .border(BorderStroke(5.dp, Bittersweet), shape = RoundedCornerShape(8.dp))
+                .padding(10.dp),
+            color = GiantsOrange,
+            fontFamily = FontFamily.SansSerif
+        )
+        Text(
+            text = "You are using the app without connection.",
+            fontWeight = FontWeight.Bold,
+            fontSize = 15.sp,
+            modifier = modifier
+                .align(alignment = Alignment.CenterHorizontally)
+                .padding(10.dp),
+            color = Bittersweet,
+            fontFamily = FontFamily.SansSerif
+        )
     }
 }
 
