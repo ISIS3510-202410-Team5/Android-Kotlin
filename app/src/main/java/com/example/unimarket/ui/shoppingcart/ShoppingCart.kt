@@ -31,7 +31,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,8 +42,10 @@ import androidx.navigation.NavHostController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
 import com.example.unimarket.R
+import com.example.unimarket.connection.ConnectivityObserver
 import com.example.unimarket.model.Product
 import com.example.unimarket.ui.theme.AlmostWhite
+import com.example.unimarket.ui.theme.Bittersweet
 import com.example.unimarket.ui.theme.CoolGray
 import com.example.unimarket.ui.theme.GiantsOrange
 import com.example.unimarket.ui.theme.Licorice
@@ -56,6 +60,8 @@ fun ShoppingCart(navController: NavHostController )  {
     val productList by viewModel.cartContent.collectAsState()
     val price by viewModel.cartPrice.collectAsState()
 
+    val connectStatus  by viewModel.connectivityObserver.observe().collectAsState(initial = ConnectivityObserver.Status.Losing)
+
     Column (
         modifier = Modifier.fillMaxSize()
     ) {
@@ -63,7 +69,20 @@ fun ShoppingCart(navController: NavHostController )  {
             onClickFun = {
             Log.d(null, "PaymentButton pressed")
             viewModel.pressPayment()
-        })
+        },
+            connectStatus)
+        if (connectStatus != ConnectivityObserver.Status.Available){
+            Text(
+                text="At the moment, you can't purchase products. There is no connection available",
+                modifier = Modifier
+                    .align(alignment = Alignment.CenterHorizontally)
+                    .padding(5.dp),
+                fontSize = 15.sp,
+                fontFamily = FontFamily.SansSerif,
+                color = Bittersweet,
+                textAlign = TextAlign.Center
+            )
+        }
         Divider(color = CoolGray,
             thickness = 3.dp,
             modifier = Modifier
@@ -96,7 +115,7 @@ fun ShoppingCart(navController: NavHostController )  {
 
 
 @Composable
-fun TotalComposable(total:Int?, onClickFun: () -> Unit){
+fun TotalComposable(total:Int?, onClickFun: () -> Unit, connectStatus : ConnectivityObserver.Status){
 
     val displayTotal = total?:0
 
@@ -123,6 +142,7 @@ fun TotalComposable(total:Int?, onClickFun: () -> Unit){
 
             FilledTonalButton(
                 onClick = { onClickFun() },
+                enabled = connectStatus == ConnectivityObserver.Status.Available,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 15.dp, vertical = 10.dp)

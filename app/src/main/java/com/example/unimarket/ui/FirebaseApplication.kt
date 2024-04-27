@@ -3,6 +3,10 @@ package com.example.unimarket.ui
 import android.app.Application
 import com.example.unimarket.db.ShoppingCartDb
 import com.example.unimarket.di.SharedPreferenceService
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
+import com.google.firebase.firestore.firestoreSettings
+import com.google.firebase.firestore.ktx.memoryCacheSettings
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +28,13 @@ class FirebaseApplication: Application() {
         super.onCreate()
         CoroutineScope(Dispatchers.IO).launch {
             SharedPreferenceService.init(this@FirebaseApplication)
+        }
+        CoroutineScope(Dispatchers.Default).launch {
+            val firestore = FirebaseFirestore.getInstance()
+            firestore.firestoreSettings = FirebaseFirestoreSettings.Builder()
+                .setLocalCacheSettings(memoryCacheSettings {  })
+                .build()
+
         }
 
     }
