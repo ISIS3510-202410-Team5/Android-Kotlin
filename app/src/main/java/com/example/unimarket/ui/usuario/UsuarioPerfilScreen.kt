@@ -13,6 +13,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.unimarket.model.UsuarioDTO
 import com.example.unimarket.R
 
@@ -21,7 +22,7 @@ import com.example.unimarket.R
 
 @Composable
 fun UserProfileScreen(
-    usuario: UsuarioDTO,
+    navController: NavHostController,usuarioViewModel: UsuarioViewModel, usuario: UsuarioDTO,
     isLoading: Boolean = false
 ) {
     Box(
