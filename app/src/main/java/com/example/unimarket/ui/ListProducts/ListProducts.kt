@@ -1,6 +1,8 @@
 package com.example.unimarket.ui.ListProducts
 
 import android.content.res.Configuration
+import android.graphics.drawable.Drawable
+import android.widget.Toast
 import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.runtime.Composable
@@ -28,6 +30,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -44,6 +48,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.annotation.ExperimentalCoilApi
 import coil.compose.rememberImagePainter
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.example.unimarket.R
 import com.example.unimarket.ui.theme.Licorice
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -68,6 +77,18 @@ fun ListProductApp(modifier: Modifier = Modifier, navController: NavHostControll
     val state = viewModel.state.value
     val isRefreshing = viewModel.isRefreshing.collectAsState()
     val productList = state.productos
+    val context = LocalContext.current
+
+    var isEnabled by remember { mutableStateOf(false) }
+
+    LaunchedEffect(viewModel.isOnline) {
+        viewModel.isConnected.collect { isOnline ->
+            isEnabled = isOnline
+            if (!isOnline) {
+                Toast.makeText(context, "No hay conexión. El contenido puede que esté desactualizado.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
 
     Column() {
 
@@ -163,6 +184,10 @@ fun ProductCard(product: Product, modifier: Modifier = Modifier) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val screenHeight = LocalConfiguration.current.screenHeightDp.dp
 
+    val context = LocalContext.current
+
+    var image by remember { mutableStateOf<Drawable?>(null) }
+
     Box(
         modifier = modifier
             .padding(1.dp)
@@ -208,6 +233,27 @@ fun ProductCard(product: Product, modifier: Modifier = Modifier) {
                     .width(screenWidth / 2)
                     .padding(1.dp)
             ) {
+
+                Glide.with(context)
+                    .load(product.coverUrl)
+                    .apply(
+                        RequestOptions()
+                        .centerCrop()
+                        .placeholder(R.drawable.placeholder)
+                        .error(R.drawable.error)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL))
+                    .into(object : CustomTarget<Drawable>() {
+                        override fun onResourceReady(
+                            resource: Drawable,
+                            transition: Transition<in Drawable>?
+                        ) {
+                            image = resource
+                        }
+
+                        override fun onLoadCleared(placeholder: Drawable?) {
+                        }
+                    })
+
                 Image(
                     painter = rememberImagePainter(product.coverUrl),
                     contentDescription = product.coverUrl,
