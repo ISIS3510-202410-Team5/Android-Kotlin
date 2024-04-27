@@ -2,6 +2,7 @@ package com.example.unimarket.ui.SearchProduct
 
 import android.content.Context
 import android.location.LocationManager
+import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -57,6 +58,9 @@ fun SearchProductApp(modifier: Modifier = Modifier,navController: NavHostControl
     var query by remember { mutableStateOf("") }
     var active by remember { mutableStateOf(true) }
 
+    var isEnabled by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
     val viewModelUbi: LocationViewModel = hiltViewModel()
 
     val locationPermissions = rememberMultiplePermissionsState(
@@ -69,6 +73,15 @@ fun SearchProductApp(modifier: Modifier = Modifier,navController: NavHostControl
     LaunchedEffect(key1 = locationPermissions.allPermissionsGranted) {
         if (locationPermissions.allPermissionsGranted) {
             viewModelUbi.getCurrentLocation()
+        }
+    }
+
+    LaunchedEffect(viewModel.isOnline) {
+        viewModel.isConnected.collect { isOnline ->
+            isEnabled = isOnline
+            if (!isOnline) {
+                Toast.makeText(context, "No hay conexión. El contenido puede que esté desactualizado.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

@@ -20,6 +20,7 @@ import com.example.unimarket.repositories.ConnectivityRepository
 import com.example.unimarket.repositories.ProductoRepository
 import com.example.unimarket.repositories.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
@@ -48,6 +49,8 @@ constructor
     val isRefreshing: StateFlow<Boolean> = _isRefreshing
 
     val isOnline = connectivityRepository.isConnected.asLiveData()
+
+    var isConnected: Flow<Boolean> = connectivityRepository.isConnected
 
     init{
         getProductList()
@@ -79,7 +82,6 @@ constructor
                         else -> {}
                     }
                 }.launchIn(viewModelScope)
-                // Handle online state
             } else {
 
                 _state.value = ProductListState(productos = productCache.getProducts("products")?: emptyList())
