@@ -1,9 +1,11 @@
 package com.example.unimarket.ui.DetailProduct
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -51,13 +53,48 @@ constructor(
 
     var isConnected: Flow<Boolean> = connectivityRepository.isConnected
 
+    val context = LocalContext
+
     init {
         cargarProductos()
     }
 
     fun setSelectedProduct(product: Product) {
         _selectedProduct.value = product
-        RelatedProducts()
+
+        val cacheRelatedProducts = relatedCache.getProductsRelated(_selectedProduct.value!!.id)
+
+        viewModelScope.launch(Dispatchers.Main) {
+            isConnected.collect { isConnected ->
+
+                if (isConnected) {
+
+                    if(cacheRelatedProducts != null)
+                    {
+
+                        _productosRelacionados.value = ProductListState(productos = cacheRelatedProducts)
+
+                    }else{
+
+                        RelatedProducts()
+
+                    }
+
+                } else {
+
+                    if(cacheRelatedProducts != null)
+                    {
+
+                        _productosRelacionados.value = ProductListState(productos = cacheRelatedProducts)
+
+                    }else{
+
+
+                    }
+
+                }
+            }
+        }
     }
 
     private fun cargarProductos() {
@@ -82,6 +119,7 @@ constructor(
                     val product = _productListState.value.find { it.id == id }
                     product?.let { products.add(it) }
                 }
+                relatedCache.putProductsRelated(selectedProductId,products)
                 Result.Success(data = products)
             } else {
                 Result.Error(message = "Error desconocido")
