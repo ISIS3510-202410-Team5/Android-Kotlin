@@ -3,25 +3,36 @@ package com.example.unimarket.ui.DetailProduct
 import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,9 +55,15 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.unimarket.R
 import com.example.unimarket.model.Product
+import com.example.unimarket.ui.ListProducts.ProductCard
+import com.example.unimarket.ui.ListProducts.ProductList
+import com.example.unimarket.ui.ListProducts.ProductListState
+import com.example.unimarket.ui.ListProducts.ProductListViewModel
 import com.example.unimarket.ui.ListProducts.SelectedProductViewModel
 import com.example.unimarket.ui.theme.GiantsOrange
 import com.example.unimarket.ui.theme.Licorice
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.skydoves.landscapist.rememberDrawablePainter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -64,12 +81,23 @@ fun DetailProduct(navController: NavHostController, productViewModel: SelectedPr
 
     val context = LocalContext.current
 
+    val state = detailviewModel.productosRelacionados.value
+
+    val productList = state.productos
+
+    val isRefreshing = detailviewModel.isRefreshing.collectAsState()
+
     LaunchedEffect(Unit) {
         producto = withContext(Dispatchers.Main) {
             productViewModel.getSelectedProduct()
         }
     }
 
+    LaunchedEffect(producto) {
+
+        producto?.let { detailviewModel.setSelectedProduct(it) }
+
+    }
 
     Column() {
 
@@ -107,7 +135,8 @@ fun DetailProduct(navController: NavHostController, productViewModel: SelectedPr
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp),
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.SpaceEvenly,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -116,11 +145,11 @@ fun DetailProduct(navController: NavHostController, productViewModel: SelectedPr
                     text = it.title,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp),
+                        .padding(4.dp),
                     style = MaterialTheme.typography.bodyLarge.copy(
                         fontWeight = FontWeight.Bold,
                         fontSize = 30.sp,
-                        color  = Color.Black
+                        color  = LocalContentColor.current
                     )
                 )
 
@@ -143,44 +172,122 @@ fun DetailProduct(navController: NavHostController, productViewModel: SelectedPr
                     text = "$ " + it.precio,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp),
+                        .padding(2.dp),
                     style = MaterialTheme.typography.bodyLarge.copy(
                         fontWeight = FontWeight.Bold,
                         fontSize = 25.sp,
-                        color  = Color.Black
+                        color  = LocalContentColor.current
                     )
                 )
 
-                FilledTonalButton(
-                    onClick= { },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = GiantsOrange,
-                        contentColor = Licorice
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ){
-                    Text(
-                        text = "Buy now"
-                    )
+                Row {
+
+                    FilledTonalButton(
+                        onClick= { },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = GiantsOrange,
+                            contentColor = Licorice
+                        ),
+                        modifier = Modifier
+                            .width(150.dp)
+                    ){
+                        Text(
+                            text = "Buy now"
+                        )
+                    }
+
+                    FilledTonalButton(
+                        onClick= { producto?.let { detailviewModel.addToShoppingCart(it) } },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xffffcfd5),
+                            contentColor = Licorice
+                        ),
+                        modifier = Modifier
+                            .width(180.dp)
+                    ){
+                        Text(
+                            text = "Add product to cart"
+                        )
+                    }
+
                 }
 
-                FilledTonalButton(
-                    onClick= { producto?.let { detailviewModel.addToShoppingCart(it) } },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xffffcfd5),
-                        contentColor = Licorice
-                    ),
+                Text(
+                    text = "Related products",
                     modifier = Modifier
                         .fillMaxWidth()
-                ){
-                    Text(
-                        text = "Add product to cart"
+                        .padding(2.dp),
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 25.sp,
+                        color  = LocalContentColor.current
                     )
-                }
+                )
+
+                ProductListDetail(
+                    productList = productList,
+                    isRefreshing = isRefreshing.value,
+                    refreshData = detailviewModel::RelatedProducts,
+                    state = state,
+                    navController = navController,
+                    productViewModel = productViewModel
+                )
+
             }
 
         }
 
+    }
+}
+
+
+@Composable
+fun ProductListDetail(
+    productList: List<Product>,
+    modifier: Modifier = Modifier,
+    isRefreshing: Boolean,
+    refreshData: () -> Unit,
+    state: ProductListState,
+    navController: NavHostController,
+    productViewModel: SelectedProductViewModel
+) {
+
+    SwipeRefresh(state = rememberSwipeRefreshState(isRefreshing), onRefresh = refreshData) {
+
+        LazyColumn(modifier = modifier
+            .height(150.dp)) {
+            items(productList) { product ->
+                ProductCard(
+                    product = product,
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .clickable {
+                            productViewModel.setSelectedProduct(product)
+                            navController.navigate("DETAIL")
+                        }
+                )
+
+            }
+        }
+
+    }
+
+    if(state.error.isBlank())
+    {
+        Text(
+            text = state.error,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            style = MaterialTheme.typography.bodyLarge.copy(
+                fontWeight = FontWeight.Bold,
+                color = Color(0xffff4500)
+            )
+        )
+    }
+
+    if(state.isLoading)
+    {
+        CircularProgressIndicator()
     }
 }
