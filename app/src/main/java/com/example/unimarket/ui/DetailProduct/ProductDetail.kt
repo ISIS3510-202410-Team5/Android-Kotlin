@@ -226,8 +226,6 @@ fun DetailProduct(navController: NavHostController, productViewModel: SelectedPr
 
                 ProductListDetail(
                     productList = productList,
-                    isRefreshing = isRefreshing.value,
-                    refreshData = detailviewModel::RelatedProducts,
                     state = state,
                     navController = navController,
                     productViewModel = productViewModel
@@ -245,14 +243,10 @@ fun DetailProduct(navController: NavHostController, productViewModel: SelectedPr
 fun ProductListDetail(
     productList: List<Product>,
     modifier: Modifier = Modifier,
-    isRefreshing: Boolean,
-    refreshData: () -> Unit,
     state: ProductListState,
     navController: NavHostController,
     productViewModel: SelectedProductViewModel
 ) {
-
-    SwipeRefresh(state = rememberSwipeRefreshState(isRefreshing), onRefresh = refreshData) {
 
         LazyColumn(modifier = modifier
             .height(150.dp)) {
@@ -269,8 +263,6 @@ fun ProductListDetail(
 
             }
         }
-
-    }
 
     if(state.error.isBlank())
     {
