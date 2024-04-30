@@ -91,7 +91,12 @@ fun DetailProduct(navController: NavHostController, productViewModel: SelectedPr
         producto = withContext(Dispatchers.Main) {
             productViewModel.getSelectedProduct()
         }
+    }
+
+    LaunchedEffect(producto) {
+
         producto?.let { detailviewModel.setSelectedProduct(it) }
+
     }
 
     Column() {
