@@ -81,8 +81,7 @@ fun Home(navController: NavHostController) {
 
     val viewModel: HomeViewModel = hiltViewModel()
     val users = viewModel.state.value.users
-    //val isOnline = viewModel.isOnline
-    val userNumber = if (users.isNotEmpty()) {users[0].regUsers} else {0}
+    var userNumber: Int = users.regUsers
 
     val scope = rememberCoroutineScope()
 
@@ -109,8 +108,14 @@ fun Home(navController: NavHostController) {
     LaunchedEffect(viewModel.isOnline) {
         viewModel.isOnline.collect { isOnline ->
             isEnabled = isOnline
+            if (isOnline)
+            {
+                viewModel.getRegUsers()
+            }
         }
+
     }
+
     DisposableEffect(sensorManager){
         sensorManager.registerListener(shakeListener, accelSensor, SensorManager.SENSOR_DELAY_NORMAL)
 

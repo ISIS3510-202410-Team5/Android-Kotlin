@@ -34,7 +34,6 @@ class FirebaseApplication: Application() {
             firestore.firestoreSettings = FirebaseFirestoreSettings.Builder()
                 .setLocalCacheSettings(memoryCacheSettings {  })
                 .build()
-
         }
 
     }

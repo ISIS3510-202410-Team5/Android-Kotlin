@@ -6,11 +6,15 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.unimarket.connection.ConnectivityObserver
 import com.example.unimarket.connection.NetworkConnectivityObserver
+import com.example.unimarket.model.User
 import com.example.unimarket.repositories.ConnectivityRepository
 import com.example.unimarket.repositories.Result
 import com.example.unimarket.repositories.UserRepository
@@ -24,6 +28,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -72,12 +77,19 @@ constructor
             }
         }
 
-        Log.d("ViewModelHome", "inicializa el viewModel")
+        Log.d("HomeViewModel", "inicializa el viewModel")
+        //var connected: Boolean = false
+        //viewModelScope.launch { isOnline.collect() {
+        //    connected = it
+        //} }
+        //if (connected) {
         getRegUsers()
+        //}
     }
 
     fun getRegUsers()
     {
+        Log.d("HomeViewModel", "getRegUsersCalled")
         val users = userRepository.getUserList().onEach { result ->
 
             when(result){
@@ -88,7 +100,7 @@ constructor
                     _state.value = UserListState(isLoading = true)
                 }
                 is Result.Success -> {
-                    _state.value = UserListState(users = result.data ?: emptyList())
+                    _state.value = UserListState(users = result.data ?: User())
                 }
                 else -> {}
             }
