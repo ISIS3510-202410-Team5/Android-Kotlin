@@ -38,6 +38,7 @@ import com.example.unimarket.ui.Login.ui.SignUpScreen
 import com.example.unimarket.ui.Login.ui.SignUpViewModel
 import com.example.unimarket.ui.Login.ui.UserInfoScreen
 import com.example.unimarket.ui.Login.ui.UserInfoViewModel
+import com.example.unimarket.ui.SearchProduct.LocationSlider
 import com.example.unimarket.ui.camera.ui.CameraScreen
 import com.example.unimarket.ui.camera.ui.CameraViewModel
 import com.example.unimarket.ui.camera.ui.LightSensorViewModel
@@ -71,7 +72,7 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
         bottomBar = {AppBottomNav(navController = navController)}
     ) {
             innerPadding ->
-        NavHost(navController, startDestination = Screen.LogIn.route, Modifier.padding(innerPadding)){
+        NavHost(navController, startDestination = Screen.ListProduct.route, Modifier.padding(innerPadding)){
             composable(Screen.Home.route){
                 Home(navController=navController)
             }
@@ -107,6 +108,9 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
             }
             composable(Screen.InfoScreen.route) {
                 UserInfoScreen(navController = navController, viewModel =userInfoViewModel)
+            }
+            composable(Screen.LocationSliderScreen.route) {
+                LocationSlider(navController = navController)
             }
             /*composable(Screen.UserProfile.route) {
                 UserProfileScreen(navController = navController, usuarioViewModel = UsuarioViewModel,,)
@@ -213,4 +217,6 @@ sealed class Screen(val route: String) {
     data object DetailProduct: Screen(route = "DETAIL")
 
     data object InfoScreen: Screen(route = "INFO")
+
+    data object LocationSliderScreen: Screen(route = "SliderLocation")
 }

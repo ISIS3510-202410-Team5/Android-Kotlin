@@ -25,6 +25,7 @@ import javax.inject.Inject
 import com.example.unimarket.repositories.Result
 import com.example.unimarket.ui.ListProducts.ProductListState
 import com.example.unimarket.ui.ListProducts.SelectedProductViewModel
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -55,11 +56,14 @@ constructor(
 
     val context = LocalContext
 
+    var _isSelected: Boolean = false
+
     init {
         cargarProductos()
     }
 
     fun setSelectedProduct(product: Product) {
+        _isSelected = true
         _selectedProduct.value = product
 
         val cacheRelatedProducts = relatedCache.getProductsRelated(_selectedProduct.value!!.id)
@@ -132,25 +136,44 @@ constructor(
     }
 
     fun RelatedProducts() {
-        viewModelScope.launch {
-            Log.d("DetailProductViewModel", "Buscando productos relacionados...")
-            val result = fetchRelatedProduct()
-            _productosRelacionados.value = when (result) {
-                is Result.Success -> {
-                    Log.d("DetailProductViewModel", "Productos relacionados encontrados: ${result.data}")
-                    ProductListState(productos = result.data ?: emptyList())
-                }
-                is Result.Error -> {
-                    Log.e("DetailProductViewModel", "Error al buscar productos relacionados: ${result.message}")
-                    ProductListState(error = result.message ?: "Error desconocido")
-                }
 
-                is Result.Loading -> TODO()
+            viewModelScope.launch {
+
+                if(_isSelected == true) {
+
+                    Log.d("DetailProductViewModel", "Buscando productos relacionados...")
+                    val result = fetchRelatedProduct()
+                    _productosRelacionados.value = when (result) {
+                        is Result.Success -> {
+                            Log.d("DetailProductViewModel", "Productos relacionados encontrados: ${result.data}")
+                            ProductListState(productos = result.data ?: emptyList())
+                        }
+                        is Result.Error -> {
+                            Log.e("DetailProductViewModel", "Error al buscar productos relacionados: ${result.message}")
+                            ProductListState(error = result.message ?: "Error desconocido")
+                        }
+
+                        is Result.Loading -> TODO()
+                    }
+
+                }
             }
-        }
+
     }
 
     fun addToShoppingCart(product: Product){
         shoppingCart.addProduct(product)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+
+        viewModelScope.cancel()
+        _isSelected = false
+    }
+
+    fun clear() {
+
+        onCleared()
     }
 }
