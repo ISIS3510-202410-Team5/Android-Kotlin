@@ -2,6 +2,7 @@ package com.example.unimarket.repositories
 
 import android.util.Log
 import com.example.unimarket.model.Product
+import com.example.unimarket.model.ProductCache
 import com.example.unimarket.repositories.Result
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.toObject
@@ -16,6 +17,7 @@ import javax.inject.Singleton
 class ProductoRepository
 @Inject
 constructor(
+    private val productCache: ProductCache,
     @Named("productos")
     private val productList: CollectionReference)
 {
@@ -56,24 +58,22 @@ constructor(
         }
     }
 
-    suspend fun getRelatedById(productId: String): Result<String?> {
+    fun getRelatedProducts(product: Product): Result<List<Product>> {
         return try {
-            val documentSnapshot = productList.document(productId).get().await()
-            val related = documentSnapshot.data?.get("related") as? String
-            if (related != null) {
-                Log.d("$related","$related")
-                Result.Success(data = related)
-
-            } else {
-
-                Result.Error(message = "")
+            val relatedIds = product.related ?: return Result.Success(emptyList()) // Si no hay productos relacionados, devolvemos una lista vacía
+            val relatedProducts = mutableListOf<Product>()
+            for (relatedId in relatedIds) {
+                val relatedProduct = productCache.getProduct(relatedId.toString())
+                if (relatedProduct != null) {
+                    relatedProducts.add(relatedProduct)
+                }
             }
+            Result.Success(data = relatedProducts)
         } catch (e: Exception) {
-            Log.e("ProductoRepository", "Error al obtener el producto relacionado", e)
+            Log.e("ProductoRepository", "Error al obtener los productos relacionados", e)
             Result.Error(message = e.localizedMessage ?: "Error desconocido")
         }
     }
-
 
 
 }

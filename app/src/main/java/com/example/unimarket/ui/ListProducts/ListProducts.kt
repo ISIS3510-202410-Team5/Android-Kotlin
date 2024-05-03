@@ -54,6 +54,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.unimarket.R
+import com.example.unimarket.ui.navigation.Screen
 import com.example.unimarket.ui.theme.Licorice
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -71,7 +72,7 @@ import kotlin.math.sqrt
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
-fun ListProductApp(modifier: Modifier = Modifier, navController: NavHostController, productViewModel: SelectedProductViewModel) {
+fun ListProductApp(modifier: Modifier = Modifier, navController: NavHostController) {
 
     val viewModel: ProductListViewModel = hiltViewModel()
     val state = viewModel.state.value
@@ -116,8 +117,7 @@ fun ListProductApp(modifier: Modifier = Modifier, navController: NavHostControll
             refreshData = viewModel::getProductList,
             state = state,
             viewModel = viewModel,
-            navController = navController,
-            productViewModel = productViewModel
+            navController = navController
         )
 
     }
@@ -133,8 +133,7 @@ fun ProductList(
     refreshData: () -> Unit,
     state: ProductListState,
     viewModel: ProductListViewModel,
-    navController: NavHostController,
-    productViewModel: SelectedProductViewModel
+    navController: NavHostController
 ) {
     
     SwipeRefresh(state = rememberSwipeRefreshState(isRefreshing), onRefresh = refreshData) {
@@ -146,8 +145,7 @@ fun ProductList(
                     modifier = Modifier
                         .padding(8.dp)
                         .clickable {
-                            productViewModel.setSelectedProduct(product)
-                            navController.navigate("DETAIL")
+                            navController.navigate(Screen.DetailProduct.route + "/${product.id}")
                         }
                 )
 

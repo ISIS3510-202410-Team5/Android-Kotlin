@@ -13,11 +13,14 @@ import com.example.unimarket.repositories.ConnectivityRepository
 import com.example.unimarket.repositories.ProductoRepository
 import com.example.unimarket.repositories.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
@@ -69,7 +72,12 @@ constructor
                         is Result.Success ->  {
 
                             _state.value = ProductListState(productos = result.data ?: emptyList())
-                            productCache.putProducts("products", _state.value.productos)
+
+                            viewModelScope.launch(Dispatchers.IO) {
+                                _state.value.productos.forEach { product ->
+                                        productCache.putProduct(product.id, product)
+                                }
+                            }
                         }
 
                         else -> {}
@@ -77,7 +85,12 @@ constructor
                 }.launchIn(viewModelScope)
             } else {
 
-                _state.value = ProductListState(productos = productCache.getProducts("products")?: emptyList())
+                viewModelScope.launch(Dispatchers.IO) {
+                    val productListState = ProductListState(productos = productCache.getProducts()?: emptyList())
+                    withContext(Dispatchers.Main) {
+                        _state.value = productListState
+                    }
+                }
 
             }
         }

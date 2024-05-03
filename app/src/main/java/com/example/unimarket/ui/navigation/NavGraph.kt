@@ -95,16 +95,17 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
                 SignUpScreen(viewModel = signUpViewModel, navController = navController)
             }
             composable(Screen.ListProduct.route){
-                ListProductApp(navController = navController, productViewModel = ProductviewModel)
+                ListProductApp(navController = navController)
             }
             composable(Screen.User.route){
                 shakeSlider()
             }
             composable(Screen.ListProductSearch.route){
-                SearchProductApp(navController = navController, productViewModel = ProductviewModel)
+                SearchProductApp(navController = navController)
             }
-            composable(Screen.DetailProduct.route) {
-                DetailProduct(navController = navController, productViewModel = ProductviewModel)
+            composable(Screen.DetailProduct.route + "/{productId}") { backStackEntry ->
+                val productId = backStackEntry.arguments?.getString("productId") ?: ""
+                DetailProduct(navController = navController, productId = productId)
             }
             composable(Screen.InfoScreen.route) {
                 UserInfoScreen(navController = navController, viewModel =userInfoViewModel)

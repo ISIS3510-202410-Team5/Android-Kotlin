@@ -2,6 +2,7 @@ package com.example.unimarket.ui.DetailProduct
 
 import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -61,6 +62,7 @@ import com.example.unimarket.ui.ListProducts.ProductList
 import com.example.unimarket.ui.ListProducts.ProductListState
 import com.example.unimarket.ui.ListProducts.ProductListViewModel
 import com.example.unimarket.ui.ListProducts.SelectedProductViewModel
+import com.example.unimarket.ui.navigation.Screen
 import com.example.unimarket.ui.theme.GiantsOrange
 import com.example.unimarket.ui.theme.Licorice
 import com.google.accompanist.swiperefresh.SwipeRefresh
@@ -72,7 +74,7 @@ import kotlinx.coroutines.withContext
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalCoilApi::class)
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun DetailProduct(navController: NavHostController, productViewModel: SelectedProductViewModel) {
+fun DetailProduct(navController: NavHostController, productId: String) {
 
     val detailviewModel: DetailProductViewModel = hiltViewModel()
 
@@ -86,24 +88,9 @@ fun DetailProduct(navController: NavHostController, productViewModel: SelectedPr
 
     val productList = state.productos
 
-    val isRefreshing = detailviewModel.isRefreshing.collectAsState()
-
     LaunchedEffect(Unit) {
-        producto = withContext(Dispatchers.Main) {
-            productViewModel.getSelectedProduct()
-        }
-    }
-
-    LaunchedEffect(producto) {
-
-        producto?.let { detailviewModel.setSelectedProduct(it) }
-
-    }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            detailviewModel.clear()
-        }
+        detailviewModel.getRelatedProductsView(productId)
+        producto = detailviewModel._selectedProduct.value
     }
 
     Column() {
@@ -234,8 +221,7 @@ fun DetailProduct(navController: NavHostController, productViewModel: SelectedPr
                 ProductListDetail(
                     productList = productList,
                     state = state,
-                    navController = navController,
-                    productViewModel = productViewModel
+                    navController = navController
                 )
 
             }
@@ -251,8 +237,7 @@ fun ProductListDetail(
     productList: List<Product>,
     modifier: Modifier = Modifier,
     state: ProductListState,
-    navController: NavHostController,
-    productViewModel: SelectedProductViewModel
+    navController: NavHostController
 ) {
 
         LazyColumn(modifier = modifier
@@ -263,8 +248,7 @@ fun ProductListDetail(
                     modifier = Modifier
                         .padding(8.dp)
                         .clickable {
-                            productViewModel.setSelectedProduct(product)
-                            navController.navigate("DETAIL")
+                            navController.navigate(Screen.DetailProduct.route + "/${product.id}")
                         }
                 )
 

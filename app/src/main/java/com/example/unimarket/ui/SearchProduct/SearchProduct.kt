@@ -54,7 +54,7 @@ import kotlin.math.sqrt
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
-fun SearchProductApp(modifier: Modifier = Modifier,navController: NavHostController, productViewModel: SelectedProductViewModel) {
+fun SearchProductApp(modifier: Modifier = Modifier,navController: NavHostController) {
 
     val viewModel: ProductListViewModel = hiltViewModel()
     val state = viewModel.state.value
@@ -214,8 +214,7 @@ fun SearchProductApp(modifier: Modifier = Modifier,navController: NavHostControl
                     refreshData = viewModel::getProductList,
                     state = state,
                     viewModel = viewModel,
-                    navController = navController,
-                    productViewModel = productViewModel
+                    navController = navController
                 )
 
             }
