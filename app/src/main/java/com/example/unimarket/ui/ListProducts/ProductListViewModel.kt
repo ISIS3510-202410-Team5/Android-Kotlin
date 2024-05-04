@@ -1,9 +1,11 @@
 package com.example.unimarket.ui.ListProducts
 
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -44,55 +46,68 @@ constructor
     private val _isRefreshing = MutableStateFlow(false)
     val isRefreshing: StateFlow<Boolean> = _isRefreshing
 
-    val isOnline = connectivityRepository.isConnected.asLiveData()
-
-    var isConnected: Flow<Boolean> = connectivityRepository.isConnected
+    var isOnline: Flow<Boolean> = connectivityRepository.isConnected
 
     init{
+
+        viewModelScope.launch {
+            connectivityRepository.isConnected.collect() {
+                Log.d("List", "$it")
+
+            }
+        }
+
+        Log.d("", "inicia viewmodel")
+
         getProductList()
     }
 
     fun getProductList()
     {
-        isOnline.observeForever() { isOnline ->
+        if (productCache.getProducts().isEmpty()) {
 
-            if (isOnline) {
+            productoRepository.getProductList().onEach { result ->
 
-                productoRepository.getProductList().onEach { result ->
+                when (result) {
+                    is Result.Error -> {
 
-                    when(result){
-                        is Result.Error -> {
+                        _state.value =
+                            ProductListState(error = result.message ?: "Error inesperado")
+                    }
 
-                            _state.value = ProductListState(error = result.message?: "Error inesperado")
-                        }
-                        is Result.Loading -> {
+                    is Result.Loading -> {
 
-                            _state.value = ProductListState(isLoading = true)
-                        }
-                        is Result.Success ->  {
+                        _state.value = ProductListState(isLoading = true)
+                    }
 
-                            _state.value = ProductListState(productos = result.data ?: emptyList())
+                    is Result.Success -> {
 
-                            viewModelScope.launch(Dispatchers.IO) {
-                                _state.value.productos.forEach { product ->
-                                        productCache.putProduct(product.id, product)
-                                }
+                        Log.d("", "esto es una prueba")
+
+                        _state.value =
+                            ProductListState(productos = result.data ?: emptyList())
+
+                        viewModelScope.launch(Dispatchers.IO) {
+                            _state.value.productos.forEach { product ->
+                                productCache.putProduct(product.id, product)
                             }
                         }
-
-                        else -> {}
                     }
-                }.launchIn(viewModelScope)
-            } else {
 
-                viewModelScope.launch(Dispatchers.IO) {
-                    val productListState = ProductListState(productos = productCache.getProducts()?: emptyList())
-                    withContext(Dispatchers.Main) {
-                        _state.value = productListState
-                    }
+                    else -> {}
                 }
+            }.launchIn(viewModelScope)
 
+        }else {
+
+            viewModelScope.launch(Dispatchers.IO) {
+                val productListState =
+                    ProductListState(productos = productCache.getProducts() ?: emptyList())
+                withContext(Dispatchers.Main) {
+                    _state.value = productListState
+                }
             }
+
         }
 
     }

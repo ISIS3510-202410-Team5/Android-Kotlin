@@ -83,12 +83,17 @@ fun ListProductApp(modifier: Modifier = Modifier, navController: NavHostControll
     var isEnabled by remember { mutableStateOf(false) }
 
     LaunchedEffect(viewModel.isOnline) {
-        viewModel.isConnected.collect { isOnline ->
+        viewModel.isOnline.collect { isOnline ->
             isEnabled = isOnline
+            if (isOnline)
+            {
+                viewModel.getProductList()
+            }
             if (!isOnline) {
-                Toast.makeText(context, "No hay conexión. El contenido puede que esté desactualizado.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "No hay conexión. El contenido puede que esté desactualizado.", Toast.LENGTH_LONG).show()
             }
         }
+
     }
 
     Column() {

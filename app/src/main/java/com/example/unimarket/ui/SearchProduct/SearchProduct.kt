@@ -77,18 +77,23 @@ fun SearchProductApp(modifier: Modifier = Modifier,navController: NavHostControl
         )
     )
 
+    LaunchedEffect(viewModel.isOnline) {
+        viewModel.isOnline.collect { isOnline ->
+            isEnabled = isOnline
+            if (isOnline)
+            {
+                viewModel.getProductList()
+            }
+            if (!isOnline) {
+                Toast.makeText(context, "No hay conexión. El contenido puede que esté desactualizado.", Toast.LENGTH_LONG).show()
+            }
+        }
+
+    }
+
     LaunchedEffect(key1 = locationPermissions.allPermissionsGranted) {
         if (locationPermissions.allPermissionsGranted) {
             viewModelUbi.getCurrentLocation()
-        }
-    }
-
-    LaunchedEffect(viewModel.isOnline) {
-        viewModel.isConnected.collect { isOnline ->
-            isEnabled = isOnline
-            if (!isOnline) {
-                Toast.makeText(context, "No hay conexión. El contenido puede que esté desactualizado.", Toast.LENGTH_SHORT).show()
-            }
         }
     }
 
