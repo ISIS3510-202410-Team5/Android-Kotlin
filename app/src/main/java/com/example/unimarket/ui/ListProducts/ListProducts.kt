@@ -30,6 +30,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -94,6 +95,12 @@ fun ListProductApp(modifier: Modifier = Modifier, navController: NavHostControll
             }
         }
 
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.onClear()
+        }
     }
 
     Column() {

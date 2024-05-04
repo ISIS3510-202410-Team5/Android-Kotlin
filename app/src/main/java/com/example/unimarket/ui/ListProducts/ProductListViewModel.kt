@@ -16,6 +16,7 @@ import com.example.unimarket.repositories.ProductoRepository
 import com.example.unimarket.repositories.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -110,5 +111,8 @@ constructor
 
         }
 
+    }
+    fun onClear() {
+        viewModelScope.cancel()
     }
 }

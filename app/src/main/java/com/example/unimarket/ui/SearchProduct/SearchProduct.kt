@@ -24,6 +24,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -89,6 +90,12 @@ fun SearchProductApp(modifier: Modifier = Modifier,navController: NavHostControl
             }
         }
 
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.onClear()
+        }
     }
 
     LaunchedEffect(key1 = locationPermissions.allPermissionsGranted) {
