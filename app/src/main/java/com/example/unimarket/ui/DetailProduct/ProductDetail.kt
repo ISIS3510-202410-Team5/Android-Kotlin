@@ -2,7 +2,6 @@ package com.example.unimarket.ui.DetailProduct
 
 import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -32,9 +31,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,18 +55,11 @@ import com.bumptech.glide.request.transition.Transition
 import com.example.unimarket.R
 import com.example.unimarket.model.Product
 import com.example.unimarket.ui.ListProducts.ProductCard
-import com.example.unimarket.ui.ListProducts.ProductList
 import com.example.unimarket.ui.ListProducts.ProductListState
-import com.example.unimarket.ui.ListProducts.ProductListViewModel
-import com.example.unimarket.ui.ListProducts.SelectedProductViewModel
 import com.example.unimarket.ui.navigation.Screen
 import com.example.unimarket.ui.theme.GiantsOrange
 import com.example.unimarket.ui.theme.Licorice
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.skydoves.landscapist.rememberDrawablePainter
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalCoilApi::class)
 @SuppressLint("UnrememberedMutableState")
