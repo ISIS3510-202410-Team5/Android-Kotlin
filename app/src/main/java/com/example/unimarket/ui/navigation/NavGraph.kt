@@ -72,7 +72,7 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
         bottomBar = {AppBottomNav(navController = navController)}
     ) {
             innerPadding ->
-        NavHost(navController, startDestination = Screen.ListProduct.route, Modifier.padding(innerPadding)){
+        NavHost(navController, startDestination = Screen.LogIn.route, Modifier.padding(innerPadding)){
             composable(Screen.Home.route){
                 Home(navController=navController)
             }
