@@ -118,27 +118,31 @@ constructor
     }
 
 
-    fun filterUbication(context: Context, currentLocation: Location?, query: String, scope: CoroutineScope): LiveData<List<Product>> {
-        val liveData = MutableLiveData<List<Product>>()
+    fun filterUbication(context: Context, currentLocation: Location?, query: String, scope: CoroutineScope): LiveData<List<ProductWithDistance>> {
+        val liveData = MutableLiveData<List<ProductWithDistance>>()
 
         val job = scope.launch(Dispatchers.Default) {
             val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
             val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
 
             val result = if (isGpsEnabled) {
-                _state.value.productos.filter { product ->
+                _state.value.productos.mapNotNull { product ->
                     val distance = calculateDistance(
                         currentLocation?.latitude ?: 0.0,
                         currentLocation?.longitude ?: 0.0,
                         product.latitud.toDouble(),
                         product.longitud.toDouble()
                     )
-                    product.title.contains(query, ignoreCase = true) && distance <= SharedPreferenceService.getLocationThreshold()
-                }
+                    if (product.title.contains(query, ignoreCase = true) && distance <= SharedPreferenceService.getLocationThreshold()) {
+                        ProductWithDistance(product, distance)
+                    } else {
+                        null
+                    }
+                }.sortedBy { it.distance }
             } else {
                 _state.value.productos.filter { product ->
-                    product.title.contains("dwadawdawdawdwadawdaw", ignoreCase = true)
-                }
+                    product.title.contains(query, ignoreCase = true)
+                }.map { ProductWithDistance(it, Double.MAX_VALUE) } // Asignar una distancia muy grande si no se puede obtener la ubicación actual
             }
 
             withContext(Dispatchers.Main) {
@@ -152,6 +156,8 @@ constructor
 
         return liveData
     }
+
+    data class ProductWithDistance(val product: Product, val distance: Double)
 
 
     fun onClear() {
