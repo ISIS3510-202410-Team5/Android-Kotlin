@@ -28,7 +28,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.unimarket.repositories.UsuarioRepository
 import com.example.unimarket.ui.DetailProduct.DetailProduct
 import com.example.unimarket.ui.ListProducts.ListProductApp
-import com.example.unimarket.ui.ListProducts.SelectedProductViewModel
 import com.example.unimarket.ui.SearchProduct.SearchProductApp
 import com.example.unimarket.ui.Login.model.LoginModel
 import com.example.unimarket.ui.home.Home
@@ -64,9 +63,6 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
     val signUpViewModel = remember {SignUpViewModel(loginModel)}
     val userInfoViewModel= remember {UserInfoViewModel(loginModel,signUpViewModel)}
     /*val UsuarioViewModel = remember {UsuarioViewModel(usuariorepository)}*/
-
-
-    val ProductviewModel: SelectedProductViewModel = hiltViewModel()
 
     Scaffold (
         bottomBar = {AppBottomNav(navController = navController)}
