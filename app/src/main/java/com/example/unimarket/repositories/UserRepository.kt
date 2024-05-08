@@ -18,14 +18,14 @@ constructor(
     @Named("users")
     private val userList: CollectionReference)
 {
-    fun getUserList(): Flow<Result<List<User>>> = flow{
+    fun getUserList(): Flow<Result<User>> = flow{
         try {
-            emit(Result.Loading<List<User>>())
-            val usersList = userList.get().await().map{document -> document.toObject(User::class.java)}
-            emit(Result.Success<List<User>>(data = usersList))
+            emit(Result.Loading<User>())
+            val user = userList.document("1").get().await().toObject<User>()
+            emit(Result.Success<User>(data = user))
         } catch (e: Exception)
         {
-            emit(Result.Error<List<User>>(message = e.localizedMessage?: "Unknown Error"))
+            emit(Result.Error<User>(message = e.localizedMessage?: "Unknown Error"))
         }
     }
 }

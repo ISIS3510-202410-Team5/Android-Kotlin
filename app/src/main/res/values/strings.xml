@@ -30,4 +30,5 @@
     <string name="affirmation10">I hello wdijawoidjwaidjaw be present in all the moments that this day brings.</string>
     <string name="usersharedpreferences">UserSharedPreferences</string>
     <string name="shakedetector">shakeDetector</string>
+    <string name="locationdist">locationdist</string>
 </resources>

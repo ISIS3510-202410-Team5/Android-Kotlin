@@ -81,20 +81,19 @@ fun Home(navController: NavHostController) {
 
     val viewModel: HomeViewModel = hiltViewModel()
     val users = viewModel.state.value.users
-    //val isOnline = viewModel.isOnline
-    val userNumber = if (users.isNotEmpty()) {users[0].regUsers} else {0}
+    var userNumber: Int = users.regUsers
 
     val scope = rememberCoroutineScope()
 
 
 
 
-    val searchText by viewModel.searchText.collectAsState()
+    //val searchText by viewModel.searchText.collectAsState()
 
     //val isSearching by viewModel.isSearching.collectAsState()
 
     val context = LocalContext.current
-    val lifeCycleOwner = LocalLifecycleOwner.current
+    //val lifeCycleOwner = LocalLifecycleOwner.current
     val sensorManager = remember {context.getSystemService(ComponentActivity.SENSOR_SERVICE) as SensorManager}
     val accelSensor = remember { sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)}
 
@@ -109,8 +108,14 @@ fun Home(navController: NavHostController) {
     LaunchedEffect(viewModel.isOnline) {
         viewModel.isOnline.collect { isOnline ->
             isEnabled = isOnline
+            if (isOnline)
+            {
+                viewModel.getRegUsers()
+            }
         }
+
     }
+
     DisposableEffect(sensorManager){
         sensorManager.registerListener(shakeListener, accelSensor, SensorManager.SENSOR_DELAY_NORMAL)
 
@@ -165,7 +170,8 @@ fun Home(navController: NavHostController) {
                 text = "Search for a product"
             )
         }
-        Log.d("Home", "Test Live data changes $connectStatus")
+        //Log.d("Home", "Test Live data changes $connectStatus")
+
         when (connectStatus) {
             ConnectivityObserver.Status.Available -> {ShowSales(userNumber)}
             else -> { SalesFallBack() }

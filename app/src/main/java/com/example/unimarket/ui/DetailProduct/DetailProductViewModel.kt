@@ -4,18 +4,22 @@ import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.unimarket.model.Product
 import com.example.unimarket.model.ProductCache
 import com.example.unimarket.model.ShoppingCart
+import com.example.unimarket.repositories.ConnectivityRepository
 import com.example.unimarket.repositories.ProductoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import com.example.unimarket.repositories.Result
+import com.example.unimarket.ui.ListProducts.ProductListState
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @HiltViewModel
 class DetailProductViewModel
@@ -27,50 +31,30 @@ constructor(
 )
     : ViewModel() {
 
-    private val _productListState: MutableState<List<Product>> = mutableStateOf(emptyList())
-    val productListState: State<List<Product>> = _productListState
 
-    init {
-        cargarProductos()
-    }
+        val _selectedProduct = MutableLiveData<Product>()
 
-    private fun cargarProductos() {
-        viewModelScope.launch(context = Dispatchers.Main) {
-            val productList = withContext(Dispatchers.IO){productCache.getProducts("products") ?: emptyList()}
 
-            _productListState.value = productList
-            }
-    }
+    private val _productosRelacionados: MutableState<ProductListState> = mutableStateOf(ProductListState())
+    val productosRelacionados: State<ProductListState> = _productosRelacionados
 
-    suspend fun buscarProductoEnLista(searchTerm: String): Product? {
-        val productList = productListState.value ?: emptyList()
-        val searchTermInt = searchTerm.toIntOrNull()
+    private val _isRefreshing = MutableStateFlow(false)
+    
+    val context = LocalContext
 
-        for (product in productList) {
-            if (searchTermInt != null && product.id.toIntOrNull() == searchTermInt) { // Comparar con el ID convertido a Int
-                return product
-            }
-        }
-        return null
+    fun getRelatedProductsView(productid: String) {
+
+        _selectedProduct.value = productCache.getProduct(productid)
+
+        val selectedProduct = _selectedProduct.value ?: return
+
+        val relateProducts = productoRepository.getRelatedProducts(selectedProduct)
+
+        _productosRelacionados.value = ProductListState(productos = relateProducts.data ?: emptyList())
+
     }
 
     fun addToShoppingCart(product: Product){
         shoppingCart.addProduct(product)
-    }
-    suspend fun fetchRelatedProduct(productId: String): Result<List<String>> {
-        return try {
-            val result = productoRepository.getRelatedById(productId)
-            if (result is Result.Success) {
-
-                val data = result.data?.split(",") ?: emptyList()
-                Log.d("Split realizado, creacion lista","$data")
-                Result.Success(data = data)
-            } else {
-                Result.Error(message = "Error desconocido")
-            }
-        } catch (e: Exception) {
-            Log.d("errorVM", "ErrorVM")
-            Result.Error(message = e.localizedMessage ?: "Error desconocido")
-        }
     }
 }
