@@ -47,4 +47,17 @@ constructor(
     fun addToShoppingCart(product: Product){
         shoppingCart.addProduct(product)
     }
+
+    fun getRelatedProductsView(productid: String) {
+
+        _selectedProduct.value = productCache.getProduct(productid)
+
+        val selectedProduct = _selectedProduct.value ?: return
+
+        val relateProducts = productoRepository.getRelatedProducts(selectedProduct)
+
+        _productosRelacionados.value = ProductListState(productos = relateProducts.data ?: emptyList())
+
+    }
+
 }

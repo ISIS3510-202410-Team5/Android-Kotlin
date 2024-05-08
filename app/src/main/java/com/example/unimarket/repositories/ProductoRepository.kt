@@ -40,6 +40,23 @@ constructor(
 
     }
 
+    fun getRelatedProducts(product: Product): Result<List<Product>> {
+        return try {
+            val relatedIds = product.related.split(",") ?: return Result.Success(emptyList()) // Si no hay productos relacionados, devolvemos una lista vacía
+            val relatedProducts = mutableListOf<Product>()
+            for (relatedId in relatedIds) {
+                val relatedProduct = productCache.getProduct(relatedId)
+                if (relatedProduct != null) {
+                    relatedProducts.add(relatedProduct)
+                }
+            }
+            Result.Success(data = relatedProducts)
+        } catch (e: Exception) {
+            Log.e("ProductoRepository", "Error al obtener los productos relacionados", e)
+            Result.Error(message = e.localizedMessage ?: "Error desconocido")
+        }
+    }
+
     fun getProductList(): Flow<Result<List<Product>>> = flow{
 
         try {
