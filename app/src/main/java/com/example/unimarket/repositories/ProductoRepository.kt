@@ -60,10 +60,10 @@ constructor(
 
     fun getRelatedProducts(product: Product): Result<List<Product>> {
         return try {
-            val relatedIds = product.related ?: return Result.Success(emptyList()) // Si no hay productos relacionados, devolvemos una lista vacía
+            val relatedIds = product.related.split(",") ?: return Result.Success(emptyList()) // Si no hay productos relacionados, devolvemos una lista vacía
             val relatedProducts = mutableListOf<Product>()
             for (relatedId in relatedIds) {
-                val relatedProduct = productCache.getProduct(relatedId.toString())
+                val relatedProduct = productCache.getProduct(relatedId)
                 if (relatedProduct != null) {
                     relatedProducts.add(relatedProduct)
                 }
