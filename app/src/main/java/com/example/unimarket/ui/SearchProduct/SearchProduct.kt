@@ -33,6 +33,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.DisposableEffect
@@ -40,6 +41,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -62,6 +64,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.unimarket.R
+import com.example.unimarket.di.SharedPreferenceService
 import com.example.unimarket.model.Product
 import com.example.unimarket.ui.ListProducts.ExampleScreen
 import com.example.unimarket.ui.ListProducts.ProductCard
@@ -71,6 +74,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import kotlinx.coroutines.launch
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -212,15 +216,32 @@ fun SearchProductApp(modifier: Modifier = Modifier,navController: NavHostControl
                 if(isButtonPressed)
                 {
 
-                    Button(
-                        onClick = { navController.navigate("SliderLocation") },
-                        modifier = Modifier.padding(16.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.DarkGray
-                        )
+                    Column(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth()
                     ) {
+                        var sliderPosition by remember { mutableFloatStateOf(SharedPreferenceService.getLocationThreshold()) }
+
                         Text(
-                            text = "Ajustar distancia busqueda",
+                            text = "Ajusta como prefieras la distancia de filtrado",
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        Slider(
+                            value = sliderPosition,
+                            onValueChange = {
+                                sliderPosition = it
+                                scope.launch { SharedPreferenceService.putLocationThreshold(sliderPosition) }
+                            },
+                            steps = 20,
+                            valueRange = 0.1f..10f,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        Text(
+                            text = sliderPosition.toString(),
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
 
