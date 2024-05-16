@@ -124,8 +124,11 @@ fun CustomTextField(text: String,function: (String)->Unit, header: String) {
 
 fun validPrice(price: String): Boolean{
     try {
-        price.toInt()
-        return true
+        val priceInt = price.toInt()
+        if (priceInt > 0) {
+            return true
+        }
+        return false
     } catch (e: Exception){
         return false
     }
