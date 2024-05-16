@@ -25,6 +25,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.unimarket.repositories.PostRepository
 import com.example.unimarket.repositories.UsuarioRepository
 import com.example.unimarket.ui.DetailProduct.DetailProduct
 import com.example.unimarket.ui.ListProducts.ListProductApp
@@ -63,6 +64,7 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
     val signUpViewModel = remember {SignUpViewModel(loginModel)}
     val userInfoViewModel= remember {UserInfoViewModel(loginModel,signUpViewModel)}
     /*val UsuarioViewModel = remember {UsuarioViewModel(usuariorepository)}*/
+
 
 
     val ProductviewModel: SelectedProductViewModel = hiltViewModel()

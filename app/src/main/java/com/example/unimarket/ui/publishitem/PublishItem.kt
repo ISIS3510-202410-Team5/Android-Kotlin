@@ -35,9 +35,11 @@ fun PublishItem(navController: NavHostController){
 
     val productTitle by viewModel.productTitle.collectAsState()
     val productPrice by viewModel.productPrice.collectAsState()
+    val productCategories by viewModel.productCategories.collectAsState()
 
     val titleValid: Boolean = productTitle != ""
     val priceValid: Boolean = validPrice(productPrice)
+    val categoriesValid: Boolean = validCategories(productCategories)
 
     val connectStatus by viewModel.connectivityObserver.observe().collectAsState(initial = ConnectivityObserver.Status.Losing)
 
@@ -62,15 +64,14 @@ fun PublishItem(navController: NavHostController){
         )
         Spacer(modifier = Modifier.height(30.dp))
         CustomTextField(text = productTitle, function = viewModel::onTitleChange, header = "Product Title")
-        Spacer(
-            modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         CustomTextField(text = productPrice, function = viewModel::onPriceChange, header = "Price")
-        Spacer(
-            modifier = Modifier.height(30.dp)
-        )
+        Spacer(modifier = Modifier.height(20.dp))
+        CustomTextField(text = productCategories, function = viewModel::onCategoriesChange, header = "Categories")
+        Spacer(modifier = Modifier.height(30.dp))
         FilledTonalButton(
-            onClick = { /*TODO*/ },
-            enabled = titleValid && priceValid,
+            onClick = {  },
+            enabled = titleValid && priceValid && categoriesValid,
             colors = ButtonDefaults.buttonColors(
                 containerColor = GiantsOrange,
                 contentColor = Licorice
@@ -123,15 +124,16 @@ fun CustomTextField(text: String,function: (String)->Unit, header: String) {
 }
 
 fun validPrice(price: String): Boolean{
-    try {
+    return try {
         val priceInt = price.toInt()
-        if (priceInt > 0) {
-            return true
-        }
-        return false
+        priceInt > 0
     } catch (e: Exception){
-        return false
+        false
     }
+}
+
+fun validCategories(categories: String) : Boolean {
+    return true
 }
 
 @Composable
