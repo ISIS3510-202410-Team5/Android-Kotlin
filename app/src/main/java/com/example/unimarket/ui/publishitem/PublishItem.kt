@@ -1,5 +1,6 @@
 package com.example.unimarket.ui.publishitem
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -29,8 +30,9 @@ import com.example.unimarket.ui.theme.Licorice
 import com.example.unimarket.ui.theme.UniMarketTheme
 
 @Composable
-fun PublishItem(navController: NavHostController){
+fun PublishItem(navController: NavHostController, productUri: String?){
 
+    Log.d("PublishItem", productUri.toString())
     val viewModel: PublishItemViewModel = hiltViewModel()
 
     val productTitle by viewModel.productTitle.collectAsState()

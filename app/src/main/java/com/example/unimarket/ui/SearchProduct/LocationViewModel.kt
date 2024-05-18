@@ -20,7 +20,7 @@ class LocationViewModel @Inject constructor(
     var currentLocation by mutableStateOf<Location?>(null)
 
     fun getCurrentLocation() {
-        viewModelScope.launch(context = Dispatchers.Unconfined) {
+        viewModelScope.launch(context = Dispatchers.Default) {
             currentLocation = locationTracker.getCurrentLocation()
         }
     }
