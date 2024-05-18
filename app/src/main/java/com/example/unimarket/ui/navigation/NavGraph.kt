@@ -1,5 +1,6 @@
 package com.example.unimarket.ui.navigation
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -45,7 +46,6 @@ import com.example.unimarket.ui.publishitem.PublishItem
 import com.example.unimarket.ui.shoppingcart.ShoppingCart
 import com.example.unimarket.ui.usuario.UserProfileScreen
 import com.example.unimarket.ui.usuario.UsuarioViewModel
-
 import com.example.unimarket.ui.usuario.shakeSlider
 
 @Composable
@@ -62,6 +62,7 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
     val loginViewModel = remember {LoginViewModel(loginModel)}
     val signUpViewModel = remember {SignUpViewModel(loginModel)}
     val userInfoViewModel= remember {UserInfoViewModel(loginModel,signUpViewModel)}
+    val Uri=
     /*val UsuarioViewModel = remember {UsuarioViewModel(usuariorepository)}*/
 
     Scaffold (
@@ -76,7 +77,7 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
                 PublishItem(navController = navController)
             }
             composable(Screen.Camera.route){
-                CameraScreen(viewModel = CameraViewModel(), lightViewModel = lightSensorViewModel)
+                CameraScreen(viewModel = CameraViewModel(), lightViewModel = lightSensorViewModel,navController=navController)
             }
             composable(Screen.Cart.route){
                 ShoppingCart(navController = navController)
