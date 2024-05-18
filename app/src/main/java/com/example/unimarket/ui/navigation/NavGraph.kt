@@ -34,6 +34,8 @@ import com.example.unimarket.ui.Login.model.LoginModel
 import com.example.unimarket.ui.home.Home
 import com.example.unimarket.ui.Login.ui.LoginScreen
 import com.example.unimarket.ui.Login.ui.LoginViewModel
+import com.example.unimarket.ui.Login.ui.PasswordRecoverViewModel
+import com.example.unimarket.ui.Login.ui.PasswordResetScreen
 import com.example.unimarket.ui.Login.ui.SignUpScreen
 import com.example.unimarket.ui.Login.ui.SignUpViewModel
 import com.example.unimarket.ui.Login.ui.UserInfoScreen
@@ -62,7 +64,7 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
     val loginViewModel = remember {LoginViewModel(loginModel)}
     val signUpViewModel = remember {SignUpViewModel(loginModel)}
     val userInfoViewModel= remember {UserInfoViewModel(loginModel,signUpViewModel)}
-    val Uri=
+    val passwordrecoverviewmodel = remember {PasswordRecoverViewModel()}
     /*val UsuarioViewModel = remember {UsuarioViewModel(usuariorepository)}*/
 
     Scaffold (
@@ -110,6 +112,10 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
             composable(Screen.LocationSliderScreen.route) {
                 LocationSlider(navController = navController)
             }
+
+            composable(Screen.RecoverScreen.route) {
+                PasswordResetScreen(navController = navController,passwordrecoverviewmodel )
+            }
             /*composable(Screen.UserProfile.route) {
                 UserProfileScreen(navController = navController, usuarioViewModel = UsuarioViewModel,,)
             }*/
@@ -122,7 +128,7 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
 fun AppBottomNav(navController: NavHostController){
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-    if (currentDestination?.route == Screen.LogIn.route || currentDestination?.route == Screen.SignUp.route|| currentDestination?.route == Screen.InfoScreen.route)
+    if (currentDestination?.route == Screen.LogIn.route || currentDestination?.route == Screen.SignUp.route|| currentDestination?.route == Screen.InfoScreen.route|| currentDestination?.route == Screen.RecoverScreen.route)
     {
         Log.d(null, "La ruta actual es ${currentDestination.route}")
     } else {
@@ -215,6 +221,8 @@ sealed class Screen(val route: String) {
     data object DetailProduct: Screen(route = "DETAIL")
 
     data object InfoScreen: Screen(route = "INFO")
+
+    data object RecoverScreen: Screen(route = "RECOVER")
 
     data object LocationSliderScreen: Screen(route = "SliderLocation")
 }

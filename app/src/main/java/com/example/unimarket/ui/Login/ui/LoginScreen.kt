@@ -103,6 +103,8 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
 
         Spacer(modifier = Modifier.padding(16.dp))
         SignUpText(navController = navController)
+        Spacer(modifier = Modifier.padding(16.dp))
+        PasswordRecoveryText(navController = navController)
     }
     }
 }
@@ -160,6 +162,25 @@ fun SignUpText(navController: NavHostController) {
         fontFamily = FontFamily.SansSerif
         )
 }
+
+
+@Composable
+fun PasswordRecoveryText(navController: NavHostController) {
+    { TODO("Aqui toca colocar la parte de navegacion hacia Sign UP screen") }
+    Text(text = "Recover Password",
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentSize(Alignment.Center)
+            .clickable {
+                Log.d(null, "se presiona botton de sign up")
+                navController.navigate("RECOVER")
+            },
+        fontSize = 15.sp,
+        color = Color(0xFFFF5958),
+        fontFamily = FontFamily.SansSerif
+    )
+}
+
 
 @Composable
 fun EmailText() {
