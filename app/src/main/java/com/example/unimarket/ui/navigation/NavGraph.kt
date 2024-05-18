@@ -26,6 +26,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.unimarket.repositories.UsuarioRepository
 import com.example.unimarket.ui.DetailProduct.DetailProduct
 import com.example.unimarket.ui.ListProducts.ListProductApp
@@ -73,8 +74,10 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
             composable(Screen.Home.route){
                 Home(navController=navController)
             }
-            composable(Screen.Post.route){
-                PublishItem(navController = navController)
+            composable(Screen.Post.route + "?imageUri={imageUri}",
+                arguments = listOf(navArgument("imageUri") {defaultValue = ""})){
+                val productUri = it.arguments?.getString("imageUri")
+                PublishItem(navController = navController, productUri)
             }
             composable(Screen.Camera.route){
                 CameraScreen(viewModel = CameraViewModel(), lightViewModel = lightSensorViewModel,navController=navController)

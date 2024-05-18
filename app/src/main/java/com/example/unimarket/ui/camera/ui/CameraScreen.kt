@@ -150,5 +150,7 @@ fun CameraScreen(
 
 }
 fun navigateToAnotherView(navController: NavHostController, uri: Uri) {
-    navController.navigate("POST")
+    Log.d("CameraScreen", "invoqued navigateToAnotherView")
+    Log.d("CameraScreen", "the image uri is: ${uri}")
+    navController.navigate("POST?imageUri=${uri}")
 }
