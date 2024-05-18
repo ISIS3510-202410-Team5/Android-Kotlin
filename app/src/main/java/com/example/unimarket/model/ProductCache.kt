@@ -6,14 +6,18 @@ import javax.inject.Singleton
 @Singleton
 class ProductCache
 @Inject constructor() {
-    private val cache: MutableMap<String, List<Product>> = mutableMapOf()
+    private val cache: MutableMap<String, Product> = mutableMapOf()
 
-    fun putProducts(key: String, products: List<Product>) {
-        cache[key] = products
+    fun putProduct(key: String, product: Product) {
+        cache[key] = product
     }
 
-    fun getProducts(key: String): List<Product>? {
+    fun getProduct(key: String): Product? {
         return cache[key]
+    }
+
+    fun getProducts(): List<Product> {
+        return cache.values.toList()
     }
 
     fun clearCache() {

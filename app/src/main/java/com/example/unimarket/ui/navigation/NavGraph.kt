@@ -1,5 +1,6 @@
 package com.example.unimarket.ui.navigation
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -28,7 +29,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.unimarket.repositories.UsuarioRepository
 import com.example.unimarket.ui.DetailProduct.DetailProduct
 import com.example.unimarket.ui.ListProducts.ListProductApp
-import com.example.unimarket.ui.ListProducts.SelectedProductViewModel
 import com.example.unimarket.ui.SearchProduct.SearchProductApp
 import com.example.unimarket.ui.Login.model.LoginModel
 import com.example.unimarket.ui.home.Home
@@ -38,6 +38,7 @@ import com.example.unimarket.ui.Login.ui.SignUpScreen
 import com.example.unimarket.ui.Login.ui.SignUpViewModel
 import com.example.unimarket.ui.Login.ui.UserInfoScreen
 import com.example.unimarket.ui.Login.ui.UserInfoViewModel
+import com.example.unimarket.ui.SearchProduct.LocationSlider
 import com.example.unimarket.ui.camera.ui.CameraScreen
 import com.example.unimarket.ui.camera.ui.CameraViewModel
 import com.example.unimarket.ui.camera.ui.LightSensorViewModel
@@ -45,7 +46,6 @@ import com.example.unimarket.ui.publishitem.PublishItem
 import com.example.unimarket.ui.shoppingcart.ShoppingCart
 import com.example.unimarket.ui.usuario.UserProfileScreen
 import com.example.unimarket.ui.usuario.UsuarioViewModel
-
 import com.example.unimarket.ui.usuario.shakeSlider
 
 @Composable
@@ -62,10 +62,8 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
     val loginViewModel = remember {LoginViewModel(loginModel)}
     val signUpViewModel = remember {SignUpViewModel(loginModel)}
     val userInfoViewModel= remember {UserInfoViewModel(loginModel,signUpViewModel)}
+    val Uri=
     /*val UsuarioViewModel = remember {UsuarioViewModel(usuariorepository)}*/
-
-
-    val ProductviewModel: SelectedProductViewModel = hiltViewModel()
 
     Scaffold (
         bottomBar = {AppBottomNav(navController = navController)}
@@ -79,7 +77,7 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
                 PublishItem(navController = navController)
             }
             composable(Screen.Camera.route){
-                CameraScreen(viewModel = CameraViewModel(), lightViewModel = lightSensorViewModel)
+                CameraScreen(viewModel = CameraViewModel(), lightViewModel = lightSensorViewModel,navController=navController)
             }
             composable(Screen.Cart.route){
                 ShoppingCart(navController = navController)
@@ -94,19 +92,23 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
                 SignUpScreen(viewModel = signUpViewModel, navController = navController)
             }
             composable(Screen.ListProduct.route){
-                ListProductApp(navController = navController, productViewModel = ProductviewModel)
+                ListProductApp(navController = navController)
             }
             composable(Screen.User.route){
                 shakeSlider()
             }
             composable(Screen.ListProductSearch.route){
-                SearchProductApp(navController = navController, productViewModel = ProductviewModel)
+                SearchProductApp(navController = navController)
             }
-            composable(Screen.DetailProduct.route) {
-                DetailProduct(navController = navController, productViewModel = ProductviewModel)
+            composable(Screen.DetailProduct.route + "/{productId}") { backStackEntry ->
+                val productId = backStackEntry.arguments?.getString("productId") ?: ""
+                DetailProduct(navController = navController, productId = productId)
             }
             composable(Screen.InfoScreen.route) {
                 UserInfoScreen(navController = navController, viewModel =userInfoViewModel)
+            }
+            composable(Screen.LocationSliderScreen.route) {
+                LocationSlider(navController = navController)
             }
             /*composable(Screen.UserProfile.route) {
                 UserProfileScreen(navController = navController, usuarioViewModel = UsuarioViewModel,,)
@@ -213,4 +215,6 @@ sealed class Screen(val route: String) {
     data object DetailProduct: Screen(route = "DETAIL")
 
     data object InfoScreen: Screen(route = "INFO")
+
+    data object LocationSliderScreen: Screen(route = "SliderLocation")
 }

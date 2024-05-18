@@ -3,8 +3,6 @@ package com.example.unimarket.ui.ListProducts
 import android.content.res.Configuration
 import android.graphics.drawable.Drawable
 import android.widget.Toast
-import android.util.Log
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.unimarket.model.Product
@@ -30,6 +28,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -54,24 +53,16 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.unimarket.R
+import com.example.unimarket.ui.navigation.Screen
 import com.example.unimarket.ui.theme.Licorice
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import kotlin.math.atan2
-import kotlin.math.cos
-import kotlin.math.log
-import kotlin.math.sin
-import kotlin.math.sqrt
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
-fun ListProductApp(modifier: Modifier = Modifier, navController: NavHostController, productViewModel: SelectedProductViewModel) {
+fun ListProductApp(modifier: Modifier = Modifier, navController: NavHostController) {
 
     val viewModel: ProductListViewModel = hiltViewModel()
     val state = viewModel.state.value
@@ -82,11 +73,22 @@ fun ListProductApp(modifier: Modifier = Modifier, navController: NavHostControll
     var isEnabled by remember { mutableStateOf(false) }
 
     LaunchedEffect(viewModel.isOnline) {
-        viewModel.isConnected.collect { isOnline ->
+        viewModel.isOnline.collect { isOnline ->
             isEnabled = isOnline
-            if (!isOnline) {
-                Toast.makeText(context, "No hay conexión. El contenido puede que esté desactualizado.", Toast.LENGTH_SHORT).show()
+            if (isOnline)
+            {
+                viewModel.getProductList()
             }
+            if (!isOnline) {
+                Toast.makeText(context, "No hay conexión. El contenido puede que esté desactualizado.", Toast.LENGTH_LONG).show()
+            }
+        }
+
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.onClear()
         }
     }
 
@@ -116,8 +118,7 @@ fun ListProductApp(modifier: Modifier = Modifier, navController: NavHostControll
             refreshData = viewModel::getProductList,
             state = state,
             viewModel = viewModel,
-            navController = navController,
-            productViewModel = productViewModel
+            navController = navController
         )
 
     }
@@ -133,8 +134,7 @@ fun ProductList(
     refreshData: () -> Unit,
     state: ProductListState,
     viewModel: ProductListViewModel,
-    navController: NavHostController,
-    productViewModel: SelectedProductViewModel
+    navController: NavHostController
 ) {
     
     SwipeRefresh(state = rememberSwipeRefreshState(isRefreshing), onRefresh = refreshData) {
@@ -146,8 +146,7 @@ fun ProductList(
                     modifier = Modifier
                         .padding(8.dp)
                         .clickable {
-                            productViewModel.setSelectedProduct(product)
-                            navController.navigate("DETAIL")
+                            navController.navigate(Screen.DetailProduct.route + "/${product.id}")
                         }
                 )
 

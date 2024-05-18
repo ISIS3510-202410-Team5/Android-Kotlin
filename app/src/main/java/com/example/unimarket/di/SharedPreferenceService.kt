@@ -24,6 +24,7 @@ object SharedPreferenceService {
         /* initialize shakeDetector threshold*/
 
         sharedPreferences.edit().putFloat(context.getString(R.string.shakedetector), 15.0f).apply()
+        sharedPreferences.edit().putFloat(context.getString(R.string.locationdist), 0.1f).apply()
 
         /* Other values should be initialized using this same notation */
     }
@@ -38,6 +39,19 @@ object SharedPreferenceService {
     suspend fun putShakeDetectorThreshold(newThreshold: Float): Unit= withContext(Dispatchers.IO) {
         sharedPreferences.edit().putFloat(
             /* key = */ "shakeDetector",
+            /* value = */ newThreshold
+        ).apply()
+    }
+
+    fun getLocationThreshold(): Float {
+        return sharedPreferences.getFloat(
+            /* key = */ "locationThreshold",
+            /* defValue = */ 0.1f)
+    }
+
+    suspend fun putLocationThreshold(newThreshold: Float): Unit= withContext(Dispatchers.IO) {
+        sharedPreferences.edit().putFloat(
+            /* key = */ "locationThreshold",
             /* value = */ newThreshold
         ).apply()
     }
