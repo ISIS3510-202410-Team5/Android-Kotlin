@@ -1,9 +1,12 @@
 package com.example.unimarket.entities
 
+import android.annotation.SuppressLint
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.unimarket.model.Product
+import java.text.SimpleDateFormat
+import java.util.Date
 
 @Entity(tableName="shopping_cart")
 data class ProductoEntity(
@@ -23,10 +26,17 @@ data class ProductoEntity(
     @ColumnInfo(name = "related")
     val related: String,
     @ColumnInfo(name = "categories")
-    val categories: String
+    val categories: String,
+    @ColumnInfo(name = "fecha_publicacion")
+    val fecha_publicacion: String
 ) {
 
     fun entityToDTO(): Product {
-        return Product(id, coverUrl, title, precio, latitud, longitud, categories, related)
+
+        val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss")
+
+        val date: Date = sdf.parse(fecha_publicacion)
+
+        return Product(id, coverUrl, title, precio, latitud, longitud, categories, related,date)
     }
 }
