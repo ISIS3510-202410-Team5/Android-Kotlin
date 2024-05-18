@@ -30,23 +30,26 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.unimarket.ui.ListProducts.ProductListViewModel
+import com.example.unimarket.ui.usuario.UsuarioViewModel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel, navController: NavHostController){
+fun LoginScreen(viewModel: LoginViewModel, navController: NavHostController, userViewModel: UsuarioViewModel){
     Box(
         Modifier
             .fillMaxHeight()
             .padding(16.dp)) {
-        Login(Modifier.align(Alignment.Center),viewModel, navController)
+        Login(Modifier.align(Alignment.Center),viewModel, navController,userViewModel)
     }
 }
 
 @Composable
-fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostController) {
+fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostController, userViewModel: UsuarioViewModel) {
 
     val email:String by viewModel.email.observeAsState(initial = "")
     val password:String by viewModel.password.observeAsState(initial = "")
@@ -86,6 +89,8 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
                             navController.navigate(route = "HOME"){
                                 popUpTo(route = "LOGIN"){inclusive = true}
                             }
+
+                            userViewModel.setCorreoUsuarioApp(email)
                         }
                     }
                     catch (e:Exception) {

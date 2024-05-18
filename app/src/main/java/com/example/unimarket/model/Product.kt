@@ -15,11 +15,12 @@ data class Product(
     val longitud: String,
     val categories: String,
     val related: String,
-    val fecha_publicacion: Date
+    val fecha_publicacion: Date,
+    val proveedor: String
 )
 {
     constructor(): this("","","","","",""
-        , "", "",Date())
+        , "", "",Date(),"")
 
 
     fun convertToEntity(): ProductoEntity {
@@ -28,6 +29,6 @@ data class Product(
 
         val dateString: String = sdf.format(fecha_publicacion)
 
-        return ProductoEntity(id, title, precio, coverUrl, latitud, longitud, related, categories,dateString)
+        return ProductoEntity(id, title, precio, coverUrl, latitud, longitud, related, categories,dateString,proveedor)
     }
 }

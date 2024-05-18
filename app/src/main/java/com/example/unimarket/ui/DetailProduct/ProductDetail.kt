@@ -19,6 +19,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
@@ -54,17 +55,19 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.unimarket.R
 import com.example.unimarket.model.Product
+import com.example.unimarket.ui.Chats.ChatViewModel
 import com.example.unimarket.ui.ListProducts.ProductCard
 import com.example.unimarket.ui.ListProducts.ProductListState
 import com.example.unimarket.ui.navigation.Screen
 import com.example.unimarket.ui.theme.GiantsOrange
 import com.example.unimarket.ui.theme.Licorice
+import com.example.unimarket.ui.usuario.UsuarioViewModel
 import com.skydoves.landscapist.rememberDrawablePainter
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalCoilApi::class)
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun DetailProduct(navController: NavHostController, productId: String) {
+fun DetailProduct(navController: NavHostController, productId: String, chatViewModel: ChatViewModel = hiltViewModel(), userViewModel: UsuarioViewModel) {
 
     val detailviewModel: DetailProductViewModel = hiltViewModel()
 
@@ -194,6 +197,15 @@ fun DetailProduct(navController: NavHostController, productId: String) {
                         )
                     }
 
+                }
+
+                Button(onClick = {
+                    val userCorreo = userViewModel.getCorreoUsuarioApp()
+                    chatViewModel.iniciarChat(producto!!, userCorreo) { chatId ->
+                        navController.navigate(Screen.ChatDetail.route + "/${chatId}")
+                    }
+                }) {
+                    Text(text = "Iniciar Chat con el dueño")
                 }
 
                 Text(

@@ -6,6 +6,7 @@ import com.example.unimarket.data.DefaultLocationTracker
 import com.example.unimarket.data.LocationTracker
 import com.example.unimarket.db.ShoppingCartDb
 import com.example.unimarket.entities.ProductoDAO
+import com.example.unimarket.repositories.ChatRepository
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.firestore.FirebaseFirestore
@@ -79,5 +80,11 @@ object AppModule
     @Provides
     fun provideRoomDbInstance(application: Application, applicationScope: CoroutineScope): ShoppingCartDb
         = ShoppingCartDb.getDatabase(application, applicationScope)
+
+    @Provides
+    @Singleton
+    fun provideChatRepository(): ChatRepository {
+        return ChatRepository()
+    }
 
 }

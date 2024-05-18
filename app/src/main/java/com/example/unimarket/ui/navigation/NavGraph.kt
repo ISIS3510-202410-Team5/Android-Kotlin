@@ -26,6 +26,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.unimarket.repositories.UsuarioRepository
+import com.example.unimarket.ui.Chats.ChatViewModel
+import com.example.unimarket.ui.Chats.ListaDeChats
+import com.example.unimarket.ui.Chats.VistaDelChat
 import com.example.unimarket.ui.DetailProduct.DetailProduct
 import com.example.unimarket.ui.ListProducts.ListProductApp
 import com.example.unimarket.ui.SearchProduct.SearchProductApp
@@ -62,7 +65,10 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
     val loginViewModel = remember {LoginViewModel(loginModel)}
     val signUpViewModel = remember {SignUpViewModel(loginModel)}
     val userInfoViewModel= remember {UserInfoViewModel(loginModel,signUpViewModel)}
-    /*val UsuarioViewModel = remember {UsuarioViewModel(usuariorepository)}*/
+
+    val userViewModel: UsuarioViewModel = hiltViewModel()
+
+    val chatViewModel: ChatViewModel = hiltViewModel()
 
     Scaffold (
         bottomBar = {AppBottomNav(navController = navController)}
@@ -85,7 +91,7 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
                 Text(text="Under construction")
             }
             composable(Screen.LogIn.route){
-                LoginScreen(viewModel = loginViewModel, navController = navController)
+                LoginScreen(viewModel = loginViewModel, navController = navController, userViewModel = userViewModel)
             }
             composable(Screen.SignUp.route){
                 SignUpScreen(viewModel = signUpViewModel, navController = navController)
@@ -101,7 +107,7 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
             }
             composable(Screen.DetailProduct.route + "/{productId}") { backStackEntry ->
                 val productId = backStackEntry.arguments?.getString("productId") ?: ""
-                DetailProduct(navController = navController, productId = productId)
+                DetailProduct(navController = navController, productId = productId, userViewModel = userViewModel)
             }
             composable(Screen.InfoScreen.route) {
                 UserInfoScreen(navController = navController, viewModel =userInfoViewModel)
@@ -112,6 +118,13 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
             /*composable(Screen.UserProfile.route) {
                 UserProfileScreen(navController = navController, usuarioViewModel = UsuarioViewModel,,)
             }*/
+            composable(Screen.ListChats.route) {
+                ListaDeChats(navController = navController, chatViewModel = chatViewModel, userViewModel = userViewModel)
+            }
+            composable(Screen.ChatDetail.route + "/{chatId}") { backStackEntry ->
+                val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
+                VistaDelChat(chatId = chatId, chatViewModel = chatViewModel)
+            }
         }
     }
 
@@ -169,7 +182,7 @@ data class BottomNavigationItem(
             BottomNavigationItem(
                 label = "Msgs",
                 icon = Icons.Rounded.MailOutline,
-                route = Screen.UnderConstruction.route
+                route = Screen.ListChats.route
             ),
             BottomNavigationItem(
                 label = "Post",
@@ -216,4 +229,8 @@ sealed class Screen(val route: String) {
     data object InfoScreen: Screen(route = "INFO")
 
     data object LocationSliderScreen: Screen(route = "SliderLocation")
+
+    data object ListChats: Screen(route = "LISTCHATS")
+
+    data object ChatDetail: Screen(route = "CHAT")
 }
