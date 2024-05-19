@@ -103,7 +103,7 @@ constructor(
             withContext(Dispatchers.IO) {
                 postRepository.addNewProduct(coverURL,_productTitle.value, _productPrice.value, _productCategories.value)
                 postRepository.clearCache()
-                //postRepository.clearSharedPreferences()
+                postRepository.clearSharedPreferences()
 
                 withContext(Dispatchers.Main) {
                     _productTitle.value = ""

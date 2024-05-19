@@ -112,4 +112,13 @@ object SharedPreferenceService {
             /* value = */ productCategories
         ).apply()
     }
+
+    suspend fun clearProductPreferences(): Unit = withContext(Dispatchers.IO) {
+        val editor = sharedPreferences.edit()
+        editor.remove("coverURL")
+        editor.remove("title")
+        editor.remove("precio")
+        editor.remove("categories")
+        editor.apply()
+    }
 }

@@ -64,6 +64,10 @@ constructor(
     fun clearCache() {
         postCache.clear()
     }
+
+    suspend fun clearSharedPreferences() {
+        SharedPreferenceService.clearProductPreferences()
+    }
     
 
 
