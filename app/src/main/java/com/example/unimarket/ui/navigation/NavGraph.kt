@@ -64,12 +64,9 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
     val loginViewModel = remember {LoginViewModel(loginModel)}
     val signUpViewModel = remember {SignUpViewModel(loginModel)}
     val userInfoViewModel= remember {UserInfoViewModel(loginModel,signUpViewModel)}
-    val Uri=
+    val cameraViewModel = remember {CameraViewModel()}
     /*val UsuarioViewModel = remember {UsuarioViewModel(usuariorepository)}*/
 
-
-
-    val ProductviewModel: SelectedProductViewModel = hiltViewModel()
 
     Scaffold (
         bottomBar = {AppBottomNav(navController = navController)}
@@ -81,11 +78,11 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
             }
             composable(Screen.Post.route + "?imageUri={imageUri}",
                 arguments = listOf(navArgument("imageUri") {defaultValue = ""})){
-                val productUri = it.arguments?.getString("imageUri")
-                PublishItem(navController = navController, productUri)
+                val productUri = it.arguments?.getString("imageUri") ?: ""
+                PublishItem(navController = navController, productUri, cameraViewModel)
             }
             composable(Screen.Camera.route){
-                CameraScreen(viewModel = CameraViewModel(), lightViewModel = lightSensorViewModel,navController=navController)
+                CameraScreen(viewModel = cameraViewModel, lightViewModel = lightSensorViewModel,navController=navController)
             }
             composable(Screen.Cart.route){
                 ShoppingCart(navController = navController)

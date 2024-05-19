@@ -1,8 +1,10 @@
 package com.example.unimarket.repositories
 
 import android.util.SparseArray
+import com.example.unimarket.di.SharedPreferenceService
 import com.example.unimarket.model.Product
 import com.google.firebase.firestore.CollectionReference
+import java.util.Date
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Named
@@ -21,15 +23,18 @@ constructor(
 
 
     init {
-        //primero debe cargar desde sharedPreferences al cache
+        postCache.put(0, SharedPreferenceService.getProductCover())
+        postCache.put(1, SharedPreferenceService.getProductTitle())
+        postCache.put(2, SharedPreferenceService.getProductPrice())
+        postCache.put(3, SharedPreferenceService.getProductCategories())
     }
 
 
-    fun addNewProduct(title: String, price: String, categories: String)
+    fun addNewProduct(coverURL: String, title: String, price: String, categories: String)
     {
         try
         {
-            val product = createProduct(title = title, precio = price, categories = categories)
+            val product = createProduct(coverURL = coverURL,title = title, precio = price, categories = categories)
             productoDB.document(product.id).set(product)
         }
         catch (e: Exception)
@@ -41,10 +46,15 @@ constructor(
 
 
 
-    fun savePostFieldDataCache(fieldId: Int, value: String) {
+    suspend fun savePostFieldDataCache(fieldId: Int, value: String) {
         postCache.put(fieldId, value)
 
-        //guardar tambien en memoria - considerar hacerlo en otro momento
+        when(fieldId) {
+            0 -> SharedPreferenceService.putProductURL(value)
+            1 -> SharedPreferenceService.putProductTitle(value)
+            2 -> SharedPreferenceService.putProductPrice(value)
+            3 -> SharedPreferenceService.putProductCategories(value)
+        }
     }
 
     fun getPostFieldDataCache(fieldId: Int): String? {
@@ -58,11 +68,11 @@ constructor(
 
 
     private fun createProduct(coverURL: String = "", title: String, precio: String, categories: String): Product {
-        /*TODO cambiar la logica de como obtener el cover URL
+        /*
         *  TODO: Incluir como sacar latitud y longitud de cuando se llama esta funcion */
         val id = UUID.randomUUID().toString()
         val latitud = ""
         val longitud = ""
-        return Product(id, coverURL, title, precio, latitud, longitud, categories, "")
+        return Product(id, coverURL, title, precio, latitud, longitud, categories, "", Date())
     }
 }

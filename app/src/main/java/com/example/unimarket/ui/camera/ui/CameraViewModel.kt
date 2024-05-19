@@ -25,6 +25,8 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.Firebase
 import com.google.firebase.storage.storage
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 import java.io.IOException
 import java.util.UUID
@@ -33,6 +35,9 @@ import java.util.UUID
 class CameraViewModel : ViewModel() {
     private val _imageUri = MutableLiveData<Uri?>()
     val imageUri: MutableLiveData<Uri?> = _imageUri
+
+    private val _imageFirestoreURL = MutableStateFlow<String>("")
+    val imageFirestoreURL : StateFlow<String> = _imageFirestoreURL
 
     fun captureImage(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -64,7 +69,7 @@ class CameraViewModel : ViewModel() {
         return null
     }
 
-    fun uploadImageToFirebase(uri: Uri) {
+    fun uploadImageToFirebase(uri: Uri){
         val storageRef = Firebase.storage.reference
         val imagesRef = storageRef.child("images/${UUID.randomUUID()}")
 
@@ -72,11 +77,24 @@ class CameraViewModel : ViewModel() {
             .addOnSuccessListener { taskSnapshot ->
                 // La imagen se subió exitosamente
                 Log.d("FirebaseStorage", "Imagen subida exitosamente: ${taskSnapshot.metadata?.path}")
+                //_imageFirestoreURL.value = taskSnapshot.metadata?.path.toString()
+                getImageUrl(taskSnapshot.metadata?.path.toString())
+
             }
             .addOnFailureListener { exception ->
                 // Ocurrió un error al subir la imagen
                 Log.e("FirebaseStorage", "Error al subir la imagen: $exception")
             }
+    }
+
+
+    private fun getImageUrl(url: String) {
+        val storageRef = Firebase.storage.reference
+
+        storageRef.child(url).downloadUrl.addOnSuccessListener {
+            Log.d("CameraViewModel",it.toString())
+            _imageFirestoreURL.value = it.toString()
+        }
     }
 
 

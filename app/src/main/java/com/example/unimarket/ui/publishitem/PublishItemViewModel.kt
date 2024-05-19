@@ -26,7 +26,6 @@ constructor(
 )
     : ViewModel()
 {
-
     private val _productTitle = MutableStateFlow<String>("")
     val productTitle: StateFlow<String> = _productTitle
 
@@ -36,19 +35,22 @@ constructor(
     private val _productCategories = MutableStateFlow<String>("")
     val productCategories: StateFlow<String> = _productCategories
 
+    private val _productCover = MutableStateFlow<String>("")
+    val productCover: StateFlow<String> = _productCover
+
     val connectivityObserver = NetworkConnectivityObserver(application.applicationContext)
 
     init {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 //Cargar del cache a los estados actuales
-                val nullableUri = postRepository.getPostFieldDataCache(0)
+                val nullableCover = postRepository.getPostFieldDataCache(0)
                 val nullableTitle = postRepository.getPostFieldDataCache(1)
                 val nullablePrice = postRepository.getPostFieldDataCache(2)
                 val nullableCategories = postRepository.getPostFieldDataCache(3)
 
                 withContext(Dispatchers.Default){
-                    //if (nullableUri != null) _productUri.value = nullableTitle
+                    if (nullableCover != null) _productCover.value = nullableCover
                     if (nullableTitle != null) _productTitle.value = nullableTitle
                     if (nullablePrice != null) _productPrice.value = nullablePrice
                     if (nullableCategories != null) _productCategories.value = nullableCategories
@@ -58,10 +60,6 @@ constructor(
     }
 
 
-    /*fun addProduct(){
-        val newProduct = Product()
-        newProduct.id =
-    }*/
 
     fun onTitleChange(text:String){
         viewModelScope.launch {
@@ -100,10 +98,10 @@ constructor(
 
 
 
-    fun addProductDB() {
+    fun addProductDB(coverURL: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                postRepository.addNewProduct(_productTitle.value, _productPrice.value, _productCategories.value)
+                postRepository.addNewProduct(coverURL,_productTitle.value, _productPrice.value, _productCategories.value)
                 postRepository.clearCache()
                 //postRepository.clearSharedPreferences()
 

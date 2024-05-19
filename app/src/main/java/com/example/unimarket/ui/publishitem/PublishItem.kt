@@ -12,6 +12,7 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -21,29 +22,42 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import android.net.Uri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.unimarket.connection.ConnectivityObserver
+import com.example.unimarket.ui.camera.ui.CameraViewModel
 import com.example.unimarket.ui.theme.Bittersweet
 import com.example.unimarket.ui.theme.GiantsOrange
 import com.example.unimarket.ui.theme.Licorice
 import com.example.unimarket.ui.theme.UniMarketTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Composable
-fun PublishItem(navController: NavHostController, productUri: String?){
+fun PublishItem(navController: NavHostController, productUri: String, cameraViewModel: CameraViewModel){
 
-    Log.d("PublishItem", productUri.toString())
     val viewModel: PublishItemViewModel = hiltViewModel()
 
     val productTitle by viewModel.productTitle.collectAsState()
     val productPrice by viewModel.productPrice.collectAsState()
     val productCategories by viewModel.productCategories.collectAsState()
 
+
     val titleValid: Boolean = productTitle != ""
     val priceValid: Boolean = validPrice(productPrice)
     val categoriesValid: Boolean = validCategories(productCategories)
 
     val connectStatus by viewModel.connectivityObserver.observe().collectAsState(initial = ConnectivityObserver.Status.Losing)
+
+    /*LaunchedEffect(Unit) {
+        withContext(Dispatchers.IO) {
+            if (productUri != ""){
+                cameraViewModel.uploadImageToFirebase(Uri.parse(productUri))
+            }
+
+        }
+    }*/
 
 
     if (connectStatus != ConnectivityObserver.Status.Available) {
@@ -72,7 +86,7 @@ fun PublishItem(navController: NavHostController, productUri: String?){
         CustomTextField(text = productCategories, function = viewModel::onCategoriesChange, header = "Categories")
         Spacer(modifier = Modifier.height(30.dp))
         FilledTonalButton(
-            onClick = {  },
+            onClick = { viewModel.addProductDB(cameraViewModel.imageFirestoreURL.value) },
             enabled = titleValid && priceValid && categoriesValid,
             colors = ButtonDefaults.buttonColors(
                 containerColor = GiantsOrange,

@@ -55,4 +55,61 @@ object SharedPreferenceService {
             /* value = */ newThreshold
         ).apply()
     }
+
+
+    fun getProductCover() : String? {
+        return sharedPreferences.getString(
+            /* key = */ "coverURL",
+            /* defValue = */ null
+        )
+    }
+
+    fun getProductTitle() :String? {
+        return sharedPreferences.getString(
+            /* key = */ "title",
+            /* defValue = */ null
+        )
+    }
+
+    fun getProductPrice() : String? {
+        return sharedPreferences.getString(
+            /* key = */ "precio",
+            /* defValue = */ null
+        )
+    }
+
+    fun getProductCategories() : String? {
+        return sharedPreferences.getString(
+            /* key = */ "categories",
+            /* defValue = */ null
+        )
+    }
+
+    suspend fun putProductURL(productUrl: String): Unit= withContext(Dispatchers.IO) {
+        sharedPreferences.edit().putString(
+            /* key = */ "coverURL",
+            /* value = */ productUrl
+        ).apply()
+    }
+
+    suspend fun putProductTitle(productTitle: String): Unit= withContext(Dispatchers.IO) {
+        sharedPreferences.edit().putString(
+            /* key = */ "title",
+            /* value = */ productTitle
+        ).apply()
+    }
+
+    suspend fun putProductPrice(productPrice: String): Unit= withContext(Dispatchers.IO) {
+        sharedPreferences.edit().putString(
+            /* key = */ "precio",
+            /* value = */ productPrice
+        ).apply()
+    }
+
+    suspend fun putProductCategories(productCategories: String): Unit= withContext(Dispatchers.IO) {
+        sharedPreferences.edit().putString(
+            /* key = */ "categories",
+            /* value = */ productCategories
+        ).apply()
+    }
 }
