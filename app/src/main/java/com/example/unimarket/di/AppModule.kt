@@ -5,6 +5,7 @@ import android.util.Log
 import com.example.unimarket.data.DefaultLocationTracker
 import com.example.unimarket.data.LocationTracker
 import com.example.unimarket.db.ShoppingCartDb
+import com.example.unimarket.entities.CategoryDAO
 import com.example.unimarket.entities.ProductoDAO
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -69,6 +70,12 @@ object AppModule
     @Provides
     fun provideProductoDao(shoppingCartDb: ShoppingCartDb) : ProductoDAO {
         return shoppingCartDb.ProductoDAO()
+    }
+
+    @Singleton
+    @Provides
+    fun provideCategoryDao(shoppingCartDb: ShoppingCartDb): CategoryDAO {
+        return shoppingCartDb.CategoryDAO()
     }
 
     @Singleton
