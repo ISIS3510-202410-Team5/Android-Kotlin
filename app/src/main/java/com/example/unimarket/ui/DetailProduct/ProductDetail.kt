@@ -54,6 +54,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.example.unimarket.R
+import com.example.unimarket.di.SharedPreferenceService
 import com.example.unimarket.model.Product
 import com.example.unimarket.ui.Chats.ChatViewModel
 import com.example.unimarket.ui.ListProducts.ProductCard
@@ -67,7 +68,7 @@ import com.skydoves.landscapist.rememberDrawablePainter
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalCoilApi::class)
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun DetailProduct(navController: NavHostController, productId: String, chatViewModel: ChatViewModel = hiltViewModel(), userViewModel: UsuarioViewModel) {
+fun DetailProduct(navController: NavHostController, productId: String, chatViewModel: ChatViewModel = hiltViewModel()) {
 
     val detailviewModel: DetailProductViewModel = hiltViewModel()
 
@@ -199,13 +200,15 @@ fun DetailProduct(navController: NavHostController, productId: String, chatViewM
 
                 }
 
-                if(producto!!.proveedor != userViewModel.getCorreoUsuarioApp())
+                if(producto!!.proveedor != SharedPreferenceService.getCurrentUser())
                     {
 
                         Button(onClick = {
-                            val userCorreo = userViewModel.getCorreoUsuarioApp()
-                            chatViewModel.iniciarChat(producto!!, userCorreo) { chatId ->
-                                navController.navigate(Screen.ChatDetail.route + "/${chatId}")
+                            val userCorreo = SharedPreferenceService.getCurrentUser()
+                            if (userCorreo != null) {
+                                chatViewModel.iniciarChat(producto!!, userCorreo) { chatId ->
+                                    navController.navigate(Screen.ChatDetail.route + "/${chatId}")
+                                }
                             }
                         }) {
                             Text(text = "Iniciar Chat con el dueño")

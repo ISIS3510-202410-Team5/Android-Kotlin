@@ -32,6 +32,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.unimarket.di.SharedPreferenceService
 import com.example.unimarket.ui.ListProducts.ProductListViewModel
 import com.example.unimarket.ui.usuario.UsuarioViewModel
 import kotlinx.coroutines.coroutineScope
@@ -39,17 +40,17 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel, navController: NavHostController, userViewModel: UsuarioViewModel){
+fun LoginScreen(viewModel: LoginViewModel, navController: NavHostController){
     Box(
         Modifier
             .fillMaxHeight()
             .padding(16.dp)) {
-        Login(Modifier.align(Alignment.Center),viewModel, navController,userViewModel)
+        Login(Modifier.align(Alignment.Center),viewModel, navController)
     }
 }
 
 @Composable
-fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostController, userViewModel: UsuarioViewModel) {
+fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostController) {
 
     val email:String by viewModel.email.observeAsState(initial = "")
     val password:String by viewModel.password.observeAsState(initial = "")
@@ -90,7 +91,7 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
                                 popUpTo(route = "LOGIN"){inclusive = true}
                             }
 
-                            userViewModel.setCorreoUsuarioApp(email)
+                            SharedPreferenceService.putCurrentUser(email)
                         }
                     }
                     catch (e:Exception) {

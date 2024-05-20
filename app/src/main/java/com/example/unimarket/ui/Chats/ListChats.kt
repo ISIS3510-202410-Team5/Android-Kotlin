@@ -12,14 +12,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.unimarket.di.SharedPreferenceService
 import com.example.unimarket.model.Chat
 import com.example.unimarket.ui.navigation.Screen
 import com.example.unimarket.ui.usuario.UsuarioViewModel
 
 @Composable
-fun ListaDeChats(chatViewModel: ChatViewModel, navController: NavHostController, userViewModel: UsuarioViewModel) {
+fun ListaDeChats(chatViewModel: ChatViewModel, navController: NavHostController) {
 
-    chatViewModel.obtenerChats(userViewModel.getCorreoUsuarioApp())
+    SharedPreferenceService.getCurrentUser()?.let { chatViewModel.obtenerChats(it) }
 
     val chats by chatViewModel.chats.collectAsState(emptyList())
 

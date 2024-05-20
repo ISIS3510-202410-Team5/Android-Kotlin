@@ -66,8 +66,6 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
     val signUpViewModel = remember {SignUpViewModel(loginModel)}
     val userInfoViewModel= remember {UserInfoViewModel(loginModel,signUpViewModel)}
 
-    val userViewModel: UsuarioViewModel = hiltViewModel()
-
     val chatViewModel: ChatViewModel = hiltViewModel()
 
     Scaffold (
@@ -91,7 +89,7 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
                 Text(text="Under construction")
             }
             composable(Screen.LogIn.route){
-                LoginScreen(viewModel = loginViewModel, navController = navController, userViewModel = userViewModel)
+                LoginScreen(viewModel = loginViewModel, navController = navController)
             }
             composable(Screen.SignUp.route){
                 SignUpScreen(viewModel = signUpViewModel, navController = navController)
@@ -107,7 +105,7 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
             }
             composable(Screen.DetailProduct.route + "/{productId}") { backStackEntry ->
                 val productId = backStackEntry.arguments?.getString("productId") ?: ""
-                DetailProduct(navController = navController, productId = productId, userViewModel = userViewModel)
+                DetailProduct(navController = navController, productId = productId)
             }
             composable(Screen.InfoScreen.route) {
                 UserInfoScreen(navController = navController, viewModel =userInfoViewModel)
@@ -119,11 +117,11 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
                 UserProfileScreen(navController = navController, usuarioViewModel = UsuarioViewModel,,)
             }*/
             composable(Screen.ListChats.route) {
-                ListaDeChats(navController = navController, chatViewModel = chatViewModel, userViewModel = userViewModel)
+                ListaDeChats(navController = navController, chatViewModel = chatViewModel)
             }
             composable(Screen.ChatDetail.route + "/{chatId}") { backStackEntry ->
                 val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
-                VistaDelChat(chatId = chatId, chatViewModel = chatViewModel,userViewModel = userViewModel)
+                VistaDelChat(chatId = chatId, chatViewModel = chatViewModel)
             }
         }
     }

@@ -24,13 +24,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.unimarket.di.SharedPreferenceService
 import com.example.unimarket.ui.usuario.UsuarioViewModel
 
 @Composable
-fun VistaDelChat(chatId: String, chatViewModel: ChatViewModel, userViewModel: UsuarioViewModel) {
+fun VistaDelChat(chatId: String, chatViewModel: ChatViewModel) {
     val mensajes by chatViewModel.mensajes.collectAsState()
     val chatDetails by chatViewModel.chatDetails.collectAsState()
-    val usuarioActual: String = userViewModel.getCorreoUsuarioApp()
+    val usuarioActual: String? = SharedPreferenceService.getCurrentUser()
 
     LaunchedEffect(chatId) {
         chatViewModel.obtenerMensajes(chatId)
@@ -70,7 +71,9 @@ fun VistaDelChat(chatId: String, chatViewModel: ChatViewModel, userViewModel: Us
         )
         Button(onClick = {
             val remitente = usuarioActual
-            chatViewModel.enviarMensaje(chatId, nuevoMensaje, remitente)
+            if (remitente != null) {
+                chatViewModel.enviarMensaje(chatId, nuevoMensaje, remitente)
+            }
             nuevoMensaje = ""
         }, modifier = Modifier.align(Alignment.End).padding(8.dp)) {
             Text(text = "Enviar")
