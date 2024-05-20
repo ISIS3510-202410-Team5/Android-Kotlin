@@ -1,5 +1,6 @@
 package com.example.unimarket.ui.navigation
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -25,6 +26,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.unimarket.repositories.UsuarioRepository
 import com.example.unimarket.ui.DetailProduct.DetailProduct
 import com.example.unimarket.ui.ListProducts.ListProductApp
@@ -33,6 +35,8 @@ import com.example.unimarket.ui.Login.model.LoginModel
 import com.example.unimarket.ui.home.Home
 import com.example.unimarket.ui.Login.ui.LoginScreen
 import com.example.unimarket.ui.Login.ui.LoginViewModel
+import com.example.unimarket.ui.Login.ui.PasswordRecoverViewModel
+import com.example.unimarket.ui.Login.ui.PasswordResetScreen
 import com.example.unimarket.ui.Login.ui.SignUpScreen
 import com.example.unimarket.ui.Login.ui.SignUpViewModel
 import com.example.unimarket.ui.Login.ui.UserInfoScreen
@@ -45,7 +49,6 @@ import com.example.unimarket.ui.publishitem.PublishItem
 import com.example.unimarket.ui.shoppingcart.ShoppingCart
 import com.example.unimarket.ui.usuario.UserProfileScreen
 import com.example.unimarket.ui.usuario.UsuarioViewModel
-
 import com.example.unimarket.ui.usuario.shakeSlider
 
 @Composable
@@ -62,6 +65,7 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
     val loginViewModel = remember {LoginViewModel(loginModel)}
     val signUpViewModel = remember {SignUpViewModel(loginModel)}
     val userInfoViewModel= remember {UserInfoViewModel(loginModel,signUpViewModel)}
+    val passwordrecoverviewmodel = remember {PasswordRecoverViewModel()}
     /*val UsuarioViewModel = remember {UsuarioViewModel(usuariorepository)}*/
 
     Scaffold (
@@ -72,11 +76,13 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
             composable(Screen.Home.route){
                 Home(navController=navController)
             }
-            composable(Screen.Post.route){
-                PublishItem(navController = navController)
+            composable(Screen.Post.route + "?imageUri={imageUri}",
+                arguments = listOf(navArgument("imageUri") {defaultValue = ""})){
+                val productUri = it.arguments?.getString("imageUri")
+                PublishItem(navController = navController, productUri)
             }
             composable(Screen.Camera.route){
-                CameraScreen(viewModel = CameraViewModel(), lightViewModel = lightSensorViewModel)
+                CameraScreen(viewModel = CameraViewModel(), lightViewModel = lightSensorViewModel,navController=navController)
             }
             composable(Screen.Cart.route){
                 ShoppingCart(navController = navController)
@@ -109,6 +115,10 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
             composable(Screen.LocationSliderScreen.route) {
                 LocationSlider(navController = navController)
             }
+
+            composable(Screen.RecoverScreen.route) {
+                PasswordResetScreen(navController = navController,passwordrecoverviewmodel )
+            }
             /*composable(Screen.UserProfile.route) {
                 UserProfileScreen(navController = navController, usuarioViewModel = UsuarioViewModel,,)
             }*/
@@ -121,7 +131,7 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
 fun AppBottomNav(navController: NavHostController){
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-    if (currentDestination?.route == Screen.LogIn.route || currentDestination?.route == Screen.SignUp.route|| currentDestination?.route == Screen.InfoScreen.route)
+    if (currentDestination?.route == Screen.LogIn.route || currentDestination?.route == Screen.SignUp.route|| currentDestination?.route == Screen.InfoScreen.route|| currentDestination?.route == Screen.RecoverScreen.route)
     {
         Log.d(null, "La ruta actual es ${currentDestination.route}")
     } else {
@@ -214,6 +224,8 @@ sealed class Screen(val route: String) {
     data object DetailProduct: Screen(route = "DETAIL")
 
     data object InfoScreen: Screen(route = "INFO")
+
+    data object RecoverScreen: Screen(route = "RECOVER")
 
     data object LocationSliderScreen: Screen(route = "SliderLocation")
 }
