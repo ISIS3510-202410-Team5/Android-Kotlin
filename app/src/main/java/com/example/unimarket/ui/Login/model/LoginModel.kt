@@ -32,6 +32,7 @@ class LoginModel{
     suspend fun resetPassword(email: String) {
         try {
             FirebaseAuth.getInstance().sendPasswordResetEmail(email).await()
+            
         } catch (e: Exception) {
             throw PasswordResetException("Error al enviar el correo de recuperación: ${e.message}")
         }
