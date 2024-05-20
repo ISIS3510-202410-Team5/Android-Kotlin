@@ -123,7 +123,7 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
             }
             composable(Screen.ChatDetail.route + "/{chatId}") { backStackEntry ->
                 val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
-                VistaDelChat(chatId = chatId, chatViewModel = chatViewModel)
+                VistaDelChat(chatId = chatId, chatViewModel = chatViewModel,userViewModel = userViewModel)
             }
         }
     }

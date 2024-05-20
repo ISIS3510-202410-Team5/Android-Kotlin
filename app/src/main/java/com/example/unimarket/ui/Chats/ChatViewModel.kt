@@ -27,6 +27,9 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
 
     private val db = FirebaseFirestore.getInstance()
 
+    private val _chatDetails = MutableStateFlow<Chat?>(null)
+    val chatDetails: StateFlow<Chat?> = _chatDetails
+
     fun iniciarChat(product: Product, userCorreo: String, onChatCreated: (String) -> Unit) {
         viewModelScope.launch {
             try {
@@ -69,6 +72,14 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
         viewModelScope.launch {
             val mensajes = chatRepository.obtenerMensajes(chatId)
             _mensajes.value = mensajes
+        }
+    }
+
+    fun obtenerChatDetails(chatId: String) {
+        viewModelScope.launch {
+            val chatDoc = db.collection("chats").document(chatId).get().await()
+            val chat = chatDoc.toObject(Chat::class.java)?.copy(id = chatDoc.id)
+            _chatDetails.value = chat
         }
     }
 
