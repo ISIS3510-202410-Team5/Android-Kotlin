@@ -66,7 +66,7 @@ object SharedPreferenceService {
     suspend fun putCurrentUser(newThreshold: String): Unit= withContext(Dispatchers.IO) {
         sharedPreferences.edit().putString(
             /* key = */ "currentUser",
-            /* value = */ ""
+            /* value = */ newThreshold
         ).apply()
     }
 }
