@@ -5,6 +5,7 @@ import com.example.unimarket.di.SharedPreferenceService
 import com.example.unimarket.model.UsuarioDTO
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.toObject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
@@ -17,6 +18,8 @@ class UsuarioRepository @Inject constructor(
     @Named("Usuarios")
     private val usuariosCollection: CollectionReference,
 ) {
+
+    /*
     fun obtenerDatosUsuario(correo: String): Flow<Result<UsuarioDTO>> = flow {
         try {
             emit(Result.Loading())
@@ -31,7 +34,29 @@ class UsuarioRepository @Inject constructor(
         } catch (e: Exception) {
             emit(Result.Error(message = e.localizedMessage ?: "Error desconocido"))
         }
+    }*/
+
+
+    // Función para obtener la información de un usuario por correo
+    suspend fun getUsuarioPorCorreo(correo: String): UsuarioDTO? {
+        return try {
+            val querySnapshot = usuariosCollection
+                .whereEqualTo("correo", correo)
+                .get()
+                .await()
+
+            if (querySnapshot.documents.isNotEmpty()) {
+                querySnapshot.documents[0].toObject<UsuarioDTO>()
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            null
+        }
     }
+
+
+
 
 
     fun actualizarShakeUsuario(correo: String, newShakeVal: String): Flow<Result<Unit>> = flow {
