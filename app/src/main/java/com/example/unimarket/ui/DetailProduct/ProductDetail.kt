@@ -199,14 +199,19 @@ fun DetailProduct(navController: NavHostController, productId: String, chatViewM
 
                 }
 
-                Button(onClick = {
-                    val userCorreo = userViewModel.getCorreoUsuarioApp()
-                    chatViewModel.iniciarChat(producto!!, userCorreo) { chatId ->
-                        navController.navigate(Screen.ChatDetail.route + "/${chatId}")
+                if(producto!!.proveedor != userViewModel.getCorreoUsuarioApp())
+                    {
+
+                        Button(onClick = {
+                            val userCorreo = userViewModel.getCorreoUsuarioApp()
+                            chatViewModel.iniciarChat(producto!!, userCorreo) { chatId ->
+                                navController.navigate(Screen.ChatDetail.route + "/${chatId}")
+                            }
+                        }) {
+                            Text(text = "Iniciar Chat con el dueño")
+                        }
+
                     }
-                }) {
-                    Text(text = "Iniciar Chat con el dueño")
-                }
 
                 Text(
                     text = "Related products",

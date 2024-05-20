@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.Text
@@ -36,7 +37,11 @@ fun VistaDelChat(chatId: String, chatViewModel: ChatViewModel, userViewModel: Us
         chatViewModel.obtenerChatDetails(chatId)
     }
 
-    Log.d("",usuarioActual)
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(mensajes) {
+        listState.animateScrollToItem(mensajes.size - 1)
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         if (chatDetails != null) {
