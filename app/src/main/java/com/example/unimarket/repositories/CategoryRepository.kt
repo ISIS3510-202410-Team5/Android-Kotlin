@@ -45,6 +45,13 @@ constructor(
     }
 
 
+    //Funciones para acceso al cache
+
+    fun getProductsCategoryCache(category: String) : List<Product> {
+        return categoryCache.getProducts(category) ?: listOf()
+    }
+
+
 
 
 
