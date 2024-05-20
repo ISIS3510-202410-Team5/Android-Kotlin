@@ -31,6 +31,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.unimarket.di.SharedPreferenceService
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
@@ -87,6 +88,8 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
                                 popUpTo(route = "LOGIN"){inclusive = true}
                             }
                         }
+
+                        SharedPreferenceService.putCurrentUser(email)
                     }
                     catch (e:Exception) {
                         Log.d(null, "error en el login")
