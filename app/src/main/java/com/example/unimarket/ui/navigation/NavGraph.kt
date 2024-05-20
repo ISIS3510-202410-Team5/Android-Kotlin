@@ -47,7 +47,9 @@ import com.example.unimarket.ui.camera.ui.CameraViewModel
 import com.example.unimarket.ui.camera.ui.LightSensorViewModel
 import com.example.unimarket.ui.publishitem.PublishItem
 import com.example.unimarket.ui.shoppingcart.ShoppingCart
+import com.example.unimarket.ui.usuario.PerfilViewModel
 import com.example.unimarket.ui.usuario.UserProfileScreen
+import com.example.unimarket.ui.usuario.UsuarioScreen
 import com.example.unimarket.ui.usuario.UsuarioViewModel
 import com.example.unimarket.ui.usuario.shakeSlider
 
@@ -66,6 +68,7 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
     val signUpViewModel = remember {SignUpViewModel(loginModel)}
     val userInfoViewModel= remember {UserInfoViewModel(loginModel,signUpViewModel)}
     val passwordrecoverviewmodel = remember {PasswordRecoverViewModel()}
+
     /*val UsuarioViewModel = remember {UsuarioViewModel(usuariorepository)}*/
 
     Scaffold (
@@ -119,6 +122,10 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
             composable(Screen.RecoverScreen.route) {
                 PasswordResetScreen(navController = navController,passwordrecoverviewmodel )
             }
+            composable(Screen.PerfilScreen.route) {
+                UsuarioScreen(navController = navController)
+            }
+
             /*composable(Screen.UserProfile.route) {
                 UserProfileScreen(navController = navController, usuarioViewModel = UsuarioViewModel,,)
             }*/
@@ -195,7 +202,7 @@ data class BottomNavigationItem(
             BottomNavigationItem(
                 label = "User",
                 icon = Icons.Rounded.AccountCircle,
-                route = Screen.User.route
+                route = Screen.PerfilScreen.route
 
             )
 
@@ -226,6 +233,8 @@ sealed class Screen(val route: String) {
     data object InfoScreen: Screen(route = "INFO")
 
     data object RecoverScreen: Screen(route = "RECOVER")
+
+    data object PerfilScreen: Screen(route = "PERFIL")
 
     data object LocationSliderScreen: Screen(route = "SliderLocation")
 }
