@@ -88,9 +88,8 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
                             navController.navigate(route = "HOME"){
                                 popUpTo(route = "LOGIN"){inclusive = true}
                             }
+                            SharedPreferenceService.putCurrentUser(email)
                         }
-
-                        SharedPreferenceService.putCurrentUser(email)
                     }
                     catch (e:Exception) {
                         Log.d(null, "error en el login")
