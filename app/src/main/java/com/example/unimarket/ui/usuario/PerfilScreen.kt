@@ -8,11 +8,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -24,12 +29,19 @@ import com.example.unimarket.model.UsuarioDTO
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
+
 
 @Composable
 fun UsuarioInfo(usuario: UsuarioDTO) {
     Column(modifier = Modifier.padding(16.dp)) {
         Text(text = "Nombre: ${usuario.nombre}")
+        Spacer(modifier = Modifier.height(8.dp))
         Text(text = "Carrera: ${usuario.carrera}")
+        Spacer(modifier = Modifier.height(8.dp))
         Text(text = "Semestre: ${usuario.semestre}")
     }
 }
@@ -38,6 +50,8 @@ fun UsuarioInfo(usuario: UsuarioDTO) {
 fun UsuarioScreen(viewModel: PerfilViewModel = hiltViewModel(), navController: NavHostController) {
     val auth: FirebaseAuth = Firebase.auth
     val currentUser = auth.currentUser
+
+    var modoEdicion by remember { mutableStateOf(false) }
 
     if (currentUser != null) {
         val correo = currentUser.email
@@ -58,9 +72,16 @@ fun UsuarioScreen(viewModel: PerfilViewModel = hiltViewModel(), navController: N
                             modifier = Modifier.padding(16.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+                            Text(text = "Correo: ${usuario.correo}")
                             HeaderImage()
                             Spacer(modifier = Modifier.height(16.dp))
                             UsuarioInfo(usuario)
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Button(onClick = {
+                                navController.navigate("EDIT")
+                            }) {
+                                Text("Editar")
+                            }
                         }
                     } ?: run {
                         CircularProgressIndicator()
@@ -68,10 +89,10 @@ fun UsuarioScreen(viewModel: PerfilViewModel = hiltViewModel(), navController: N
                 }
             }
         } else {
-            // El correo electrónico del usuario es nulo no deberia pasar en ningun caso
+            // El correo electrónico del usuario es nulo no debería pasar en ningún caso
         }
     } else {
-        // No hay usuario autenticado no deberia pasar en ningun cas
+        // No hay usuario autenticado no debería pasar en ningún caso
     }
 }
 
