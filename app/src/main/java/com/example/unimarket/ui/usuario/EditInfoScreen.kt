@@ -7,8 +7,12 @@ import com.google.firebase.auth.auth
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.unimarket.model.UsuarioDTO
@@ -23,7 +27,10 @@ fun EditarUsuarioForm(
     var carrera by remember { mutableStateOf(usuario.carrera) }
     var semestre by remember { mutableStateOf(usuario.semestre) }
 
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(
+        modifier = Modifier.padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         TextField(
             value = nombre,
             onValueChange = { nombre = it },
@@ -42,19 +49,25 @@ fun EditarUsuarioForm(
             label = { Text("Semestre") }
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = {
-            val nuevosDatos = mapOf(
-                "nombre" to nombre,
-                "carrera" to carrera,
-                "semestre" to semestre
-            )
-            onSave(nuevosDatos)
-        }) {
-            Text("Guardar")
+        Button(
+            onClick = {
+                val nuevosDatos = mapOf(
+                    "nombre" to nombre,
+                    "carrera" to carrera,
+                    "semestre" to semestre
+                )
+                onSave(nuevosDatos)
+            },
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF5958))
+        ) {
+            Text("Guardar", color = Color.White)
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = { onCancel() }) {
-            Text("Cancelar")
+        Button(
+            onClick = { onCancel() },
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF5958))
+        ) {
+            Text("Cancelar", color = Color.White)
         }
     }
 }
@@ -73,16 +86,40 @@ fun EditarUsuarioScreen(
             val usuarioState by viewModel.obtenerUsuarioPorCorreo(correo).observeAsState()
 
             usuarioState?.let { usuario ->
-                EditarUsuarioForm(
-                    usuario = usuario,
-                    onSave = { nuevosDatos ->
-                        viewModel.actualizarUsuario(correo, nuevosDatos)
-                        navController.popBackStack()
-                    },
-                    onCancel = {
-                        navController.popBackStack()
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Text(
+                            text = "Editar Información del Usuario",
+                            fontSize = 24.sp,
+                            color = Color(0xFFFF5958),
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "Actualiza la información del usuario y guarda los cambios.",
+                            fontSize = 16.sp,
+                            color = Color(0xFF181316),
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(modifier = Modifier.height(24.dp))
+                        EditarUsuarioForm(
+                            usuario = usuario,
+                            onSave = { nuevosDatos ->
+                                viewModel.actualizarUsuario(correo, nuevosDatos)
+                                navController.popBackStack()
+                            },
+                            onCancel = {
+                                navController.popBackStack()
+                            }
+                        )
                     }
-                )
+                }
             }
         }
     }
