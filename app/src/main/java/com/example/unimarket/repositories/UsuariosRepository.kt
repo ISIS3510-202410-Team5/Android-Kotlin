@@ -55,6 +55,25 @@ class UsuarioRepository @Inject constructor(
         }
     }
 
+    suspend fun actualizarUsuario(correo: String, nuevosDatos: Map<String, Any>): Boolean {
+        return try {
+            val querySnapshot = usuariosCollection
+                .whereEqualTo("correo", correo)
+                .get()
+                .await()
+
+            if (querySnapshot.documents.isNotEmpty()) {
+                val documento = querySnapshot.documents[0]
+                usuariosCollection.document(documento.id).update(nuevosDatos).await()
+                true
+            } else {
+                false
+            }
+        } catch (e: Exception) {
+            false
+        }
+    }
+
 
 
 

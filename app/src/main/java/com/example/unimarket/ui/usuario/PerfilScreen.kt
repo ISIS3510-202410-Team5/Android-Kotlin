@@ -8,11 +8,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -24,13 +29,60 @@ import com.example.unimarket.model.UsuarioDTO
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.sp
+
 
 @Composable
 fun UsuarioInfo(usuario: UsuarioDTO) {
     Column(modifier = Modifier.padding(16.dp)) {
-        Text(text = "Nombre: ${usuario.nombre}")
-        Text(text = "Carrera: ${usuario.carrera}")
-        Text(text = "Semestre: ${usuario.semestre}")
+        Text(
+            text = "Tu nombre es:",
+            fontSize = 14.sp,
+            color = Color.Gray,
+            fontFamily = FontFamily.SansSerif,
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
+        Text(
+            text = usuario.nombre,
+            fontSize = 16.sp,
+            color = Color.Black,
+            fontFamily = FontFamily.SansSerif
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "Tu carrera es:",
+            fontSize = 14.sp,
+            color = Color.Gray,
+            fontFamily = FontFamily.SansSerif,
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
+        Text(
+            text = usuario.carrera,
+            fontSize = 16.sp,
+            color = Color.Black,
+            fontFamily = FontFamily.SansSerif
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "Tu semestre es:",
+            fontSize = 14.sp,
+            color = Color.Gray,
+            fontFamily = FontFamily.SansSerif,
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
+        Text(
+            text = usuario.semestre,
+            fontSize = 16.sp,
+            color = Color.Black,
+            fontFamily = FontFamily.SansSerif
+        )
     }
 }
 
@@ -58,9 +110,17 @@ fun UsuarioScreen(viewModel: PerfilViewModel = hiltViewModel(), navController: N
                             modifier = Modifier.padding(16.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+                            Text(text = "Correo: ${usuario.correo}")
                             HeaderImage()
                             Spacer(modifier = Modifier.height(16.dp))
                             UsuarioInfo(usuario)
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Button(onClick = {
+                                navController.navigate("EDIT")
+                            },
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF5958))) {
+                                Text("Editar")
+                            }
                         }
                     } ?: run {
                         CircularProgressIndicator()
@@ -68,10 +128,10 @@ fun UsuarioScreen(viewModel: PerfilViewModel = hiltViewModel(), navController: N
                 }
             }
         } else {
-            // El correo electrónico del usuario es nulo no deberia pasar en ningun caso
+            // El correo electrónico del usuario es nulo no debería pasar en ningún caso
         }
     } else {
-        // No hay usuario autenticado no deberia pasar en ningun cas
+        // No hay usuario autenticado no debería pasar en ningún caso
     }
 }
 
