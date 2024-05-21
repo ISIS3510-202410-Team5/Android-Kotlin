@@ -1,5 +1,6 @@
 package com.example.unimarket.repositories
 
+import android.util.Log
 import com.example.unimarket.entities.CategoryDAO
 import com.example.unimarket.entities.CategoryEntity
 import com.example.unimarket.model.CategoryCache
@@ -24,9 +25,8 @@ class CategoryRepository
 constructor(
     @Named("productos")
     private val productCollection: CollectionReference,
-    /*@Named("categories")
+    @Named("categories")
     private val categoryCollection: CollectionReference,
-     */
     private val categoryCache: CategoryCache,
     private val categoryDAO: CategoryDAO
 ){
@@ -87,18 +87,33 @@ constructor(
     }
 
 
+    fun getCategoriesFirebase(): Flow<Result<List<String>>> = flow{
+        Log.d("CategoryRepository", "Llamada a getCategoriesFirebase")
+        try {
+            emit(Result.Loading<List<String>>())
 
-    //Funciones para el acceso a la base de datos
-    private suspend fun getCategoriesDB(): List<CategoryEntity> {
-        return withContext(Dispatchers.IO) {
-            categoryDAO.getAllCategories()
+            val CategoryList = categoryCollection.document("recomend").get().await().get("recomend")!! as List<String>
+
+            CoroutineScope(Dispatchers.IO).launch{
+                for (index in CategoryList.indices) {
+                    categoryDAO.insertCategories(category = CategoryEntity(id = index.toString(), catName = CategoryList[index]))
+                }
+            }
+
+            emit(Result.Success<List<String>>(data = CategoryList))
+        }
+        catch (e: Exception)
+        {
+            emit(Result.Error<List<String>>(message = e.localizedMessage ?: "Unknown Error"))
         }
     }
 
 
-    fun putCategoriesDB(categories: List<CategoryEntity>) {
-        CoroutineScope(Dispatchers.IO).launch {
-            categoryDAO.insertCategories(categories)
+
+    //Funciones para el acceso a la base de datos
+    suspend fun getCategoriesDB(): List<CategoryEntity> {
+        return withContext(Dispatchers.IO) {
+            categoryDAO.getAllCategories()
         }
     }
 }

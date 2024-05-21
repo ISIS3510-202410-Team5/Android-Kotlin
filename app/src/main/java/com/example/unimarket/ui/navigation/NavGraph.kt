@@ -50,6 +50,7 @@ import com.example.unimarket.ui.shoppingcart.ShoppingCart
 import com.example.unimarket.ui.usuario.UserProfileScreen
 import com.example.unimarket.ui.usuario.UsuarioViewModel
 import com.example.unimarket.ui.usuario.shakeSlider
+import com.example.unimarket.ui.categoryList.CategoryList
 
 @Composable
 fun Nav(lightSensorViewModel: LightSensorViewModel){
@@ -118,6 +119,9 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
 
             composable(Screen.RecoverScreen.route) {
                 PasswordResetScreen(navController = navController,passwordrecoverviewmodel )
+            }
+            composable(Screen.CategoryScreen.route + "/{categoryName}"){
+                CategoryList(navController = navController, categoryName = it.arguments?.getString("categoryName") ?: "")
             }
             /*composable(Screen.UserProfile.route) {
                 UserProfileScreen(navController = navController, usuarioViewModel = UsuarioViewModel,,)
@@ -228,4 +232,6 @@ sealed class Screen(val route: String) {
     data object RecoverScreen: Screen(route = "RECOVER")
 
     data object LocationSliderScreen: Screen(route = "SliderLocation")
+
+    data object CategoryScreen: Screen(route = "CATEGORY")
 }

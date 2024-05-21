@@ -51,6 +51,11 @@ object AppModule
 
     @Provides
     @Singleton
+    @Named("categories")
+    fun provideCategoriesCollection(firestore: FirebaseFirestore) = firestore.collection("Categories")
+
+    @Provides
+    @Singleton
     fun providesFusedLocationProviderClient(
         application: Application
     ): FusedLocationProviderClient =
