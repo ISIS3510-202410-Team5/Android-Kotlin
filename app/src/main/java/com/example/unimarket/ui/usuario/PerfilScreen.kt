@@ -33,16 +33,56 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.sp
 
 
 @Composable
 fun UsuarioInfo(usuario: UsuarioDTO) {
     Column(modifier = Modifier.padding(16.dp)) {
-        Text(text = "Nombre: ${usuario.nombre}")
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(text = "Carrera: ${usuario.carrera}")
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(text = "Semestre: ${usuario.semestre}")
+        Text(
+            text = "Tu nombre es:",
+            fontSize = 14.sp,
+            color = Color.Gray,
+            fontFamily = FontFamily.SansSerif,
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
+        Text(
+            text = usuario.nombre,
+            fontSize = 16.sp,
+            color = Color.Black,
+            fontFamily = FontFamily.SansSerif
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "Tu carrera es:",
+            fontSize = 14.sp,
+            color = Color.Gray,
+            fontFamily = FontFamily.SansSerif,
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
+        Text(
+            text = usuario.carrera,
+            fontSize = 16.sp,
+            color = Color.Black,
+            fontFamily = FontFamily.SansSerif
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "Tu semestre es:",
+            fontSize = 14.sp,
+            color = Color.Gray,
+            fontFamily = FontFamily.SansSerif,
+            modifier = Modifier.padding(bottom = 4.dp)
+        )
+        Text(
+            text = usuario.semestre,
+            fontSize = 16.sp,
+            color = Color.Black,
+            fontFamily = FontFamily.SansSerif
+        )
     }
 }
 
@@ -50,8 +90,6 @@ fun UsuarioInfo(usuario: UsuarioDTO) {
 fun UsuarioScreen(viewModel: PerfilViewModel = hiltViewModel(), navController: NavHostController) {
     val auth: FirebaseAuth = Firebase.auth
     val currentUser = auth.currentUser
-
-    var modoEdicion by remember { mutableStateOf(false) }
 
     if (currentUser != null) {
         val correo = currentUser.email
@@ -79,7 +117,8 @@ fun UsuarioScreen(viewModel: PerfilViewModel = hiltViewModel(), navController: N
                             Spacer(modifier = Modifier.height(16.dp))
                             Button(onClick = {
                                 navController.navigate("EDIT")
-                            }) {
+                            },
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF5958))) {
                                 Text("Editar")
                             }
                         }
