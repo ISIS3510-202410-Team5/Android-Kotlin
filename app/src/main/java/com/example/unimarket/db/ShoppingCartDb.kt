@@ -13,7 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import javax.inject.Inject
 
 
-@Database(entities = [ProductoEntity::class, CategoryEntity::class], version = 2, exportSchema = false)
+@Database(entities = [ProductoEntity::class, CategoryEntity::class], version = 3, exportSchema = false)
 public abstract class ShoppingCartDb
 
     constructor(): RoomDatabase() {
