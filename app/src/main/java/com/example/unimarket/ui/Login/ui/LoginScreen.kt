@@ -29,9 +29,11 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import kotlinx.coroutines.Dispatchers
+import com.example.unimarket.di.SharedPreferenceService
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
@@ -87,6 +89,7 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
                             navController.navigate(route = "HOME"){
                                 popUpTo(route = "LOGIN"){inclusive = true}
                             }
+                            SharedPreferenceService.putCurrentUser(email)
                         }
                     }
                     catch (e:Exception) {

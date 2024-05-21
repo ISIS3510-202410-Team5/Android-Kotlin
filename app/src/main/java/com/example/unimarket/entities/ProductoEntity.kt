@@ -28,7 +28,9 @@ data class ProductoEntity(
     @ColumnInfo(name = "categories")
     val categories: String,
     @ColumnInfo(name = "fecha_publicacion")
-    val fecha_publicacion: String
+    val fecha_publicacion: String,
+    @ColumnInfo(name = "proveedor")
+    val proveedor: String
 ) {
 
     fun entityToDTO(): Product {
@@ -37,6 +39,6 @@ data class ProductoEntity(
 
         val date: Date = sdf.parse(fecha_publicacion)
 
-        return Product(id, coverUrl, title, precio, latitud, longitud, categories, related,date)
+        return Product(id, coverUrl, title, precio, latitud, longitud, categories, related,date,proveedor)
     }
 }
