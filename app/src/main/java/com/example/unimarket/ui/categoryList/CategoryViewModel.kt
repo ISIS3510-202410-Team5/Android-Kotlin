@@ -1,6 +1,7 @@
 package com.example.unimarket.ui.categoryList
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.unimarket.connection.ConnectivityObserver
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -39,31 +41,44 @@ constructor(
 
     fun assignCategory(category: String){
         _category.value = category
-        obtenerProductos()
+        obtenerProductosFirebase()
+        obtenerProductosCache()
+
+
+
     }
 
-    private fun obtenerProductos(){
+    private fun obtenerProductosCache(){
+        _productList.value = categoryRepository.getProductsCategoryCache(_category.value)
+        Log.d("CategoryViewModel", categoryRepository.getProductsCategoryCache(_category.value).toString())
+    }
 
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                connectivityObserver.observe().collect() {
-                    if (it != ConnectivityObserver.Status.Available) {
-                        _productList.value = categoryRepository.getProductsCategoryCache(_category.value)
-                    } else {
-                        categoryRepository.getProductsCategory(_category.value).onEach { result ->
-                            when (result) {
-                                is Result.Error -> _productList.value = listOf()
-                                is Result.Loading -> _productList.value = listOf()
-                                is Result.Success -> _productList.value = result.data ?: listOf()
-                            }
-                        }
 
-                    }
+    private fun obtenerProductosFirebase(){
+        Log.d("CategoryViewModel", "ObtenerProductosFirebase() invoqued")
+
+        val res = categoryRepository.getProductsCategory(_category.value).onEach {
+            result ->
+
+            when(result)
+            {
+                is Result.Error -> {
+                    Log.d("CategoryViewModel", "Failed in retrieving categories")
                 }
+                is Result.Loading -> {
+                    Log.d("CategoryViewModel", "Loading...")
+                }
+                is Result.Success -> {
+                    Log.d("CategoryViewModel", "Worked Correctly")
+                    if (result.data!!.isNotEmpty())
+                    {
+                        _productList.value = result.data
+                    }
+
+                }
+                else -> {}
             }
-        }
-
-
+        }.launchIn(viewModelScope)
     }
 
 }

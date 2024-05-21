@@ -1,5 +1,6 @@
 package com.example.unimarket.ui.categoryList
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,6 +31,8 @@ import com.example.unimarket.ui.navigation.Screen
 import com.example.unimarket.ui.theme.Bittersweet
 import com.example.unimarket.ui.theme.GiantsOrange
 import com.example.unimarket.ui.theme.UniMarketTheme
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Composable
 fun CategoryList(navController: NavHostController, categoryName: String) {
@@ -41,7 +44,10 @@ fun CategoryList(navController: NavHostController, categoryName: String) {
     val connectStatus by viewModel.connectivityObserver.observe().collectAsState(initial = ConnectivityObserver.Status.Losing)
 
     LaunchedEffect(Unit){
-        viewModel.assignCategory(categoryName)
+        withContext(Dispatchers.IO) {
+            Log.d("CategoryList", "LaunchedEffect Invoqued")
+            viewModel.assignCategory(categoryName)
+        }
     }
 
     Column(
@@ -56,7 +62,7 @@ fun CategoryList(navController: NavHostController, categoryName: String) {
                 .clip(CircleShape)
         )
         Text(
-            text = "Now showing results for: Something",
+            text = "Now showing results for: $categoryName",
             modifier = Modifier
                 .align(alignment = Alignment.Start)
                 .padding(horizontal = 20.dp),

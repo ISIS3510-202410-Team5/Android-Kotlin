@@ -11,6 +11,8 @@ class CategoryCache
 
     private val cache: ArrayMap<String, List<Product>> = ArrayMap()
 
+
+
     fun putProducts(key: String, products: List<Product>) {
         cache[key] = products
     }
@@ -21,4 +23,6 @@ class CategoryCache
     fun clearCache() {
         cache.clear()
     }
+
+
 }

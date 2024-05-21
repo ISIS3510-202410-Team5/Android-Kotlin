@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -51,6 +52,10 @@ constructor(
         return categoryCache.getProducts(category) ?: listOf()
     }
 
+    fun putProductsCategoryCache(category: String, products: List<Product>){
+        categoryCache.putProducts(category, products)
+    }
+
 
 
 
@@ -64,8 +69,9 @@ constructor(
             var filteredList: List<Product>
 
             val unfilteredProductList = productCollection.get().await().map{ document -> document.toObject(Product::class.java)}
+            Log.d("CategoryRepository",unfilteredProductList.toString())
 
-            CoroutineScope(Dispatchers.Default).launch {
+            /*CoroutineScope(Dispatchers.Default).launch {
                 filteredList = unfilteredProductList.filter {it.categories.contains(category)}
                 withContext(Dispatchers.IO) {
                     categoryCache.putProducts(category, filteredList)
@@ -75,8 +81,14 @@ constructor(
                     emit(Result.Success<List<Product>>(data = filteredList))
                 }
 
+            }*/
+            if (unfilteredProductList.isNotEmpty()) {
+                runBlocking(Dispatchers.Default) {filteredList = unfilteredProductList.filter { it.categories.contains(category) }}
+                withContext(Dispatchers.IO) {categoryCache.putProducts(category, filteredList)}
+            }else {
+                filteredList = listOf()
             }
-
+            emit(Result.Success<List<Product>>(data = filteredList))
 
 
         }
