@@ -77,6 +77,6 @@ constructor(
         val id = UUID.randomUUID().toString()
         val latitud = ""
         val longitud = ""
-        return Product(id, coverURL, title, precio, latitud, longitud, categories, "", Date())
+        return Product(id, coverURL, title, precio, latitud, longitud, categories, "", Date(), SharedPreferenceService.getCurrentUser() ?: "")
     }
 }
