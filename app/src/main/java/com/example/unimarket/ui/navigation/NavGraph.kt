@@ -29,6 +29,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.unimarket.repositories.PostRepository
 import androidx.navigation.navArgument
 import com.example.unimarket.repositories.UsuarioRepository
+import com.example.unimarket.ui.Chats.ChatViewModel
+import com.example.unimarket.ui.Chats.ListaDeChats
+import com.example.unimarket.ui.Chats.VistaDelChat
 import com.example.unimarket.ui.DetailProduct.DetailProduct
 import com.example.unimarket.ui.ListProducts.ListProductApp
 import com.example.unimarket.ui.SearchProduct.SearchProductApp
@@ -36,6 +39,8 @@ import com.example.unimarket.ui.Login.model.LoginModel
 import com.example.unimarket.ui.home.Home
 import com.example.unimarket.ui.Login.ui.LoginScreen
 import com.example.unimarket.ui.Login.ui.LoginViewModel
+import com.example.unimarket.ui.Login.ui.PasswordRecoverViewModel
+import com.example.unimarket.ui.Login.ui.PasswordResetScreen
 import com.example.unimarket.ui.Login.ui.SignUpScreen
 import com.example.unimarket.ui.Login.ui.SignUpViewModel
 import com.example.unimarket.ui.Login.ui.UserInfoScreen
@@ -46,7 +51,9 @@ import com.example.unimarket.ui.camera.ui.CameraViewModel
 import com.example.unimarket.ui.camera.ui.LightSensorViewModel
 import com.example.unimarket.ui.publishitem.PublishItem
 import com.example.unimarket.ui.shoppingcart.ShoppingCart
+import com.example.unimarket.ui.usuario.PerfilViewModel
 import com.example.unimarket.ui.usuario.UserProfileScreen
+import com.example.unimarket.ui.usuario.UsuarioScreen
 import com.example.unimarket.ui.usuario.UsuarioViewModel
 import com.example.unimarket.ui.usuario.shakeSlider
 
@@ -67,6 +74,11 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
     val cameraViewModel = remember {CameraViewModel()}
     /*val UsuarioViewModel = remember {UsuarioViewModel(usuariorepository)}*/
 
+    val passwordrecoverviewmodel = remember {PasswordRecoverViewModel()}
+
+    /*val UsuarioViewModel = remember {UsuarioViewModel(usuariorepository)}*/
+
+    val chatViewModel: ChatViewModel = hiltViewModel()
 
     Scaffold (
         bottomBar = {AppBottomNav(navController = navController)}
@@ -107,7 +119,7 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
             }
             composable(Screen.DetailProduct.route + "/{productId}") { backStackEntry ->
                 val productId = backStackEntry.arguments?.getString("productId") ?: ""
-                DetailProduct(navController = navController, productId = productId)
+                DetailProduct(navController = navController, productId = productId,chatViewModel = chatViewModel)
             }
             composable(Screen.InfoScreen.route) {
                 UserInfoScreen(navController = navController, viewModel =userInfoViewModel)
@@ -115,6 +127,21 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
             composable(Screen.LocationSliderScreen.route) {
                 LocationSlider(navController = navController)
             }
+
+            composable(Screen.RecoverScreen.route) {
+                PasswordResetScreen(navController = navController,passwordrecoverviewmodel )
+            }
+            composable(Screen.ListChats.route) {
+                ListaDeChats(navController = navController, chatViewModel = chatViewModel)
+            }
+            composable(Screen.ChatDetail.route + "/{chatId}") { backStackEntry ->
+                val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
+                VistaDelChat(chatId = chatId, chatViewModel = chatViewModel)
+            }
+            composable(Screen.PerfilScreen.route) {
+                UsuarioScreen(navController = navController)
+            }
+
             /*composable(Screen.UserProfile.route) {
                 UserProfileScreen(navController = navController, usuarioViewModel = UsuarioViewModel,,)
             }*/
@@ -127,7 +154,7 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
 fun AppBottomNav(navController: NavHostController){
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-    if (currentDestination?.route == Screen.LogIn.route || currentDestination?.route == Screen.SignUp.route|| currentDestination?.route == Screen.InfoScreen.route)
+    if (currentDestination?.route == Screen.LogIn.route || currentDestination?.route == Screen.SignUp.route|| currentDestination?.route == Screen.InfoScreen.route|| currentDestination?.route == Screen.RecoverScreen.route)
     {
         Log.d(null, "La ruta actual es ${currentDestination.route}")
     } else {
@@ -175,7 +202,7 @@ data class BottomNavigationItem(
             BottomNavigationItem(
                 label = "Msgs",
                 icon = Icons.Rounded.MailOutline,
-                route = Screen.UnderConstruction.route
+                route = Screen.ListChats.route
             ),
             BottomNavigationItem(
                 label = "Post",
@@ -191,7 +218,7 @@ data class BottomNavigationItem(
             BottomNavigationItem(
                 label = "User",
                 icon = Icons.Rounded.AccountCircle,
-                route = Screen.User.route
+                route = Screen.PerfilScreen.route
 
             )
 
@@ -221,5 +248,13 @@ sealed class Screen(val route: String) {
 
     data object InfoScreen: Screen(route = "INFO")
 
+    data object RecoverScreen: Screen(route = "RECOVER")
+
+    data object PerfilScreen: Screen(route = "PERFIL")
+
     data object LocationSliderScreen: Screen(route = "SliderLocation")
+
+    data object ListChats: Screen(route = "LISTCHATS")
+
+    data object ChatDetail: Screen(route = "CHAT")
 }

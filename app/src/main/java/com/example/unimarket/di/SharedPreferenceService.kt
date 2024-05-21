@@ -25,6 +25,7 @@ object SharedPreferenceService {
 
         sharedPreferences.edit().putFloat(context.getString(R.string.shakedetector), 15.0f).apply()
         sharedPreferences.edit().putFloat(context.getString(R.string.locationdist), 0.1f).apply()
+        sharedPreferences.edit().putString("currentUser", "").apply()
 
         /* Other values should be initialized using this same notation */
     }
@@ -120,5 +121,17 @@ object SharedPreferenceService {
         editor.remove("precio")
         editor.remove("categories")
         editor.apply()
+    }
+    fun getCurrentUser(): String? {
+        return sharedPreferences.getString(
+            /* key = */ "currentUser",
+            /* defValue = */ "")
+    }
+
+    suspend fun putCurrentUser(newThreshold: String): Unit= withContext(Dispatchers.IO) {
+        sharedPreferences.edit().putString(
+            /* key = */ "currentUser",
+            /* value = */ newThreshold
+        ).apply()
     }
 }
