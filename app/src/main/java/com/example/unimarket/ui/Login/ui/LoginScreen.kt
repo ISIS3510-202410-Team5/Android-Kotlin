@@ -37,7 +37,6 @@ import com.example.unimarket.di.SharedPreferenceService
 import com.example.unimarket.ui.ListProducts.ProductListViewModel
 import com.example.unimarket.ui.usuario.UsuarioViewModel
 import kotlinx.coroutines.Dispatchers
-import com.example.unimarket.di.SharedPreferenceService
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
