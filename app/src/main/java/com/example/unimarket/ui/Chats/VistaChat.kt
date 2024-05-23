@@ -22,7 +22,12 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBar
@@ -38,14 +43,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.unimarket.di.SharedPreferenceService
 import com.example.unimarket.ui.navigation.Screen
+import com.example.unimarket.ui.usuario.PerfilViewModel
 import com.example.unimarket.ui.usuario.UsuarioViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VistaDelChat(chatId: String, chatViewModel: ChatViewModel, navController: NavHostController) {
+fun VistaDelChat(chatId: String, chatViewModel: ChatViewModel, navController: NavHostController, perfilViewModel: PerfilViewModel) {
 
-@Composable
-fun VistaDelChat(chatId: String, chatViewModel: ChatViewModel) {
     val mensajes by chatViewModel.mensajes.collectAsState()
     val chatDetails by chatViewModel.chatDetails.collectAsState()
     val usuarioActual: String? = SharedPreferenceService.getCurrentUser()
@@ -81,7 +85,11 @@ fun VistaDelChat(chatId: String, chatViewModel: ChatViewModel) {
                 ) {
 
                     IconButton(onClick = { navController.navigate(Screen.InfoChat.route + "/${chatId}") }) {
-                        Icon(Icons.Default.Info, contentDescription = "Chat Detail", modifier = Modifier.size(24.dp))
+                        Icon(
+                            Icons.Default.Info,
+                            contentDescription = "Chat Detail",
+                            modifier = Modifier.size(24.dp)
+                        )
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Chat Title", style = MaterialTheme.typography.bodyLarge)
@@ -126,9 +134,15 @@ fun MessageBubble(
     text: String,
     isCurrentUser: Boolean
 ) {
-    val backgroundColor = if (isCurrentUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
+    val backgroundColor =
+        if (isCurrentUser) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
     val alignment = if (isCurrentUser) Alignment.CenterEnd else Alignment.CenterStart
-    val bubbleShape = if (isCurrentUser) RoundedCornerShape(12.dp, 12.dp, 0.dp, 12.dp) else RoundedCornerShape(12.dp, 12.dp, 12.dp, 0.dp)
+    val bubbleShape = if (isCurrentUser) RoundedCornerShape(
+        12.dp,
+        12.dp,
+        0.dp,
+        12.dp
+    ) else RoundedCornerShape(12.dp, 12.dp, 12.dp, 0.dp)
 
     Box(
         modifier = Modifier

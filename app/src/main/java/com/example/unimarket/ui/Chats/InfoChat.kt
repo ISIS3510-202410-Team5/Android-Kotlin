@@ -23,10 +23,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.unimarket.di.SharedPreferenceService
 import com.example.unimarket.ui.navigation.Screen
+import com.example.unimarket.ui.usuario.PerfilViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InfoChat(navController: NavController, chatId: String, chatViewModel: ChatViewModel) {
+fun InfoChat(navController: NavController, chatId: String, chatViewModel: ChatViewModel, perfilViewModel: PerfilViewModel) {
 
     val chatDetails by chatViewModel.chatDetails.collectAsState()
     val usuarioActual: String? = SharedPreferenceService.getCurrentUser()

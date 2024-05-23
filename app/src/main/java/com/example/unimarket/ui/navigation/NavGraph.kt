@@ -75,6 +75,7 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
     val userInfoViewModel= remember {UserInfoViewModel(loginModel,signUpViewModel)}
 
     val chatViewModel: ChatViewModel = hiltViewModel()
+    val perfilviewModel: PerfilViewModel = hiltViewModel()
     val passwordrecoverviewmodel = remember {PasswordRecoverViewModel()}
 
     /*val UsuarioViewModel = remember {UsuarioViewModel(usuariorepository)}*/
@@ -131,7 +132,7 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
                 PasswordResetScreen(navController = navController,passwordrecoverviewmodel )
             }
             composable(Screen.PerfilScreen.route) {
-                UsuarioScreen(navController = navController)
+                UsuarioScreen(viewModel=perfilviewModel,navController = navController)
             }
             composable(Screen.EditScreen.route) {
                 EditarUsuarioScreen(navController = navController)
@@ -143,15 +144,15 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
                 UserProfileScreen(navController = navController, usuarioViewModel = UsuarioViewModel,,)
             }*/
             composable(Screen.ListChats.route) {
-                ListaDeChats(navController = navController, chatViewModel = chatViewModel)
+                ListaDeChats(navController = navController, chatViewModel = chatViewModel, perfilViewModel = perfilviewModel)
             }
             composable(Screen.ChatDetail.route + "/{chatId}") { backStackEntry ->
                 val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
-                VistaDelChat(chatId = chatId, chatViewModel = chatViewModel,navController = navController)
+                VistaDelChat(chatId = chatId, chatViewModel = chatViewModel,navController = navController, perfilViewModel = perfilviewModel)
             }
             composable(Screen.InfoChat.route + "/{chatId}") { backStackEntry ->
                 val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
-                InfoChat(chatId = chatId, chatViewModel = chatViewModel,navController = navController)
+                InfoChat(chatId = chatId, chatViewModel = chatViewModel,navController = navController, perfilViewModel = perfilviewModel)
             }
         }
     }
