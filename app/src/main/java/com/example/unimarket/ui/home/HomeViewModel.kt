@@ -91,6 +91,9 @@ constructor
                     Log.d("HomeViewModel", "entra al if con $it")
                     getCategories()
                 }
+                else {
+                    getCategoriesDB()
+                }
 
             }
         }
@@ -102,7 +105,6 @@ constructor
         //} }
         //if (connected) {
         getRegUsers()
-        //getCategoriesDB()
         //}
     }
 
