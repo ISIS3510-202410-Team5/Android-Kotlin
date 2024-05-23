@@ -29,6 +29,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.unimarket.repositories.UsuarioRepository
 import com.example.unimarket.ui.Chats.ChatViewModel
+import com.example.unimarket.ui.Chats.InfoChat
 import com.example.unimarket.ui.Chats.ListaDeChats
 import com.example.unimarket.ui.Chats.VistaDelChat
 import com.example.unimarket.ui.DetailProduct.DetailProduct
@@ -139,7 +140,11 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
             }
             composable(Screen.ChatDetail.route + "/{chatId}") { backStackEntry ->
                 val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
-                VistaDelChat(chatId = chatId, chatViewModel = chatViewModel)
+                VistaDelChat(chatId = chatId, chatViewModel = chatViewModel,navController = navController)
+            }
+            composable(Screen.InfoChat.route + "/{chatId}") { backStackEntry ->
+                val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
+                InfoChat(chatId = chatId, chatViewModel = chatViewModel,navController = navController)
             }
         }
     }
@@ -253,4 +258,6 @@ sealed class Screen(val route: String) {
     data object ListChats: Screen(route = "LISTCHATS")
 
     data object ChatDetail: Screen(route = "CHAT")
+
+    data object InfoChat: Screen(route = "INFOCHAT")
 }
