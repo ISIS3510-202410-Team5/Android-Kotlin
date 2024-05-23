@@ -5,8 +5,9 @@ data class UsuarioDTO(
     val nombre: String = "",
     val carrera: String = "",
     val semestre: String = "",
-    val shake: String = ""
+    val shake: String = "",
+    val profileImageUrl: String? = ""
 )
 {
-    constructor(): this("","","","", "")
+    constructor(): this("","","","", "","")
 }

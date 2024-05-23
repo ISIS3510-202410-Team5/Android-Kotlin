@@ -1,6 +1,7 @@
 package com.example.unimarket.ui.usuario
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -111,7 +112,15 @@ fun UsuarioScreen(viewModel: PerfilViewModel = hiltViewModel(), navController: N
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(text = "Correo: ${usuario.correo}")
-                            HeaderImage()
+                            ProfileImage(imageUrl = usuario.profileImageUrl)
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                text = "Editar imagen",
+                                color = Color.Blue,
+                                modifier = Modifier.clickable {
+                                    navController.navigate("EDITIMG")
+                                }
+                            )
                             Spacer(modifier = Modifier.height(16.dp))
                             UsuarioInfo(usuario)
                             Spacer(modifier = Modifier.height(16.dp))
@@ -132,6 +141,16 @@ fun UsuarioScreen(viewModel: PerfilViewModel = hiltViewModel(), navController: N
         }
     } else {
         // No hay usuario autenticado no debería pasar en ningún caso
+    }
+}
+
+@Composable
+fun ProfileImage(imageUrl: String?) {
+    if (imageUrl.isNullOrEmpty()) {
+        HeaderImage()
+    } else {
+        GlideImage(imageUrl
+        )
     }
 }
 

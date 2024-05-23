@@ -50,6 +50,7 @@ import com.example.unimarket.ui.camera.ui.CameraViewModel
 import com.example.unimarket.ui.camera.ui.LightSensorViewModel
 import com.example.unimarket.ui.publishitem.PublishItem
 import com.example.unimarket.ui.shoppingcart.ShoppingCart
+import com.example.unimarket.ui.usuario.CambioImagenPerfil
 import com.example.unimarket.ui.usuario.EditarUsuarioScreen
 import com.example.unimarket.ui.usuario.PerfilViewModel
 import com.example.unimarket.ui.usuario.UserProfileScreen
@@ -140,6 +141,9 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
             }
             composable(Screen.EditScreen.route) {
                 EditarUsuarioScreen(navController = navController)
+            }
+            composable(Screen.EditImgScreen.route) {
+                CambioImagenPerfil(navController = navController)
             }
             /*composable(Screen.UserProfile.route) {
                 UserProfileScreen(navController = navController, usuarioViewModel = UsuarioViewModel,,)
@@ -252,6 +256,8 @@ sealed class Screen(val route: String) {
     data object PerfilScreen: Screen(route = "PERFIL")
 
     data object EditScreen: Screen(route = "EDIT")
+
+    data object EditImgScreen: Screen(route = "EDITIMG")
 
     data object LocationSliderScreen: Screen(route = "SliderLocation")
 
