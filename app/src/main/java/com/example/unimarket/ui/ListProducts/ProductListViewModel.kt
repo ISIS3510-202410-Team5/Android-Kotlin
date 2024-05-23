@@ -85,10 +85,9 @@ constructor
 
                         Log.d("", "esto es una prueba")
 
-                        _state.value =
-                            ProductListState(productos = result.data ?: emptyList())
 
                         viewModelScope.launch(Dispatchers.IO) {
+                            _state.value = ProductListState(productos = result.data ?: emptyList())
                             _state.value.productos.forEach { product ->
                                 productCache.putProduct(product.id, product)
                             }

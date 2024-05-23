@@ -108,7 +108,7 @@ constructor(
 
             CoroutineScope(Dispatchers.IO).launch{
                 for (index in CategoryList.indices) {
-                    categoryDAO.insertCategories(category = CategoryEntity(id = index.toString(), catName = CategoryList[index]))
+                    categoryDAO.insertCategories(category = CategoryEntity(id = index, catName = CategoryList[index]))
                 }
             }
 
