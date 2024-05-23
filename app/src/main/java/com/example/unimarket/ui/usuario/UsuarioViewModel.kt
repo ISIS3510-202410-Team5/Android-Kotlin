@@ -20,8 +20,6 @@ class UsuarioViewModel
     private val _usuarioData = MutableStateFlow<com.example.unimarket.repositories.Result<UsuarioDTO>>(com.example.unimarket.repositories.Result.Loading())
     val usuarioData: StateFlow<com.example.unimarket.repositories.Result<UsuarioDTO>> = _usuarioData
 
-    var correoUsuario: String = ""
-
     fun obtenerDatosUsuario(correo: String) {
         viewModelScope.launch {
             usuarioRepository.obtenerDatosUsuario(correo).collect { result ->
@@ -29,21 +27,6 @@ class UsuarioViewModel
             }
         }
     }
-
-    fun setCorreoUsuarioApp(correo: String)
-    {
-
-        correoUsuario = correo
-
-    }
-
-    fun getCorreoUsuarioApp(): String
-    {
-
-        return correoUsuario
-
-    }
 }
-
 
 

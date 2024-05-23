@@ -74,11 +74,3 @@ fun UserProfileScreen(
     }
 }
 
-@Composable
-fun HeaderImage() {
-    Image(
-        painter = painterResource(id = R.drawable.fotousuario),
-        contentDescription = "User Profile Image",
-        modifier = Modifier.size(150.dp)
-    )
-}

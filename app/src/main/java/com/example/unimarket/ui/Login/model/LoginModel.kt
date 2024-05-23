@@ -29,11 +29,21 @@ class LoginModel{
         }
     }
 
-    // Clase de excepción personalizada para manejar errores de inicio de sesión
+    suspend fun resetPassword(email: String) {
+        try {
+            FirebaseAuth.getInstance().sendPasswordResetEmail(email).await()
+            
+        } catch (e: Exception) {
+            throw PasswordResetException("Error al enviar el correo de recuperación: ${e.message}")
+        }
+    }
+
     class LoginException(message: String) : Exception(message)
 
-    // Clase de excepción personalizada para manejar errores de registro de usuario
+
     class SignUpException(message: String) : Exception(message)
+
+    class PasswordResetException(message: String) : Exception(message)
 
     suspend fun guardarDatosUsuario(correo:String?,password:String?,nombre: String, carrera: String, semestre: String): Boolean {
         return try {
@@ -51,6 +61,14 @@ class LoginModel{
                 usuariosCollection.document(correo).set(datosUsuario).await()
             }
             true
+        } catch (e: Exception) {
+            false
+        }
+    }
+    suspend fun verificarCorreoExistente(correo: String): Boolean {
+        return try {
+            val querySnapshot = usuariosCollection.whereEqualTo("correo", correo).get().await()
+            !querySnapshot.isEmpty
         } catch (e: Exception) {
             false
         }

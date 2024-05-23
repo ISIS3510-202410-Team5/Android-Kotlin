@@ -64,16 +64,6 @@ class CameraViewModel : ViewModel() {
         return null
     }
 
-
-    fun showCapturedPhoto(context: Context) {
-        imageUri.value?.let { uri ->
-            val intent = Intent(Intent.ACTION_VIEW).apply {
-                setDataAndType(uri, "image/*")
-                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            }
-            context.startActivity(intent)
-        }
-    }
     fun uploadImageToFirebase(uri: Uri) {
         val storageRef = Firebase.storage.reference
         val imagesRef = storageRef.child("images/${UUID.randomUUID()}")

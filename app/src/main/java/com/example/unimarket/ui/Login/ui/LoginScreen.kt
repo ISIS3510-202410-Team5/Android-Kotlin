@@ -29,12 +29,15 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.unimarket.di.SharedPreferenceService
 import com.example.unimarket.ui.ListProducts.ProductListViewModel
 import com.example.unimarket.ui.usuario.UsuarioViewModel
+import kotlinx.coroutines.Dispatchers
+import com.example.unimarket.di.SharedPreferenceService
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
@@ -108,6 +111,8 @@ fun Login(modifier: Modifier, viewModel: LoginViewModel, navController: NavHostC
 
         Spacer(modifier = Modifier.padding(16.dp))
         SignUpText(navController = navController)
+        Spacer(modifier = Modifier.padding(16.dp))
+        PasswordRecoveryText(navController = navController)
     }
     }
 }
@@ -165,6 +170,25 @@ fun SignUpText(navController: NavHostController) {
         fontFamily = FontFamily.SansSerif
         )
 }
+
+
+@Composable
+fun PasswordRecoveryText(navController: NavHostController) {
+    { TODO("Aqui toca colocar la parte de navegacion hacia Sign UP screen") }
+    Text(text = "Recover Password",
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentSize(Alignment.Center)
+            .clickable {
+                Log.d(null, "se presiona botton de sign up")
+                navController.navigate("RECOVER")
+            },
+        fontSize = 15.sp,
+        color = Color(0xFFFF5958),
+        fontFamily = FontFamily.SansSerif
+    )
+}
+
 
 @Composable
 fun EmailText() {
