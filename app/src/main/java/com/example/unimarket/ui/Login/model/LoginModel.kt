@@ -45,7 +45,7 @@ class LoginModel{
 
     class PasswordResetException(message: String) : Exception(message)
 
-    suspend fun guardarDatosUsuario(correo:String?,password:String?,nombre: String, carrera: String, semestre: String): Boolean {
+    suspend fun guardarDatosUsuario(correo:String?,password:String?,nombre: String, carrera: String, semestre: String,profileImageUrl: String? = ""): Boolean {
         return try {
             /*Crear un objeto Map con los datos del usuario*/
             val datosUsuario = mapOf(
@@ -53,7 +53,8 @@ class LoginModel{
                 "password" to password,
                 "nombre" to nombre,
                 "carrera" to carrera,
-                "semestre" to semestre
+                "semestre" to semestre,
+                "profileImageUrl" to profileImageUrl
             )
 
             /*Agregar los datos a la colección de usuarios en Firestore*/

@@ -15,6 +15,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -46,7 +48,7 @@ fun ListaDeChats(chatViewModel: ChatViewModel, navController: NavHostController)
                 .fillMaxWidth()
                 .padding(16.dp)
         )
-        
+
         Spacer(modifier = Modifier.size(14.dp))
 
         LazyColumn(modifier = Modifier.fillMaxSize()) { // Use fillMaxSize to occupy the available space
