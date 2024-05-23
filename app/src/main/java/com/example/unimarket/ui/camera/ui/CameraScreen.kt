@@ -123,17 +123,19 @@ fun CameraScreen(
 
         }
         /*Button(
-            onClick = { imageUri?.let { uri -> viewModel.uploadImageToFirebase(uri) } },
+            onClick = { imageUri?.let { uri -> viewModel.uploadImageToFirebase(uri) }
+                      },
             modifier = Modifier.padding(16.dp),
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color(0xFF4CAF50),
                 contentColor = Color.White
             )
         ) {
-            Text("Save Image")
+            Text("Upload Image :D")
         }*/
         Button(
             onClick = { imageUri?.let { uri ->
+                viewModel.uploadImageToFirebase(uri)
                 navigateToAnotherView(navController, imageUri!!) } },
             modifier = Modifier.padding(16.dp),
             colors = ButtonDefaults.buttonColors(
