@@ -52,26 +52,24 @@ class ChatProductViewModel @Inject constructor(
     }
 
     private fun getProductList() {
-        viewModelScope.launch {
-            productoRepository.getProductList().onEach { result ->
-                when (result) {
-                    is Result.Error -> {
-                        _state.value = ProductListState(error = result.message ?: "Error inesperado")
-                    }
-                    is Result.Loading -> {
-                        _state.value = ProductListState(isLoading = true)
-                    }
-                    is Result.Success -> {
-                        _state.value = ProductListState(productos = result.data ?: emptyList())
-                        viewModelScope.launch(Dispatchers.IO) {
-                            _state.value.productos.forEach { product ->
-                                productCache.putProduct(product.id, product)
-                            }
+        productoRepository.getProductList().onEach { result ->
+            when (result) {
+                is Result.Error -> {
+                    _state.value = ProductListState(error = result.message ?: "Error inesperado")
+                }
+                is Result.Loading -> {
+                    _state.value = ProductListState(isLoading = true)
+                }
+                is Result.Success -> {
+                    _state.value = ProductListState(productos = result.data ?: emptyList())
+                    viewModelScope.launch(Dispatchers.IO) {
+                        _state.value.productos.forEach { product ->
+                            productCache.putProduct(product.id, product)
                         }
                     }
                 }
-            }.launchIn(viewModelScope)
-        }
+            }
+        }.launchIn(viewModelScope)
     }
 
     fun getProductById(productId: String) {
