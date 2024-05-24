@@ -69,50 +69,12 @@ constructor
 
     fun getProductList()
     {
-        if (productCache.getProducts().isEmpty()) {
-
-            productoRepository.getProductList().onEach { result ->
-
-                when (result) {
-                    is Result.Error -> {
-
-                        _state.value =
-                            ProductListState(error = result.message ?: "Error inesperado")
-                    }
-
-                    is Result.Loading -> {
-
-                        _state.value = ProductListState(isLoading = true)
-                    }
-
-                    is Result.Success -> {
-
-                        Log.d("", "esto es una prueba")
-
-                        _state.value =
-                            ProductListState(productos = result.data ?: emptyList())
-
-                        viewModelScope.launch(Dispatchers.IO) {
-                            _state.value.productos.forEach { product ->
-                                productCache.putProduct(product.id, product)
-                            }
-                        }
-                    }
-
-                    else -> {}
-                }
-            }.launchIn(viewModelScope)
-
-        }else {
-
-            viewModelScope.launch(Dispatchers.IO) {
-                val productListState =
-                    ProductListState(productos = productCache.getProducts() ?: emptyList())
-                withContext(Dispatchers.Main) {
-                    _state.value = productListState
-                }
+        viewModelScope.launch(Dispatchers.IO) {
+            val productListState =
+                ProductListState(productos = productCache.getProducts() ?: emptyList())
+            withContext(Dispatchers.Main) {
+                _state.value = productListState
             }
-
         }
 
     }
