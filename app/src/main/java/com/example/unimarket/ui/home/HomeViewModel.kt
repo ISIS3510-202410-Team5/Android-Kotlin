@@ -23,6 +23,7 @@ import com.example.unimarket.repositories.UserRepository
 import com.example.unimarket.ui.ListProducts.ProductListState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -87,12 +88,8 @@ constructor
         viewModelScope.launch {
             connectivityRepository.isConnected.collect() {
                 Log.d("HomeViewModel", "$it")
-                if (it){
+                if (it) {
                     Log.d("HomeViewModel", "entra al if con $it")
-                    getCategories()
-                }
-                else {
-                    getCategoriesDB()
                 }
 
             }
@@ -104,7 +101,7 @@ constructor
         //    connected = it
         //} }
         //if (connected) {
-        getRegUsers()
+        //getRegUsers()
         //}
     }
 
@@ -147,7 +144,10 @@ constructor
                 }
                 is Result.Success -> {
                     Log.d("HomeViewModel", "Worked Correctly")
-                    getCategoriesDB()
+                    withContext(Dispatchers.Main){
+                        delay(500)
+                        getCategoriesDB()
+                    }
                 }
                 else -> {}
             }
