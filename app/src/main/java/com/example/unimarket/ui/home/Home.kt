@@ -76,6 +76,7 @@ import com.example.unimarket.ui.theme.CoolGray
 import com.example.unimarket.ui.theme.GiantsOrange
 import com.example.unimarket.ui.theme.Licorice
 import com.example.unimarket.ui.theme.UniMarketTheme
+import kotlinx.coroutines.delay
 
 @Composable
 fun Home(navController: NavHostController) {
@@ -108,14 +109,26 @@ fun Home(navController: NavHostController) {
 
     var isEnabled by remember { mutableStateOf(false) }
 
-    LaunchedEffect(viewModel.isOnline) {
-        viewModel.isOnline.collect { isOnline ->
-            isEnabled = isOnline
-            if (isOnline)
-            {
-                viewModel.getRegUsers()
-                viewModel.getCategories()
+    LaunchedEffect(isEnabled) {
+
+        if (isEnabled) {
+            viewModel.isOnline.collect { isOnline ->
+                isEnabled = isOnline
             }
+        }
+
+    }
+
+    LaunchedEffect(connectStatus) {
+
+        if (connectStatus == ConnectivityObserver.Status.Available){
+            viewModel.getRegUsers()
+        }
+
+        viewModel.getCategoriesDB()
+        delay(500)
+        if (catList.isEmpty() && connectStatus == ConnectivityObserver.Status.Available) {
+            viewModel.getCategories()
         }
 
     }
