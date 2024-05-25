@@ -220,6 +220,16 @@ fun Home(navController: NavHostController) {
                     navController = navController
                 )
             }
+        } else {
+            Text(
+                text = "No recommended categories found. Connect to network to start browsing",
+                modifier = Modifier
+                    .align(alignment = Alignment.CenterHorizontally)
+                    .padding(10.dp),
+                fontSize = 15.sp,
+                fontFamily = FontFamily.SansSerif,
+                color = GiantsOrange
+            )
         }
 
     }
