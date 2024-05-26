@@ -22,6 +22,8 @@ import android.util.Log
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.unimarket.connection.ConnectivityObserver
+import com.example.unimarket.connection.NetworkConnectivityObserver
 import com.google.firebase.Firebase
 import com.google.firebase.storage.storage
 import kotlinx.coroutines.Dispatchers
@@ -38,6 +40,8 @@ class CameraViewModel : ViewModel() {
 
     private val _imageFirestoreURL = MutableStateFlow<String>("")
     val imageFirestoreURL : StateFlow<String> = _imageFirestoreURL
+
+    var connectivityObserver : ConnectivityObserver? = null
 
     fun captureImage(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -95,6 +99,10 @@ class CameraViewModel : ViewModel() {
             Log.d("CameraViewModel",it.toString())
             _imageFirestoreURL.value = it.toString()
         }
+    }
+
+    fun initConnectivityObserver(context: Context) {
+        connectivityObserver = NetworkConnectivityObserver(context)
     }
 
 

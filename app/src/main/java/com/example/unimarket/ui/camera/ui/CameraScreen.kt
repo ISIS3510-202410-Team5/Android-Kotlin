@@ -18,6 +18,7 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -34,7 +35,9 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.rememberImagePainter
+import com.example.unimarket.connection.ConnectivityObserver
 import com.example.unimarket.ui.navigation.Screen
+import com.example.unimarket.ui.publishitem.Fallback
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.IOException
@@ -64,65 +67,72 @@ fun CameraScreen(
         imageUri = uri
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Spacer(modifier = Modifier.height(16.dp))
+    if (viewModel.connectivityObserver == null){
+        viewModel.initConnectivityObserver(context.applicationContext)
+    }
+    val connectStatus  by viewModel.connectivityObserver!!.observe().collectAsState(initial = ConnectivityObserver.Status.Losing)
 
 
-        imageUri?.let { uri ->
-            Image(
-                painter = rememberImagePainter(uri),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(400.dp)
-                    .padding(16.dp)
-            )
-        }
-
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()
+    if (connectStatus == ConnectivityObserver.Status.Available) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(
-                onClick = {
-                    if (lightValue != null && lightValue!! < 1) {
-                        Toast.makeText(
-                            context,
-                            "The environment is too dark to capture an image",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } else {
-                        viewModel.captureImage(context)
-                    }
-                },
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xFFFF5958),
-                    contentColor = Color.White
-                )
-            ) {
-                Text("Capture Image")
-            }
-            
-            Button(
-                onClick = {
-                    launcher.launch("image/*")
-                },
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xFF42A5F5),
-                    contentColor = Color.White
-                )
-            ) {
-                Text("Choose Image")
-            }
+            Spacer(modifier = Modifier.height(16.dp))
 
 
-        }
-        /*Button(
+            imageUri?.let { uri ->
+                Image(
+                    painter = rememberImagePainter(uri),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(400.dp)
+                        .padding(16.dp)
+                )
+            }
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Button(
+                    onClick = {
+                        if (lightValue != null && lightValue!! < 1) {
+                            Toast.makeText(
+                                context,
+                                "The environment is too dark to capture an image",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            viewModel.captureImage(context)
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color(0xFFFF5958),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text("Capture Image")
+                }
+
+                Button(
+                    onClick = {
+                        launcher.launch("image/*")
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color(0xFF42A5F5),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Text("Choose Image")
+                }
+
+
+            }
+            /*Button(
             onClick = { imageUri?.let { uri -> viewModel.uploadImageToFirebase(uri) }
                       },
             modifier = Modifier.padding(16.dp),
@@ -133,21 +143,26 @@ fun CameraScreen(
         ) {
             Text("Upload Image :D")
         }*/
-        Button(
-            onClick = { imageUri?.let { uri ->
-                viewModel.uploadImageToFirebase(uri)
-                navigateToAnotherView(navController, imageUri!!) } },
-            modifier = Modifier.padding(16.dp),
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = Color(0xFF4CAF50),
-                contentColor = Color.White
-            )
-        ) {
-            Text("Save Image")
+            Button(
+                onClick = {
+                    imageUri?.let { uri ->
+                        viewModel.uploadImageToFirebase(uri)
+                        navigateToAnotherView(navController, imageUri!!)
+                    }
+                },
+                modifier = Modifier.padding(16.dp),
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(0xFF4CAF50),
+                    contentColor = Color.White
+                )
+            ) {
+                Text("Save Image")
+            }
+
+
         }
-
-
-
+    } else {
+        Fallback()
     }
 
 }
