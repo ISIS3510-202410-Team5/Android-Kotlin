@@ -1,5 +1,6 @@
 package com.example.unimarket.ui.usuario
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -12,13 +13,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -32,65 +29,89 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import coil.compose.rememberImagePainter
 
 
 @Composable
 fun UsuarioInfo(usuario: UsuarioDTO) {
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text(
-            text = "Tu nombre es:",
-            fontSize = 14.sp,
-            color = Color.Gray,
-            fontFamily = FontFamily.SansSerif,
-            modifier = Modifier.padding(bottom = 4.dp)
-        )
-        Text(
-            text = usuario.nombre,
-            fontSize = 16.sp,
-            color = Color.Black,
-            fontFamily = FontFamily.SansSerif
-        )
-        Spacer(modifier = Modifier.height(16.dp))
+    Card(
+        shape = RoundedCornerShape(16.dp),
+        elevation = 8.dp,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(
+                text = "Tu nombre es:",
+                fontSize = 14.sp,
+                color = Color.Gray,
+                fontFamily = FontFamily.SansSerif,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+            Text(
+                text = usuario.nombre,
+                fontSize = 16.sp,
+                color = Color.Black,
+                fontFamily = FontFamily.SansSerif,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            Divider(color = Color.LightGray, thickness = 1.dp)
 
-        Text(
-            text = "Tu carrera es:",
-            fontSize = 14.sp,
-            color = Color.Gray,
-            fontFamily = FontFamily.SansSerif,
-            modifier = Modifier.padding(bottom = 4.dp)
-        )
-        Text(
-            text = usuario.carrera,
-            fontSize = 16.sp,
-            color = Color.Black,
-            fontFamily = FontFamily.SansSerif
-        )
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
-        Text(
-            text = "Tu semestre es:",
-            fontSize = 14.sp,
-            color = Color.Gray,
-            fontFamily = FontFamily.SansSerif,
-            modifier = Modifier.padding(bottom = 4.dp)
-        )
-        Text(
-            text = usuario.semestre,
-            fontSize = 16.sp,
-            color = Color.Black,
-            fontFamily = FontFamily.SansSerif
-        )
+            Text(
+                text = "Tu carrera es:",
+                fontSize = 14.sp,
+                color = Color.Gray,
+                fontFamily = FontFamily.SansSerif,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+            Text(
+                text = usuario.carrera,
+                fontSize = 16.sp,
+                color = Color.Black,
+                fontFamily = FontFamily.SansSerif,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            Divider(color = Color.LightGray, thickness = 1.dp)
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Tu semestre es:",
+                fontSize = 14.sp,
+                color = Color.Gray,
+                fontFamily = FontFamily.SansSerif,
+                modifier = Modifier.padding(bottom = 4.dp)
+            )
+            Text(
+                text = usuario.semestre,
+                fontSize = 16.sp,
+                color = Color.Black,
+                fontFamily = FontFamily.SansSerif
+            )
+        }
     }
 }
 
 @Composable
-fun UsuarioScreen(viewModel: PerfilViewModel, navController: NavHostController) {
+fun UsuarioScreen(viewModel: PerfilViewModel = hiltViewModel(), navController: NavHostController) {
     val auth: FirebaseAuth = Firebase.auth
     val currentUser = auth.currentUser
+    val context = LocalContext.current
+    var toast: Toast? = null
 
     if (currentUser != null) {
         val correo = currentUser.email
@@ -98,37 +119,95 @@ fun UsuarioScreen(viewModel: PerfilViewModel, navController: NavHostController) 
             val usuarioState by viewModel.obtenerUsuarioPorCorreo(correo).observeAsState()
 
             if (usuarioState == null) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
-                }
-            } else {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        CircularProgressIndicator()
+                        Text(
+                            text = "Do You Have Internet Connection?\nPlease refresh the screen",
+                            color = Color(0xFFFF5958),
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                    }
+                }
+            }
+            else {
+                val isNetworkAvailable = viewModel.isNetworkAvailable(LocalContext.current)
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color(0xFFF0F0F0)),
+                    contentAlignment = Alignment.TopCenter
+                ) {
                     usuarioState?.let { usuario ->
+                        val context = LocalContext.current // Obtenemos el contexto local
+
                         Column(
-                            modifier = Modifier.padding(16.dp),
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .fillMaxWidth(),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Text(text = "Correo: ${usuario.correo}")
+                            Text(
+                                text = "Correo: ${usuario.correo}",
+                                fontSize = 14.sp,
+                                color = Color.Gray,
+                                fontFamily = FontFamily.SansSerif,
+                                modifier = Modifier.padding(bottom = 8.dp)
+                            )
                             ProfileImage(imageUrl = usuario.profileImageUrl)
                             Spacer(modifier = Modifier.height(16.dp))
-                            Text(
-                                text = "Editar imagen",
-                                color = Color.Blue,
-                                modifier = Modifier.clickable {
-                                    navController.navigate("EDITIMG")
-                                }
-                            )
+                            Button(
+                                onClick = {
+                                    if (viewModel.isNetworkAvailable(context)) {
+                                        try {
+                                            navController.navigate("EDITIMG")
+                                        } catch (e: Exception) {
+                                            toast?.cancel()
+                                            toast = Toast.makeText(context, "Error al guardar la imagen", Toast.LENGTH_SHORT)
+                                            toast?.show()
+                                        }
+
+                                    } else {
+                                        toast?.cancel()
+                                        toast = Toast.makeText(context, "No hay conectividad a internet", Toast.LENGTH_SHORT)
+                                        toast?.show()
+                                    }
+                                },
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF5958))
+                            ) {
+                                Text("Editar Imagen")
+                            }
+
                             Spacer(modifier = Modifier.height(16.dp))
                             UsuarioInfo(usuario)
                             Spacer(modifier = Modifier.height(16.dp))
-                            Button(onClick = {
-                                navController.navigate("EDIT")
-                            },
-                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF5958))) {
-                                Text("Editar")
+                            Button(
+                                onClick = {
+                                    if (viewModel.isNetworkAvailable(context)) {
+                                        try {
+                                            navController.navigate("EDIT")
+                                        } catch (e: Exception) {
+                                            toast?.cancel()
+                                            toast = Toast.makeText(context, "Error al guardar la imagen", Toast.LENGTH_SHORT)
+                                            toast?.show()
+                                        }
+
+                                    } else {
+                                        toast?.cancel()
+                                        toast = Toast.makeText(context, "No hay conectividad a internet", Toast.LENGTH_SHORT)
+                                        toast?.show()
+                                    }
+                                },
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF5958))
+                            ) {
+                                Text("Editar Informacion")
                             }
                         }
                     } ?: run {
@@ -149,7 +228,14 @@ fun ProfileImage(imageUrl: String?) {
     if (imageUrl.isNullOrEmpty()) {
         HeaderImage()
     } else {
-        GlideImage(imageUrl
+        Image(
+            painter = rememberImagePainter(imageUrl),
+            contentDescription = "User Profile Image",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .size(150.dp)
+                .clip(CircleShape)
+                .background(Color.Gray)
         )
     }
 }
@@ -159,6 +245,10 @@ fun HeaderImage() {
     Image(
         painter = painterResource(id = R.drawable.fotousuario),
         contentDescription = "User Profile Image",
-        modifier = Modifier.size(150.dp)
+        contentScale = ContentScale.Crop,
+        modifier = Modifier
+            .size(150.dp)
+            .clip(CircleShape)
+            .background(Color.Gray)
     )
 }

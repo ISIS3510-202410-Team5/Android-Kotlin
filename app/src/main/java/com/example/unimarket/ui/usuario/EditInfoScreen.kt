@@ -1,5 +1,6 @@
 package com.example.unimarket.ui.usuario
 
+import android.widget.Toast
 import androidx.compose.runtime.livedata.observeAsState
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -10,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -79,6 +81,8 @@ fun EditarUsuarioScreen(
 ) {
     val auth: FirebaseAuth = Firebase.auth
     val currentUser = auth.currentUser
+    val context = LocalContext.current
+    var toast: Toast? = null
 
     if (currentUser != null) {
         val correo = currentUser.email
@@ -111,8 +115,21 @@ fun EditarUsuarioScreen(
                         EditarUsuarioForm(
                             usuario = usuario,
                             onSave = { nuevosDatos ->
-                                viewModel.actualizarUsuario(correo, nuevosDatos)
-                                navController.popBackStack()
+                                if (viewModel.isNetworkAvailable(context)) {
+                                        try {
+                                            viewModel.actualizarUsuario(correo, nuevosDatos)
+                                            navController.popBackStack()
+                                        } catch (e: Exception) {
+                                            toast?.cancel()
+                                            toast = Toast.makeText(context, "Error al guardar los cambios", Toast.LENGTH_SHORT)
+                                            toast?.show()
+                                        }
+
+                                } else {
+                                    toast?.cancel()
+                                    toast = Toast.makeText(context, "No hay conectividad a internet", Toast.LENGTH_SHORT)
+                                    toast?.show()
+                                }
                             },
                             onCancel = {
                                 navController.popBackStack()
