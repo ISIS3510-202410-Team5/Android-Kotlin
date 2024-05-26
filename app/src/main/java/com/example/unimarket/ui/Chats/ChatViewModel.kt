@@ -55,7 +55,7 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
     }
 
     fun enviarMensaje(chatId: String, contenido: String, remitente: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             chatRepository.enviarMensaje(chatId, contenido, remitente)
             obtenerMensajes(chatId)
         }
@@ -69,7 +69,7 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
     }
 
     fun obtenerMensajes(chatId: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val mensajes = chatRepository.obtenerMensajes(chatId)
             _mensajes.value = mensajes
         }
