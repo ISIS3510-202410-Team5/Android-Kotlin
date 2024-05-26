@@ -140,7 +140,7 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
                 CategoryList(navController = navController, categoryName = it.arguments?.getString("categoryName") ?: "")
             }
             composable(Screen.PerfilScreen.route) {
-                UsuarioScreen(navController = navController)
+                UsuarioScreen(viewModel = perfilviewModel,navController = navController)
             }
             composable(Screen.EditScreen.route) {
                 EditarUsuarioScreen(navController = navController)
