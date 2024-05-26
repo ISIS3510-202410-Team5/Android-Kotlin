@@ -30,6 +30,7 @@ import com.example.unimarket.repositories.PostRepository
 import androidx.navigation.navArgument
 import com.example.unimarket.repositories.UsuarioRepository
 import com.example.unimarket.ui.Chats.ChatViewModel
+import com.example.unimarket.ui.Chats.InfoChat
 import com.example.unimarket.ui.Chats.ListaDeChats
 import com.example.unimarket.ui.Chats.VistaDelChat
 import com.example.unimarket.ui.DetailProduct.DetailProduct
@@ -77,13 +78,14 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
     val cameraViewModel = remember {CameraViewModel()}
     /*val UsuarioViewModel = remember {UsuarioViewModel(usuariorepository)}*/
 
+
+    val chatViewModel: ChatViewModel = hiltViewModel()
+    val perfilviewModel: PerfilViewModel = hiltViewModel()
     val passwordrecoverviewmodel = remember {PasswordRecoverViewModel()}
 
     val perfilviewModel: PerfilViewModel = hiltViewModel()
 
     /*val UsuarioViewModel = remember {UsuarioViewModel(usuariorepository)}*/
-
-    val chatViewModel: ChatViewModel = hiltViewModel()
 
     Scaffold (
         bottomBar = {AppBottomNav(navController = navController)}
@@ -146,6 +148,7 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
                 val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
                 VistaDelChat(chatId = chatId, chatViewModel = chatViewModel)
             }
+
             composable(Screen.PerfilScreen.route) {
                 UsuarioScreen(viewModel = perfilviewModel,navController = navController)
             }
@@ -158,6 +161,17 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
             /*composable(Screen.UserProfile.route) {
                 UserProfileScreen(navController = navController, usuarioViewModel = UsuarioViewModel,,)
             }*/
+            composable(Screen.ListChats.route) {
+                ListaDeChats(navController = navController, chatViewModel = chatViewModel, perfilViewModel = perfilviewModel)
+            }
+            composable(Screen.ChatDetail.route + "/{chatId}") { backStackEntry ->
+                val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
+                VistaDelChat(chatId = chatId, chatViewModel = chatViewModel,navController = navController, perfilViewModel = perfilviewModel)
+            }
+            composable(Screen.InfoChat.route + "/{chatId}") { backStackEntry ->
+                val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
+                InfoChat(chatId = chatId, chatViewModel = chatViewModel,navController = navController, perfilViewModel = perfilviewModel)
+            }
         }
     }
 
@@ -275,4 +289,6 @@ sealed class Screen(val route: String) {
     data object ListChats: Screen(route = "LISTCHATS")
 
     data object ChatDetail: Screen(route = "CHAT")
+
+    data object InfoChat: Screen(route = "INFOCHAT")
 }
