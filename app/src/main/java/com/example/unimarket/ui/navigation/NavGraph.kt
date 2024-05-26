@@ -83,8 +83,6 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
     val perfilviewModel: PerfilViewModel = hiltViewModel()
     val passwordrecoverviewmodel = remember {PasswordRecoverViewModel()}
 
-    val perfilviewModel: PerfilViewModel = hiltViewModel()
-
     /*val UsuarioViewModel = remember {UsuarioViewModel(usuariorepository)}*/
 
     Scaffold (
@@ -146,7 +144,7 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
             }
             composable(Screen.ChatDetail.route + "/{chatId}") { backStackEntry ->
                 val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
-                VistaDelChat(chatId = chatId, chatViewModel = chatViewModel)
+                VistaDelChat(chatId = chatId, chatViewModel = chatViewModel,navController = navController, perfilViewModel = perfilviewModel)
             }
 
             composable(Screen.PerfilScreen.route) {

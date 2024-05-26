@@ -73,7 +73,7 @@ class ChatProductViewModel @Inject constructor(
     }
 
     fun getProductById(productId: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Main) {
             productoRepository.getProductList().collect { result ->
                 when (result) {
                     is Result.Error -> {
@@ -104,7 +104,7 @@ class ChatProductViewModel @Inject constructor(
     }
 
     fun getProductsByProvider(providerId: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Main) {
             productoRepository.getProductList().collect { result ->
                 when (result) {
                     is Result.Error -> {
