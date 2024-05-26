@@ -26,6 +26,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.unimarket.repositories.PostRepository
 import androidx.navigation.navArgument
 import com.example.unimarket.repositories.UsuarioRepository
 import com.example.unimarket.ui.Chats.ChatViewModel
@@ -58,6 +59,7 @@ import com.example.unimarket.ui.usuario.UserProfileScreen
 import com.example.unimarket.ui.usuario.UsuarioScreen
 import com.example.unimarket.ui.usuario.UsuarioViewModel
 import com.example.unimarket.ui.usuario.shakeSlider
+import com.example.unimarket.ui.categoryList.CategoryList
 
 @Composable
 fun Nav(lightSensorViewModel: LightSensorViewModel){
@@ -73,6 +75,9 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
     val loginViewModel = remember {LoginViewModel(loginModel)}
     val signUpViewModel = remember {SignUpViewModel(loginModel)}
     val userInfoViewModel= remember {UserInfoViewModel(loginModel,signUpViewModel)}
+    val cameraViewModel = remember {CameraViewModel()}
+    /*val UsuarioViewModel = remember {UsuarioViewModel(usuariorepository)}*/
+
 
     val chatViewModel: ChatViewModel = hiltViewModel()
     val perfilviewModel: PerfilViewModel = hiltViewModel()
@@ -90,11 +95,11 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
             }
             composable(Screen.Post.route + "?imageUri={imageUri}",
                 arguments = listOf(navArgument("imageUri") {defaultValue = ""})){
-                val productUri = it.arguments?.getString("imageUri")
-                PublishItem(navController = navController, productUri)
+                val productUri = it.arguments?.getString("imageUri") ?: ""
+                PublishItem(navController = navController, productUri, cameraViewModel)
             }
             composable(Screen.Camera.route){
-                CameraScreen(viewModel = CameraViewModel(), lightViewModel = lightSensorViewModel,navController=navController)
+                CameraScreen(viewModel = cameraViewModel, lightViewModel = lightSensorViewModel,navController=navController)
             }
             composable(Screen.Cart.route){
                 ShoppingCart(navController = navController)
@@ -131,8 +136,11 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
             composable(Screen.RecoverScreen.route) {
                 PasswordResetScreen(navController = navController,passwordrecoverviewmodel )
             }
+            composable(Screen.CategoryScreen.route + "/{categoryName}"){
+                CategoryList(navController = navController, categoryName = it.arguments?.getString("categoryName") ?: "")
+            }
             composable(Screen.PerfilScreen.route) {
-                UsuarioScreen(viewModel=perfilviewModel,navController = navController)
+                UsuarioScreen(navController = navController)
             }
             composable(Screen.EditScreen.route) {
                 EditarUsuarioScreen(navController = navController)
@@ -267,6 +275,7 @@ sealed class Screen(val route: String) {
 
     data object LocationSliderScreen: Screen(route = "SliderLocation")
 
+    data object CategoryScreen: Screen(route = "CATEGORY")
     data object ListChats: Screen(route = "LISTCHATS")
 
     data object ChatDetail: Screen(route = "CHAT")

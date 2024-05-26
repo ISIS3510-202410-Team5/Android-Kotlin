@@ -22,6 +22,7 @@ constructor(
     private val productList: CollectionReference)
 {
 
+    // Esta función creo que deberia quitarse y pasar esa logica a postRepository
     fun addNewProduct(product: Product)
     {
 

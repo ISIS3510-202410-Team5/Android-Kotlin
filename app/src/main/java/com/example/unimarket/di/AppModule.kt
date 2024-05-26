@@ -5,6 +5,7 @@ import android.util.Log
 import com.example.unimarket.data.DefaultLocationTracker
 import com.example.unimarket.data.LocationTracker
 import com.example.unimarket.db.ShoppingCartDb
+import com.example.unimarket.entities.CategoryDAO
 import com.example.unimarket.entities.ProductoDAO
 import com.example.unimarket.repositories.ChatRepository
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -51,6 +52,11 @@ object AppModule
 
     @Provides
     @Singleton
+    @Named("categories")
+    fun provideCategoriesCollection(firestore: FirebaseFirestore) = firestore.collection("Categories")
+
+    @Provides
+    @Singleton
     fun providesFusedLocationProviderClient(
         application: Application
     ): FusedLocationProviderClient =
@@ -70,6 +76,12 @@ object AppModule
     @Provides
     fun provideProductoDao(shoppingCartDb: ShoppingCartDb) : ProductoDAO {
         return shoppingCartDb.ProductoDAO()
+    }
+
+    @Singleton
+    @Provides
+    fun provideCategoryDao(shoppingCartDb: ShoppingCartDb): CategoryDAO {
+        return shoppingCartDb.CategoryDAO()
     }
 
     @Singleton

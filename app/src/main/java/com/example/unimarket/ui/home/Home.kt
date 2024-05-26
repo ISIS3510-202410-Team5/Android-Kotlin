@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -75,6 +76,7 @@ import com.example.unimarket.ui.theme.CoolGray
 import com.example.unimarket.ui.theme.GiantsOrange
 import com.example.unimarket.ui.theme.Licorice
 import com.example.unimarket.ui.theme.UniMarketTheme
+import kotlinx.coroutines.delay
 
 @Composable
 fun Home(navController: NavHostController) {
@@ -101,17 +103,32 @@ fun Home(navController: NavHostController) {
 
     val connectStatus  by viewModel.connectivityObserver.observe().collectAsState(initial = ConnectivityObserver.Status.Losing)
 
+    val catList by viewModel.categories.collectAsState()
+
 
 
     var isEnabled by remember { mutableStateOf(false) }
 
-    LaunchedEffect(viewModel.isOnline) {
-        viewModel.isOnline.collect { isOnline ->
-            isEnabled = isOnline
-            if (isOnline)
-            {
-                viewModel.getRegUsers()
+    LaunchedEffect(isEnabled) {
+
+        if (isEnabled) {
+            viewModel.isOnline.collect { isOnline ->
+                isEnabled = isOnline
             }
+        }
+
+    }
+
+    LaunchedEffect(connectStatus) {
+
+        if (connectStatus == ConnectivityObserver.Status.Available){
+            viewModel.getRegUsers()
+        }
+
+        viewModel.getCategoriesDB()
+        delay(500)
+        if (catList.isEmpty() && connectStatus == ConnectivityObserver.Status.Available) {
+            viewModel.getCategories()
         }
 
     }
@@ -191,14 +208,41 @@ fun Home(navController: NavHostController) {
             modifier = Modifier
                 .padding(horizontal = 5.dp)
                 .clip(CircleShape))
-        Column(modifier = Modifier.verticalScroll(rememberScrollState()))
-        {
-            CatButtonRow(icon1 = catButton.button1.icon, label1 = catButton.button1.label,
-                icon2 = catButton.button2.icon, label2 = catButton.button2.label)
-            CatButtonRow(icon1 = catButton.button3.icon, label1 = catButton.button3.label,
-                icon2 = catButton.button4.icon, label2 = catButton.button4.label )
-            CatButtonRow(icon1 = catButton.button5.icon, label1 = catButton.button5.label,
-                icon2 = catButton.button6.icon, label2 = catButton.button6.label)
+        if (catList.isNotEmpty()) {
+            Column(modifier = Modifier.verticalScroll(rememberScrollState()))
+            {
+                CatButtonRow(
+                    icon1 = catButton.button4.icon,
+                    label1 = catList[0].catName,
+                    icon2 = catButton.button4.icon,
+                    label2 = catList[1].catName,
+                    navController = navController
+                )
+                CatButtonRow(
+                    icon1 = catButton.button1.icon,
+                    label1 = catList[2].catName,
+                    icon2 = catButton.button4.icon,
+                    label2 = catList[3].catName,
+                    navController = navController
+                )
+                CatButtonRow(
+                    icon1 = catButton.button4.icon,
+                    label1 = catList[4].catName,
+                    icon2 = catButton.button4.icon,
+                    label2 = catList[5].catName,
+                    navController = navController
+                )
+            }
+        } else {
+            Text(
+                text = "No recommended categories found. Connect to network to start browsing",
+                modifier = Modifier
+                    .align(alignment = Alignment.CenterHorizontally)
+                    .padding(10.dp),
+                fontSize = 15.sp,
+                fontFamily = FontFamily.SansSerif,
+                color = GiantsOrange
+            )
         }
 
     }
@@ -248,9 +292,10 @@ fun ShowSales(sales: Int = 69420){
 }
 
 @Composable
-fun CatButton(modifier: Modifier = Modifier, buttonIcon: ImageVector, buttonLabel: String) {
+fun CatButton(modifier: Modifier = Modifier, buttonIcon: ImageVector, buttonLabel: String, navController: NavHostController) {
     Column(
-        modifier = modifier,
+        modifier = modifier
+            .clickable { navController.navigate("CATEGORY/${buttonLabel}") },
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ){
@@ -277,7 +322,7 @@ fun CatButton(modifier: Modifier = Modifier, buttonIcon: ImageVector, buttonLabe
 
 
 @Composable
-fun CatButtonRow(modifier: Modifier = Modifier, icon1: ImageVector?, label1: String?, icon2: ImageVector?, label2: String?){
+fun CatButtonRow(modifier: Modifier = Modifier, icon1: ImageVector?, label1: String?, icon2: ImageVector?, label2: String?, navController: NavHostController){
     Row (
         modifier = Modifier
             .fillMaxWidth()
@@ -286,14 +331,14 @@ fun CatButtonRow(modifier: Modifier = Modifier, icon1: ImageVector?, label1: Str
         if (icon1 == null || label1 == null){
             Spacer(modifier = Modifier.weight(1f))
         }else {
-            CatButton(modifier = Modifier.weight(1f), buttonIcon = icon1, buttonLabel = label1)
+            CatButton(modifier = Modifier.weight(1f), buttonIcon = icon1, buttonLabel = label1, navController)
         }
 
         if (icon2 == null || label2 == null){
             Spacer(modifier = Modifier.weight(1f))
         } else
         {
-            CatButton(modifier = Modifier.weight(1f), buttonIcon = icon2, buttonLabel = label2)
+            CatButton(modifier = Modifier.weight(1f), buttonIcon = icon2, buttonLabel = label2, navController)
         }
 
     }
