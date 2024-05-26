@@ -109,12 +109,9 @@ fun Home(navController: NavHostController) {
 
     var isEnabled by remember { mutableStateOf(false) }
 
-    LaunchedEffect(isEnabled) {
-
-        if (isEnabled) {
-            viewModel.isOnline.collect { isOnline ->
-                isEnabled = isOnline
-            }
+    LaunchedEffect(viewModel.isOnline) {
+        viewModel.isOnline.collect { isOnline ->
+            isEnabled = isOnline
         }
 
     }
@@ -123,6 +120,7 @@ fun Home(navController: NavHostController) {
 
         if (connectStatus == ConnectivityObserver.Status.Available){
             viewModel.getRegUsers()
+            isEnabled = true
         }
 
         viewModel.getCategoriesDB()
