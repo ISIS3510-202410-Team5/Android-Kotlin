@@ -140,11 +140,11 @@ fun Nav(lightSensorViewModel: LightSensorViewModel){
                 CategoryList(navController = navController, categoryName = it.arguments?.getString("categoryName") ?: "")
             }
             composable(Screen.ListChats.route) {
-                ListaDeChats(navController = navController, chatViewModel = chatViewModel)
+                ListaDeChats(navController = navController, chatViewModel = chatViewModel, perfilViewModel = perfilviewModel)
             }
             composable(Screen.ChatDetail.route + "/{chatId}") { backStackEntry ->
                 val chatId = backStackEntry.arguments?.getString("chatId") ?: ""
-                VistaDelChat(chatId = chatId, chatViewModel = chatViewModel)
+                VistaDelChat(navController = navController,chatId = chatId, chatViewModel = chatViewModel,perfilViewModel = perfilviewModel)
             }
             composable(Screen.PerfilScreen.route) {
                 UsuarioScreen(viewModel = perfilviewModel,navController = navController)

@@ -100,7 +100,7 @@ fun VistaDelChat(chatId: String, chatViewModel: ChatViewModel, navController: Na
 
                             }else
                             {
-                                Toast.makeText(context, "No hay conexión. El contenido puede que esté desactualizado.", Toast.LENGTH_LONG).show()
+                                Toast.makeText(context, "No hay conexión. No se puede realizar la operacion.", Toast.LENGTH_LONG).show()
 
                             }
 

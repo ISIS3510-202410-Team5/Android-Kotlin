@@ -72,7 +72,7 @@ fun ListaDeChats(chatViewModel: ChatViewModel, navController: NavHostController,
                 SharedPreferenceService.getCurrentUser()?.let { chatViewModel.obtenerChats(it) }
             }
             if (!isOnline) {
-                Toast.makeText(context, "No hay conexión. El contenido puede que esté desactualizado.", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "No hay conexión. No es posible ver el contenido.", Toast.LENGTH_LONG).show()
             }
         }
 
