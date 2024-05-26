@@ -1,6 +1,7 @@
 package com.example.unimarket.ui.usuario
 
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
@@ -37,6 +39,9 @@ import kotlinx.coroutines.launch
 fun CambioImagenPerfil(viewModel: PerfilViewModel = hiltViewModel(), navController: NavHostController) {
     val auth: FirebaseAuth = Firebase.auth
     val currentUser = auth.currentUser
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    var toast: Toast? = null
 
     if (currentUser != null) {
         val correo = currentUser.email
@@ -48,7 +53,6 @@ fun CambioImagenPerfil(viewModel: PerfilViewModel = hiltViewModel(), navControll
                 var url by remember { mutableStateOf(TextFieldValue(usuario.profileImageUrl ?: "")) }
 
                 if (showFullScreenImage) {
-
                     ProfileImageFullScreen(url.text, onDismiss = { showFullScreenImage = false })
                 } else {
                     // Mostrar la interfaz de cambio de imagen de perfil
@@ -65,22 +69,36 @@ fun CambioImagenPerfil(viewModel: PerfilViewModel = hiltViewModel(), navControll
                             color = Color(0xFFFF5958),
                             modifier = Modifier.padding(bottom = 16.dp)
                         )
-                        BasicTextField(
+                        OutlinedTextField(
                             value = url,
                             onValueChange = { url = it },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(8.dp),
-                            singleLine = true
+                            singleLine = true,
+                            placeholder = { Text("Colocar URL de la imagen") }
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         GlideImage(url.text)
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(
                             onClick = {
-                                val nuevosDatos = mapOf("profileImageUrl" to url.text)
-                                viewModel.actualizarUsuario(correo, nuevosDatos)
-                                navController.popBackStack()
+                                if (viewModel.isNetworkAvailable(context)) {
+                                        try {
+                                            val nuevosDatos = mapOf("profileImageUrl" to url.text)
+                                            viewModel.actualizarUsuario(correo, nuevosDatos)
+                                            navController.popBackStack()
+                                        } catch (e: Exception) {
+                                            toast?.cancel()
+                                            toast = Toast.makeText(context, "Error al guardar la imagen", Toast.LENGTH_SHORT)
+                                            toast?.show()
+                                        }
+
+                                } else {
+                                    toast?.cancel()
+                                    toast = Toast.makeText(context, "No hay conectividad a internet", Toast.LENGTH_SHORT)
+                                    toast?.show()
+                                }
                             },
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF5958))
                         ) {
@@ -96,7 +114,7 @@ fun CambioImagenPerfil(viewModel: PerfilViewModel = hiltViewModel(), navControll
                         Spacer(modifier = Modifier.height(8.dp))
                         Button(
                             onClick = {
-                                CoroutineScope(Dispatchers.Main).launch {
+                                coroutineScope.launch {
                                     showFullScreenImage = true
                                 }
                             },
