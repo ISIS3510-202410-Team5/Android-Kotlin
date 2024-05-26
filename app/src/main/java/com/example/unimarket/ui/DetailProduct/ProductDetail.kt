@@ -2,6 +2,7 @@ package com.example.unimarket.ui.DetailProduct
 
 import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -62,12 +63,13 @@ import com.example.unimarket.ui.ListProducts.ProductListState
 import com.example.unimarket.ui.navigation.Screen
 import com.example.unimarket.ui.theme.GiantsOrange
 import com.example.unimarket.ui.theme.Licorice
+import com.example.unimarket.ui.usuario.UsuarioViewModel
 import com.skydoves.landscapist.rememberDrawablePainter
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalCoilApi::class)
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun DetailProduct(navController: NavHostController, productId: String,chatViewModel: ChatViewModel) {
+fun DetailProduct(navController: NavHostController, productId: String, chatViewModel: ChatViewModel = hiltViewModel()) {
 
     val detailviewModel: DetailProductViewModel = hiltViewModel()
 
@@ -84,6 +86,15 @@ fun DetailProduct(navController: NavHostController, productId: String,chatViewMo
     LaunchedEffect(Unit) {
         detailviewModel.getRelatedProductsView(productId)
         producto = detailviewModel._selectedProduct.value
+    }
+
+    var isEnabled by remember { mutableStateOf(false) }
+
+    LaunchedEffect(chatViewModel.isOnline) {
+        chatViewModel.isOnline.collect { isOnline ->
+            isEnabled = isOnline
+        }
+
     }
 
     Column() {
@@ -200,20 +211,30 @@ fun DetailProduct(navController: NavHostController, productId: String,chatViewMo
                 }
 
                 if(producto!!.proveedor != SharedPreferenceService.getCurrentUser())
-                {
+                    {
 
-                    Button(onClick = {
-                        val userCorreo = SharedPreferenceService.getCurrentUser()
-                        if (userCorreo != null) {
-                            chatViewModel.iniciarChat(producto!!, userCorreo) { chatId ->
-                                navController.navigate(Screen.ChatDetail.route + "/${chatId}")
+                        Button(onClick = {
+
+                            if (isEnabled) {
+
+                                val userCorreo = SharedPreferenceService.getCurrentUser()
+                                if (userCorreo != null) {
+                                    chatViewModel.iniciarChat(producto!!, userCorreo) { chatId ->
+                                        navController.navigate(Screen.ChatDetail.route + "/${chatId}")
+                                    }
+                                }
+
                             }
-                        }
-                    }) {
-                        Text(text = "Iniciar Chat con el dueño")
-                    }
+                            else
+                            {
+                                Toast.makeText(context, "No hay conexión. El contenido puede que esté desactualizado.", Toast.LENGTH_LONG).show()
 
-                }
+                            }
+                        }) {
+                            Text(text = "Iniciar Chat con el dueño")
+                        }
+
+                    }
 
                 Text(
                     text = "Related products",
