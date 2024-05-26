@@ -88,7 +88,7 @@ fun UsuarioInfo(usuario: UsuarioDTO) {
 }
 
 @Composable
-fun UsuarioScreen(viewModel: PerfilViewModel = hiltViewModel(), navController: NavHostController) {
+fun UsuarioScreen(viewModel: PerfilViewModel, navController: NavHostController) {
     val auth: FirebaseAuth = Firebase.auth
     val currentUser = auth.currentUser
 
