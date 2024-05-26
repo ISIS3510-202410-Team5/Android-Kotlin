@@ -2,6 +2,7 @@ package com.example.unimarket.ui.DetailProduct
 
 import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -85,6 +86,15 @@ fun DetailProduct(navController: NavHostController, productId: String, chatViewM
     LaunchedEffect(Unit) {
         detailviewModel.getRelatedProductsView(productId)
         producto = detailviewModel._selectedProduct.value
+    }
+
+    var isEnabled by remember { mutableStateOf(false) }
+
+    LaunchedEffect(chatViewModel.isOnline) {
+        chatViewModel.isOnline.collect { isOnline ->
+            isEnabled = isOnline
+        }
+
     }
 
     Column() {
@@ -204,11 +214,21 @@ fun DetailProduct(navController: NavHostController, productId: String, chatViewM
                     {
 
                         Button(onClick = {
-                            val userCorreo = SharedPreferenceService.getCurrentUser()
-                            if (userCorreo != null) {
-                                chatViewModel.iniciarChat(producto!!, userCorreo) { chatId ->
-                                    navController.navigate(Screen.ChatDetail.route + "/${chatId}")
+
+                            if (isEnabled) {
+
+                                val userCorreo = SharedPreferenceService.getCurrentUser()
+                                if (userCorreo != null) {
+                                    chatViewModel.iniciarChat(producto!!, userCorreo) { chatId ->
+                                        navController.navigate(Screen.ChatDetail.route + "/${chatId}")
+                                    }
                                 }
+
+                            }
+                            else
+                            {
+                                Toast.makeText(context, "No hay conexión. El contenido puede que esté desactualizado.", Toast.LENGTH_LONG).show()
+
                             }
                         }) {
                             Text(text = "Iniciar Chat con el dueño")

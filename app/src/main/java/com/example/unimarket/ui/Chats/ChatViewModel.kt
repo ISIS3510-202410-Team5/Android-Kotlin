@@ -7,9 +7,11 @@ import com.example.unimarket.model.Chat
 import com.example.unimarket.model.Mensaje
 import com.example.unimarket.model.Product
 import com.example.unimarket.repositories.ChatRepository
+import com.example.unimarket.repositories.ConnectivityRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -17,7 +19,10 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
-class ChatViewModel @Inject constructor(private val chatRepository: ChatRepository) : ViewModel() {
+class ChatViewModel @Inject constructor(
+    private val chatRepository: ChatRepository,
+    private val connectivityRepository: ConnectivityRepository
+) : ViewModel() {
 
     val _chats = MutableStateFlow<List<Chat>>(emptyList())
     val chats: StateFlow<List<Chat>> = _chats
@@ -29,6 +34,8 @@ class ChatViewModel @Inject constructor(private val chatRepository: ChatReposito
 
     private val _chatDetails = MutableStateFlow<Chat?>(null)
     val chatDetails: StateFlow<Chat?> = _chatDetails
+
+    var isOnline: Flow<Boolean> = connectivityRepository.isConnected
 
     fun iniciarChat(product: Product, userCorreo: String, onChatCreated: (String) -> Unit) {
         viewModelScope.launch {

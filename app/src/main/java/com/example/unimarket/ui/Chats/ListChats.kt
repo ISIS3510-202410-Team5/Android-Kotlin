@@ -3,6 +3,7 @@ package com.example.unimarket.ui.Chats
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -27,8 +28,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -53,35 +58,80 @@ import com.example.unimarket.ui.usuario.ProfileImage
 @Composable
 fun ListaDeChats(chatViewModel: ChatViewModel, navController: NavHostController, perfilViewModel: PerfilViewModel) {
 
-    SharedPreferenceService.getCurrentUser()?.let { chatViewModel.obtenerChats(it) }
-
     val chats by chatViewModel.chats.collectAsState(emptyList())
 
-    Column {
+    val context = LocalContext.current
 
-        Text(
-            text = "Lista de Chats",
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        )
+    var isEnabled by remember { mutableStateOf(false) }
 
-        Spacer(modifier = Modifier.size(14.dp))
-
-        LazyColumn(modifier = Modifier.fillMaxSize()) { // Use fillMaxSize to occupy the available space
-            items(chats) { chat ->
-                ChatItem( // Create a reusable ChatItem composable
-                    chat = chat,
-                    onClick = {
-                        navController.navigate(Screen.ChatDetail.route + "/${chat.id}")
-                    },
-                    perfilViewModel = perfilViewModel
-                )
+    LaunchedEffect(chatViewModel.isOnline) {
+        chatViewModel.isOnline.collect { isOnline ->
+            isEnabled = isOnline
+            if (isOnline)
+            {
+                SharedPreferenceService.getCurrentUser()?.let { chatViewModel.obtenerChats(it) }
+            }
+            if (!isOnline) {
+                Toast.makeText(context, "No hay conexión. El contenido puede que esté desactualizado.", Toast.LENGTH_LONG).show()
             }
         }
 
     }
+
+        Column {
+
+            Text(
+                text = "Lista de Chats",
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            )
+
+            Spacer(modifier = Modifier.size(14.dp))
+
+            if (isEnabled) {
+
+                LazyColumn(modifier = Modifier.fillMaxSize()) { // Use fillMaxSize to occupy the available space
+                    items(chats) { chat ->
+                        ChatItem( // Create a reusable ChatItem composable
+                            chat = chat,
+                            onClick = {
+                                navController.navigate(Screen.ChatDetail.route + "/${chat.id}")
+                            },
+                            perfilViewModel = perfilViewModel
+                        )
+                    }
+                }
+
+            }
+
+            else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column {
+
+                        Text(
+                            text = "Oops...",
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = Color.Red
+                        )
+                        Text(
+                            text = "No hay conexión a Internet",
+                            style = MaterialTheme.typography.titleLarge,
+                            color = Color.Red
+                        )
+
+                    }
+                }
+            }
+
+        }
+
 }
 
 @Composable
@@ -103,66 +153,44 @@ fun ChatItem(
             if(SharedPreferenceService.getCurrentUser()!=chat.emailProveedor)
             {
 
-                val usuarioState by perfilViewModel.obtenerUsuarioPorCorreo(chat.emailProveedor).observeAsState()
-
-                usuarioState?.let { usuario ->
-
-                    Box(modifier = Modifier.size(60.dp)){
-
-                        ProfileImage(imageUrl = usuario.profileImageUrl!!)
-
-                    }
-
-                    Column(modifier = Modifier.weight(1f)) { // Expand content within remaining space
+                Column(modifier = Modifier.weight(1f)) { // Expand content within remaining space
+                    Text(
+                        text = "Chat con: ${chat.emailProveedor}",
+                        style = MaterialTheme.typography.headlineSmall, // Use a heading style for emphasis
+                        maxLines = 1, // Limit title to one line (optional)
+                        overflow = TextOverflow.Ellipsis // Ellipsis if text overflows
+                    )
+                    if (chat.mensajes.isNotEmpty()) {
                         Text(
-                            text = "Chat con: ${chat.emailProveedor}",
-                            style = MaterialTheme.typography.headlineSmall, // Use a heading style for emphasis
-                            maxLines = 1, // Limit title to one line (optional)
-                            overflow = TextOverflow.Ellipsis // Ellipsis if text overflows
+                            text = chat.mensajes.last().contenido,
+                            style = MaterialTheme.typography.bodyMedium, // Use appropriate body style
+                            maxLines = 1, // Limit message preview to one line (optional)
+                            overflow = TextOverflow.Ellipsis // Ellipsis if message overflows
                         )
-                        if (chat.mensajes.isNotEmpty()) {
-                            Text(
-                                text = chat.mensajes.last().contenido,
-                                style = MaterialTheme.typography.bodyMedium, // Use appropriate body style
-                                maxLines = 1, // Limit message preview to one line (optional)
-                                overflow = TextOverflow.Ellipsis // Ellipsis if message overflows
-                            )
-                        }
                     }
-
                 }
 
             }
             else
             {
-                val usuarioState by perfilViewModel.obtenerUsuarioPorCorreo(chat.emailCliente).observeAsState()
 
-                usuarioState?.let { usuario ->
-
-                    Box(modifier = Modifier.size(60.dp)){
-
-                        ProfileImage(imageUrl = usuario.profileImageUrl!!)
-
-                    }
-
-                    Column(modifier = Modifier.weight(1f)) { // Expand content within remaining space
+                Column(modifier = Modifier.weight(1f)) { // Expand content within remaining space
+                    Text(
+                        text = "Chat con: ${chat.emailCliente}",
+                        style = MaterialTheme.typography.headlineSmall, // Use a heading style for emphasis
+                        maxLines = 1, // Limit title to one line (optional)
+                        overflow = TextOverflow.Ellipsis // Ellipsis if text overflows
+                    )
+                    if (chat.mensajes.isNotEmpty()) {
                         Text(
-                            text = "Chat con: ${chat.emailCliente}",
-                            style = MaterialTheme.typography.headlineSmall, // Use a heading style for emphasis
-                            maxLines = 1, // Limit title to one line (optional)
-                            overflow = TextOverflow.Ellipsis // Ellipsis if text overflows
+                            text = chat.mensajes.last().contenido,
+                            style = MaterialTheme.typography.bodyMedium, // Use appropriate body style
+                            maxLines = 1, // Limit message preview to one line (optional)
+                            overflow = TextOverflow.Ellipsis // Ellipsis if message overflows
                         )
-                        if (chat.mensajes.isNotEmpty()) {
-                            Text(
-                                text = chat.mensajes.last().contenido,
-                                style = MaterialTheme.typography.bodyMedium, // Use appropriate body style
-                                maxLines = 1, // Limit message preview to one line (optional)
-                                overflow = TextOverflow.Ellipsis // Ellipsis if message overflows
-                            )
-                        }
                     }
-
                 }
+
             }
         }
     }

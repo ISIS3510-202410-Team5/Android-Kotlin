@@ -47,79 +47,159 @@ class ChatProductViewModel @Inject constructor(
     private val _providerProductsState: MutableState<ProductListState> = mutableStateOf(ProductListState())
     val providerProductsState: State<ProductListState> = _providerProductsState
 
-    init {
-        getProductList()
-    }
-
-    private fun getProductList() {
-        productoRepository.getProductList().onEach { result ->
-            when (result) {
-                is Result.Error -> {
-                    _state.value = ProductListState(error = result.message ?: "Error inesperado")
-                }
-                is Result.Loading -> {
-                    _state.value = ProductListState(isLoading = true)
-                }
-                is Result.Success -> {
-                    _state.value = ProductListState(productos = result.data ?: emptyList())
-                    viewModelScope.launch(Dispatchers.IO) {
-                        _state.value.productos.forEach { product ->
-                            productCache.putProduct(product.id, product)
-                        }
-                    }
-                }
-            }
-        }.launchIn(viewModelScope)
-    }
-
     fun getProductById(productId: String) {
-        viewModelScope.launch(Dispatchers.Main) {
-            productoRepository.getProductList().collect { result ->
-                when (result) {
-                    is Result.Error -> {
-                        _state.value = ProductListState(error = result.message ?: "Error inesperado")
-                    }
-                    is Result.Loading -> {
-                        _state.value = ProductListState(isLoading = true)
-                    }
-                    is Result.Success -> {
-                        _state.value = ProductListState(productos = result.data ?: emptyList())
 
-                        val product = if (_state.value.productos.isNotEmpty()) {
-                            _state.value.productos.find { it.id == productId }
-                        } else {
-                            productCache.getProduct(productId)
+        if (productCache.getProducts().isEmpty()) {
+
+                productoRepository.getProductList().onEach { result ->
+                    when (result) {
+                        is Result.Error -> {
+                            _state.value =
+                                ProductListState(error = result.message ?: "Error inesperado")
                         }
 
-                        if (product != null) {
-                            selectedProduct.postValue(product)
-                        } else {
-                            Log.e("getProductById", "Producto con ID $productId no encontrado")
-                            selectedProduct.postValue(null)
+                        is Result.Loading -> {
+                            _state.value = ProductListState(isLoading = true)
+                        }
+
+                        is Result.Success -> {
+
+                            _state.value = ProductListState(productos = result.data ?: emptyList())
+
+                            viewModelScope.launch(Dispatchers.IO) {
+                                _state.value.productos.forEach { product ->
+                                    productCache.putProduct(product.id, product)
+                                }
+                            }
+
+                            viewModelScope.launch(Dispatchers.Main) {
+
+                                val product = _state.value.productos.find { it.id == productId }
+
+                                if (product != null) {
+                                    selectedProduct.postValue(product)
+                                } else {
+                                    Log.e("getProductById", "Producto con ID $productId no encontrado")
+                                    selectedProduct.postValue(null)
+                                }
+
+                            }
                         }
                     }
+                }.launchIn(viewModelScope)
+        }else {
+
+            viewModelScope.launch(Dispatchers.IO) {
+                val productListState =
+                    ProductListState(productos = productCache.getProducts() ?: emptyList())
+                withContext(Dispatchers.Main) {
+                    _state.value = productListState
                 }
             }
+
+            viewModelScope.launch(Dispatchers.Main) {
+
+                val product = productCache.getProduct(productId)
+
+                if (product != null) {
+                    selectedProduct.postValue(product)
+                } else {
+                    Log.e("getProductById", "Producto con ID $productId no encontrado")
+                    selectedProduct.postValue(null)
+                }
+
+            }
+
         }
     }
 
     fun getProductsByProvider(providerId: String) {
-        viewModelScope.launch(Dispatchers.Main) {
-            productoRepository.getProductList().collect { result ->
+
+        if (productCache.getProducts().isEmpty()) {
+
+            productoRepository.getProductList().onEach { result ->
                 when (result) {
                     is Result.Error -> {
-                        _providerProductsState.value = ProductListState(error = result.message ?: "Error inesperado")
+                        _state.value =
+                            ProductListState(error = result.message ?: "Error inesperado")
                     }
+
                     is Result.Loading -> {
-                        _providerProductsState.value = ProductListState(isLoading = true)
+                        _state.value = ProductListState(isLoading = true)
                     }
+
                     is Result.Success -> {
-                        _providerProductsState.value = ProductListState(
-                            productos = result.data?.filter { it.proveedor == providerId } ?: emptyList()
-                        )
+                        viewModelScope.launch(Dispatchers.Main) {
+
+                            _providerProductsState.value = ProductListState(
+                                productos = result.data?.filter { it.proveedor == providerId } ?: emptyList()
+                            )
+
+                        }
+
                     }
                 }
+            }.launchIn(viewModelScope)
+        }else {
+
+            viewModelScope.launch(Dispatchers.Main) {
+
+                _providerProductsState.value = ProductListState(
+                    productos = productCache.getProducts().filter { it.proveedor == providerId } ?: emptyList()
+                )
+
             }
         }
+    }
+
+
+
+    fun getProductList()
+    {
+        if (productCache.getProducts().isEmpty()) {
+
+            productoRepository.getProductList().onEach { result ->
+
+                when (result) {
+                    is Result.Error -> {
+
+                        _state.value =
+                            ProductListState(error = result.message ?: "Error inesperado")
+                    }
+
+                    is Result.Loading -> {
+
+                        _state.value = ProductListState(isLoading = true)
+                    }
+
+                    is Result.Success -> {
+
+                        Log.d("", "esto es una prueba")
+
+
+                        viewModelScope.launch(Dispatchers.IO) {
+                            _state.value = ProductListState(productos = result.data ?: emptyList())
+                            _state.value.productos.forEach { product ->
+                                productCache.putProduct(product.id, product)
+                            }
+                        }
+                    }
+
+                    else -> {}
+                }
+            }.launchIn(viewModelScope)
+
+        }else {
+
+            viewModelScope.launch(Dispatchers.IO) {
+                val productListState =
+                    ProductListState(productos = productCache.getProducts() ?: emptyList())
+                withContext(Dispatchers.Main) {
+                    _state.value = productListState
+                }
+            }
+
+        }
+
     }
 }

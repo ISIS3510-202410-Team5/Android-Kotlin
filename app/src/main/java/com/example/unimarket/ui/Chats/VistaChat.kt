@@ -1,6 +1,7 @@
 package com.example.unimarket.ui.Chats
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -37,6 +38,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -54,93 +56,140 @@ import com.example.unimarket.ui.usuario.UsuarioViewModel
 fun VistaDelChat(chatId: String, chatViewModel: ChatViewModel, navController: NavHostController, perfilViewModel: PerfilViewModel) {
 
     val mensajes by chatViewModel.mensajes.collectAsState()
-    val chatDetails by chatViewModel.chatDetails.collectAsState()
     val usuarioActual: String? = SharedPreferenceService.getCurrentUser()
 
-    LaunchedEffect(chatId) {
-        chatViewModel.obtenerMensajes(chatId)
-        chatViewModel.obtenerChatDetails(chatId)
-    }
+    var isEnabled by remember { mutableStateOf(false) }
 
-    val listState = rememberLazyListState()
+    val context = LocalContext.current
 
-    LaunchedEffect(mensajes) {
-        listState.animateScrollToItem(mensajes.size - 1)
+    LaunchedEffect(chatViewModel.isOnline) {
+        chatViewModel.isOnline.collect { isOnline ->
+            isEnabled = isOnline
+        }
+
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        if (chatDetails != null) {
 
-            TopAppBar(
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigate("LISTCHATS") }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                },
-                title = {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
+        TopAppBar(
+            navigationIcon = {
+                IconButton(onClick = {
 
-                        Button(
-                            onClick = { navController.navigate(Screen.InfoChat.route + "/${chatId}") },
-                            modifier = Modifier.fillMaxWidth().padding(8.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color.Gray),
-                            shape = RoundedCornerShape(8.dp)
-                        ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    Icons.Default.Info,
-                                    contentDescription = "Chat Detail",
-                                    modifier = Modifier.size(24.dp),
-                                    tint = Color.Black // Color del icono
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    "Chat Information",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = Color.Black // Color del texto
-                                )
+
+                    navController.navigate("LISTCHATS")
+
+
+                }) {
+                    Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                }
+            },
+            title = {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Button(
+                        onClick = {
+
+                            if (isEnabled) {
+
+                                navController.navigate(Screen.InfoChat.route + "/${chatId}")
+
+                            }else
+                            {
+                                Toast.makeText(context, "No hay conexión. El contenido puede que esté desactualizado.", Toast.LENGTH_LONG).show()
+
                             }
+
+                        },
+                        modifier = Modifier.fillMaxWidth().padding(8.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Gray),
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                Icons.Default.Info,
+                                contentDescription = "Chat Detail",
+                                modifier = Modifier.size(24.dp),
+                                tint = Color.Black // Color del icono
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                "Chat Information",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = Color.Black // Color del texto
+                            )
                         }
                     }
                 }
-            )
-
-        }
-
-        LazyColumn(
-            modifier = Modifier.weight(1f)
-        ) {
-            items(mensajes) { mensaje ->
-                MessageBubble(
-                    text = mensaje.contenido,
-                    isCurrentUser = mensaje.remitente == usuarioActual
-                )
             }
-        }
-
-        var nuevoMensaje by remember { mutableStateOf("") }
-        TextField(
-            value = nuevoMensaje,
-            onValueChange = { nuevoMensaje = it },
-            placeholder = { Text(text = "Escribe un mensaje") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
         )
-        Button(onClick = {
-            val remitente = usuarioActual
-            if (remitente != null) {
-                chatViewModel.enviarMensaje(chatId, nuevoMensaje, remitente)
+
+        if (isEnabled) {
+            LaunchedEffect(chatId) {
+                chatViewModel.obtenerMensajes(chatId)
+                chatViewModel.obtenerChatDetails(chatId)
             }
-            nuevoMensaje = ""
-        }, modifier = Modifier.align(Alignment.End).padding(8.dp)) {
-            Text(text = "Enviar")
+
+            val listState = rememberLazyListState()
+
+            LaunchedEffect(mensajes) {
+                listState.animateScrollToItem(mensajes.size - 1)
+            }
+
+            LazyColumn(
+                modifier = Modifier.weight(1f)
+            ) {
+                items(mensajes) { mensaje ->
+                    MessageBubble(
+                        text = mensaje.contenido,
+                        isCurrentUser = mensaje.remitente == usuarioActual
+                    )
+                }
+            }
+            var nuevoMensaje by remember { mutableStateOf("") }
+            TextField(
+                value = nuevoMensaje,
+                onValueChange = { nuevoMensaje = it },
+                placeholder = { Text(text = "Escribe un mensaje") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            )
+            Button(onClick = {
+                val remitente = usuarioActual
+                if (remitente != null) {
+                    chatViewModel.enviarMensaje(chatId, nuevoMensaje, remitente)
+                }
+                nuevoMensaje = ""
+            }, modifier = Modifier.align(Alignment.End).padding(8.dp)) {
+                Text(text = "Enviar")
+            }
+        } else {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Column {
+
+                    androidx.compose.material3.Text(
+                        text = "Oops...",
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = Color.Red
+                    )
+                    androidx.compose.material3.Text(
+                        text = "No hay conexión a Internet",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = Color.Red
+                    )
+
+                }
+            }
         }
+
     }
 }
 
